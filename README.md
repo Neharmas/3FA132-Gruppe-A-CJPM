@@ -1,5 +1,3 @@
 # 3FA132-Gruppe-A-CJPM
 
-Was suchst du hier ?
-
-Hally Happoween
+Bitte zur Sicherheit den /dev Branch nutzen & eure Codeveränderungen mit sinnvollen Commit-Msg versehen!
