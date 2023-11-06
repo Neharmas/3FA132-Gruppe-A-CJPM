@@ -24,7 +24,7 @@ public class DBConnect implements IDbConnect{
 		if (jdbi == null) {
 	         try {
 	            final Properties prop = new Properties();
-	            prop.load(new FileReader("gm3.properties"));
+	            prop.load(new FileReader("hausverwaltung.properties"));
 	            final String dburl = prop.getProperty("DBURL");
 	            final String dbuser = prop.getProperty("DBUSER");
 	            final String dbpw = prop.getProperty("DBPW");
