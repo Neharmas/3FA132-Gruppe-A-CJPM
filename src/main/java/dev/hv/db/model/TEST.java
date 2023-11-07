@@ -13,17 +13,23 @@ import dev.hv.db.init.DBConnect;
 public class TEST {
 
 	public static void main(String[] args) {
-		Jdbi jdbi = new DBConnect().getJdbi();
+		Jdbi jdbi = DBConnect.getConnection().getJdbi();
+		
+		DBConnect.getConnection().createAllTables();
 		
 		final Handle handle = jdbi.open();
 		
 		final List<Map<String, Object>> results = handle
-		.createQuery("SELECT * FROM KUNDEN;")
+		.createQuery("SELECT * from KUNDEN")
 		.mapToMap()
 		.list();
 		
 		System.out.println("######################");
 		results.stream().forEach(e -> System.out.println(e));
+		
+		handle.close();
+		
+		//DBConnect.getConnection().removeAllTables();
 		
 	}
 

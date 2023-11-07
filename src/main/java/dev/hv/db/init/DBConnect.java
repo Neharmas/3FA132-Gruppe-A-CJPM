@@ -7,46 +7,75 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
 
+import org.jdbi.v3.core.Handle;
 import org.jdbi.v3.core.Jdbi;
 
 public class DBConnect implements IDbConnect{
+	private static DBConnect instance = null;
+	
+	private DBConnect() {
+		
+	}
+	
+	public static DBConnect getConnection() {
+		if (instance == null) {
+			instance = new DBConnect();
+		}
+		return instance;
+	}
 	
 	private Jdbi jdbi = null;
 
 	@Override
 	public void createAllTables() {
-		// TODO Auto-generated method stub
+		Jdbi jdbi = getJdbi();
 		
+		final Handle handle = jdbi.open();
+		handle.execute("CREATE TABLE Kunden (\r\n"
+				+ "	id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\r\n"
+				+ "	Name TEXT NOT NULL,\r\n"
+				+ "	Vorname TEXT NOT NULL\r\n"
+				+ ");");
 	}
 
 	@Override
-	public Jdbi getJdbi() {
+	public Jdbi getJdbi(String uri, String user, String pw) {
 		if (jdbi == null) {
-	         try {
-	            final Properties prop = new Properties();
-	            prop.load(new FileReader("hausverwaltung.properties"));
-	            final String dburl = prop.getProperty("DBURL");
-	            final String dbuser = prop.getProperty("DBUSER");
-	            final String dbpw = prop.getProperty("DBPW");
-
-	            jdbi = Jdbi.create(dburl, dbuser, "");
-	         } catch (IOException e) {
-	            throw new RuntimeException(e);
-	         }
+	         final String dburl = uri; //DBURL
+			final String dbuser = user; //DBUSER
+			final String dbpw = pw; //DBW
+			
+			jdbi = Jdbi.create(dburl, dbuser, dbpw);
 	      }
 	      return jdbi;
 	}
 
 	@Override
-	public Jdbi getJdbi(String uri, String user, String pw) {
-		// TODO Auto-generated method stub
-		return null;
+	public Jdbi getJdbi() {
+		if (this.jdbi == null) {
+			 try {
+	            final Properties prop = new Properties();
+	            prop.load(new FileReader("hausverwaltung.properties"));
+	            final String dburl = prop.getProperty("DBURL"); //DBURL
+	            final String dbuser = prop.getProperty("DBUSER"); //DBUSER
+	            String dbpw = prop.getProperty("DBPW"); //DBW
+	            
+	            if (dbpw == null) dbpw = "";
+
+	            jdbi = Jdbi.create(dburl, dbuser, dbpw);
+	         } catch (IOException e) {
+	            throw new RuntimeException(e);
+	         }
+		}
+		return this.jdbi;
 	}
 
 	@Override
 	public void removeAllTables() {
-		// TODO Auto-generated method stub
+		Jdbi jdbi = getJdbi();
 		
+		final Handle handle = jdbi.open();
+		handle.execute("DROP TABLE Kunden");
 	}
 
 }
