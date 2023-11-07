@@ -1,40 +1,40 @@
 package dev.hv.db.model;
 
 public class DCustomer implements IDCustomer{
-
+	private String firstName;
+	private long id;
+	private String lastName;
+	
 	@Override
 	public String getFirstname() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.firstName;
 	}
 
 	@Override
 	public Long getId() {
-		// TODO Auto-generated method stub
-		return null;
+		return id;
 	}
 
 	@Override
 	public String getLastname() {
-		// TODO Auto-generated method stub
-		return null;
+		return lastName;
 	}
 
 	@Override
 	public void setFirstname(String firstName) {
-		// TODO Auto-generated method stub
+		this.firstName = firstName;
 		
 	}
 
 	@Override
 	public void setId(Long id) {
-		// TODO Auto-generated method stub
+		this.id = id;
 		
 	}
 
 	@Override
 	public void setLastname(String lastName) {
-		// TODO Auto-generated method stub
+		this.lastName = lastName;
 		
 	}
 

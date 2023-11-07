@@ -1,35 +1,75 @@
 package dev.hv.db.model;
 
 public class DReading implements IDReading{
-
-	@Override
+	private String comment;
+	private IDCustomer customer;
+	private Long dateOfReading;
+	private Long id;
+	private String kindOfMeter;
+	private String meterId;
+	private Boolean substitute;
+	private String date;
+		
+	
 	public String getComment() {
-		// TODO Auto-generated method stub
-		return null;
+		return comment;
 	}
-
-	@Override
+	public void setComment(String comment) {
+		this.comment = comment;
+	}
 	public IDCustomer getCustomer() {
-		// TODO Auto-generated method stub
-		return null;
+		return customer;
 	}
-
+	public void setCustomer(IDCustomer customer) {
+		this.customer = customer;
+	}
+	
 	@Override
 	public Long getDateofreading() {
-		// TODO Auto-generated method stub
-		return null;
+		return dateOfReading;
 	}
-
+	
 	@Override
-	public Long getId() {
-		// TODO Auto-generated method stub
-		return null;
+	public void setDateofreading(Long dateOfReading) {
+		this.dateOfReading = dateOfReading;
 	}
-
+	public Long getId() {
+		return id;
+	}
+	public void setId(Long id) {
+		this.id = id;
+	}
+	
 	@Override
 	public String getKindofmeter() {
-		// TODO Auto-generated method stub
-		return null;
+		return kindOfMeter;
+	}
+
+	@Override 
+	public void setKindofmeter(String kindOfMeter) {
+		this.kindOfMeter = kindOfMeter;
+	}
+	
+	@Override
+	public String getMeterid() {
+		return meterId;
+	}
+	
+	@Override
+	public void setMeterid(String meterId) {
+		this.meterId = meterId;
+	}
+	public Boolean getSubstitute() {
+		return substitute;
+	}
+	public void setSubstitute(Boolean substitute) {
+		this.substitute = substitute;
+	}
+	public String getDate() {
+		return date;
+	}
+	public void setDate(String date) {
+		this.date = date;
 	}
 
 	@Override
@@ -37,71 +77,21 @@ public class DReading implements IDReading{
 		// TODO Auto-generated method stub
 		return null;
 	}
-
-	@Override
-	public String getMeterid() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Boolean getSubstitute() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
+	
 	@Override
 	public String printDateofreading() {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
-	@Override
-	public void setComment(String comment) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void setCustomer(IDCustomer customer) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void setDateofreading(Long dateOfReading) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void setId(Long id) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void setKindofmeter(String kindOfMeter) {
-		// TODO Auto-generated method stub
-		
-	}
-
+	
 	@Override
 	public void setMetercount(Double meterCount) {
 		// TODO Auto-generated method stub
 		
 	}
 
-	@Override
-	public void setMeterid(String meterId) {
-		// TODO Auto-generated method stub
-		
-	}
 
-	@Override
-	public void setSubstitute(Boolean substitute) {
-		// TODO Auto-generated method stub
-		
-	}
+	
+	
 
 }
