@@ -8,28 +8,57 @@ import org.jdbi.v3.core.Handle;
 import org.jdbi.v3.core.Jdbi;
 import org.jdbi.v3.core.statement.Query;
 
+import dev.hv.db.dao.CustomerDAO;
 import dev.hv.db.init.DBConnect;
 
 public class TEST {
 
 	public static void main(String[] args) {
 		Jdbi jdbi = DBConnect.getConnection().getJdbi();
-		
-		DBConnect.getConnection().createAllTables();
-		
-		final Handle handle = jdbi.open();
-		
-		final List<Map<String, Object>> results = handle
-		.createQuery("SELECT * from KUNDEN")
-		.mapToMap()
-		.list();
-		
-		System.out.println("######################");
-		results.stream().forEach(e -> System.out.println(e));
-		
-		handle.close();
+		jdbi.installPlugins();
 		
 		//DBConnect.getConnection().removeAllTables();
+		//DBConnect.getConnection().createAllTables();
+		//insertTestData();
+		
+		Handle handle = jdbi.open();
+		final CustomerDAO dao = handle.attach(CustomerDAO.class);
+		
+		DCustomer test = new DCustomer("julian", "hannes");
+		
+		dao.createTable();
+		
+		dao.insert(test);
+		//SELECT last_insert_rowid()
+	
+		runQuery("SELECT last_insert_rowid()");
+		runQuery("SELECT * from KUNDEN");
+		//DBConnect.getConnection().removeAllTables();
+		
+	}
+	
+	public static void runQuery(String q) {
+		Handle handle = DBConnect.getConnection().getJdbi().open();
+		List<Map<String, Object>> results = handle
+			.createQuery(q)
+			.mapToMap()
+			.list();
+			
+			System.out.println("######################");
+			results.stream().forEach(e -> System.out.println(e));
+			
+			handle.close();
+	}
+	
+	public static void insertTestData() {
+		DBConnect.getConnection().createAllTables();
+		
+		final Handle handle = DBConnect.getConnection().getJdbi().open();
+	
+		handle.execute("INSERT INTO KUNDEN (Name, Vorname) VALUES (\"Hasan\", \"Mouawia\"), (\"Maile\", \"Paul\"), (\"Mandl\", \"Julian\"), (\"Ajomale\", \"Christopher\");");
+		
+		
+		handle.close();
 		
 	}
 

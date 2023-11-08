@@ -27,21 +27,20 @@ public class DBConnect implements IDbConnect{
 	private Jdbi jdbi = null;
 
 	@Override
-	public void createAllTables() {
-		Jdbi jdbi = getJdbi();
-		
+	public void createAllTables() {		
 		final Handle handle = jdbi.open();
-		handle.execute("CREATE TABLE Kunden (\r\n"
+		handle.execute("CREATE TABLE IF NOT EXISTS Kunden (\r\n"
 				+ "	id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\r\n"
 				+ "	Name TEXT NOT NULL,\r\n"
 				+ "	Vorname TEXT NOT NULL\r\n"
 				+ ");");
+		
 	}
 
 	@Override
 	public Jdbi getJdbi(String uri, String user, String pw) {
-		if (jdbi == null) {
-	         final String dburl = uri; //DBURL
+		if (this.jdbi == null) {
+	        final String dburl = uri; //DBURL
 			final String dbuser = user; //DBUSER
 			final String dbpw = pw; //DBW
 			
@@ -76,6 +75,7 @@ public class DBConnect implements IDbConnect{
 		
 		final Handle handle = jdbi.open();
 		handle.execute("DROP TABLE Kunden");
+		handle.close();
 	}
 
 }

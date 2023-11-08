@@ -17,7 +17,7 @@ public interface IDAO<T> {
    List<T> getAll();
 
    // CREATE
-   long insert(T o);
+   void insert(T o);
 
    // UPDATE
    void update(Long id, T o);
