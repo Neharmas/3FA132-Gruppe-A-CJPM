@@ -1,32 +1,24 @@
 package init;
 
 import dev.hv.db.init.DBConnect;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.fail;
-
-import java.util.List;
-import java.util.Map;
-
 import org.jdbi.v3.core.Handle;
 import org.jdbi.v3.core.Jdbi;
-
+import org.junit.Test;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.Test;
+
+import static org.junit.Assert.*;
 
 public class testDBConnect
 {
     private static DBConnect test_instance = null;
     private Jdbi test_jdbi = null;
-    
     @Test
     @BeforeAll
     @DisplayName("Set Class Singleton instance")
-    public static void test_getConnection() {
+    public void test_getConnection() {
         test_instance = DBConnect.getConnection();
         assertNotNull(test_instance);
     }
@@ -36,7 +28,7 @@ public class testDBConnect
     @DisplayName("Connect to Database")
     public void test_getJdbi()
     {
-        this.test_jdbi = test_instance.getJdbi();
+        test_jdbi = DBConnect.getConnection().getJdbi();
         assertNotNull(test_jdbi);
     }
 
@@ -45,42 +37,30 @@ public class testDBConnect
     @DisplayName("Create all Tables")
     public void test_createAllTables()
     {
-    	try {
-    		test_instance.createAllTables();
-    	}
-        catch(Exception UnableToCreateStatementException) {
-        	UnableToCreateStatementException.printStackTrace();
+        DBConnect.getConnection().createAllTables();
+
+        Handle handle;
+        handle = DBConnect.getConnection().getJdbi().open();
+
+        try {
+            handle.execute("SELECT * FROM KUNDEN");
         }
- 
-    	final Handle handle = this.test_jdbi.open();
-    	
-    	List<Map<String, Object>> result = handle
-    	.createQuery("SELECT * from KUNDEN")
-		.mapToMap()
-		.list();
-    	
-    	result.stream().forEach(e -> System.out.println(e));
-    	
-		handle.close();
+        catch(Exception UnableToCreateStatementException) {
+            fail();
+        }
+        handle.close();
     }
 
     @Test
     @AfterAll
     @DisplayName("Remove all Tables")
-    public static void test_removeAllTables()
+    public void test_removeAllTables()
     {
         try {
-        	test_instance.removeAllTables();
+            DBConnect.getConnection().removeAllTables();
         }
         catch(Exception UnableToCreateStatementException) {
-        	UnableToCreateStatementException.printStackTrace();
+            fail();
         }
-    }
-    
-    @Test
-    @DisplayName("Test JUnit")
-    public void isOne()
-    {
-        assertEquals(1, 1);
     }
 }
