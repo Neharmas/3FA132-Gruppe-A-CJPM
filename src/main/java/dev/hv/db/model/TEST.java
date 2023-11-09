@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.jdbi.v3.core.Handle;
 import org.jdbi.v3.core.Jdbi;
+import org.jdbi.v3.core.mapper.reflect.ConstructorMapper;
 import org.jdbi.v3.core.statement.Query;
 
 import dev.hv.db.dao.CustomerDAO;
@@ -24,12 +25,16 @@ public class TEST {
 		Handle handle = jdbi.open();
 		final CustomerDAO dao = handle.attach(CustomerDAO.class);
 		
-		DCustomer test = new DCustomer("julian", "hannes");
+		//DCustomer test = new DCustomer("5555", "hannes");
 		
-		dao.createTable();
+		//dao.createTable();
 		
-		dao.insert(test);
+		//dao.insert(test);
+		handle.registerRowMapper(ConstructorMapper.factory(DCustomer.class));
+		DCustomer test2 = dao.getAll().get(2);
+		System.out.println(test2.toString());
 		//SELECT last_insert_rowid()
+		//dao.delete(test2);
 	
 		runQuery("SELECT last_insert_rowid()");
 		runQuery("SELECT * from KUNDEN");

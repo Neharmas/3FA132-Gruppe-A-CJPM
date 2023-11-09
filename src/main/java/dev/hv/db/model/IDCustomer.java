@@ -8,9 +8,9 @@ public interface IDCustomer {
 
    String getLastname();
 
-   void setFirstname(String firstName);
+   void setVorname(String firstName);
 
    void setId(long id);
 
-   void setLastname(String lastName);
+   void setName(String lastName);
 }

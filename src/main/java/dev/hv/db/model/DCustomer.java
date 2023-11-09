@@ -5,10 +5,17 @@ import java.beans.ConstructorProperties;
 import org.jdbi.v3.core.mapper.reflect.ColumnName;
 
 public class DCustomer implements IDCustomer, Comparable<DCustomer>{
+	@Override
+	public String toString() {
+		return "DCustomer [firstName=" + firstName + ", id=" + id + ", lastName=" + lastName + "]";
+	}
+
 	@ColumnName("vorname")
 	private String firstName;
+	
 	@ColumnName("id")
 	private long id;
+	
 	@ColumnName("name")
 	private String lastName;
 	
@@ -28,7 +35,7 @@ public class DCustomer implements IDCustomer, Comparable<DCustomer>{
 	}
 
 	@Override
-	public void setFirstname(String firstName) {
+	public void setVorname(String firstName) {
 		this.firstName = firstName;
 		
 	}
@@ -40,20 +47,26 @@ public class DCustomer implements IDCustomer, Comparable<DCustomer>{
 	}
 
 	@Override
-	public void setLastname(String lastName) {
+	public void setName(String lastName) {
 		this.lastName = lastName;
 	}
 
 	@Override
 	public int compareTo(DCustomer o) {
-		return (o.id == this.id) ? 1 : 0;
+		if (o.id == this.id) return 0;
+		else if (o.id > this.id) return 1;
+		else return -1; 
 	}
 	
 	@ConstructorProperties({ "id", "name", "vorname" })
-	public DCustomer(final long id, final String name, final String firstName) {
+	public DCustomer(long id, String name, String firstName) {
 		this.id = id;
 		this.lastName = name;
 		this.firstName = firstName;
+	}
+	
+	public DCustomer() {
+		
 	}
 	
 	public DCustomer(final String name, final String firstName) {

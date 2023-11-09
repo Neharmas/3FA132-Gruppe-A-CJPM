@@ -3,6 +3,7 @@ package dev.hv.db.dao;
 import java.beans.ConstructorProperties;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.jdbi.v3.sqlobject.config.RegisterBeanMapper;
 import org.jdbi.v3.sqlobject.customizer.Bind;
@@ -33,12 +34,12 @@ public interface CustomerDAO extends IDAO<DCustomer> {
 	public void delete(@BindBean("o") DCustomer o);
 
 	@Override
-	@SqlQuery("SELECT * FROM ort WHERE id=:id;")
+	@SqlQuery("SELECT * FROM kunden WHERE id=:id;")
 	@RegisterBeanMapper(DCustomer.class)
 	public DCustomer findById(@Bind("id") Long id);
 
 	@Override
-	@SqlQuery("SELECT * FROM ort")
+	@SqlQuery("SELECT id, name, vorname FROM kunden;")
 	@RegisterBeanMapper(DCustomer.class)
 	public List<DCustomer> getAll();
 
