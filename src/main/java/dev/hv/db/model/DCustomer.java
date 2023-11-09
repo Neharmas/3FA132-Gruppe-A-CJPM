@@ -7,21 +7,21 @@ import org.jdbi.v3.core.mapper.reflect.ColumnName;
 public class DCustomer implements IDCustomer, Comparable<DCustomer>{
 	@Override
 	public String toString() {
-		return "DCustomer [firstName=" + firstName + ", id=" + id + ", lastName=" + lastName + "]";
+		return "DCustomer [firstName=" + vorname + ", id=" + id + ", lastName=" + name + "]";
 	}
 
 	@ColumnName("vorname")
-	private String firstName;
+	private String vorname;
 	
 	@ColumnName("id")
 	private long id;
 	
 	@ColumnName("name")
-	private String lastName;
+	private String name;
 	
 	@Override
-	public String getFirstname() {
-		return this.firstName;
+	public String getVorname() {
+		return this.vorname;
 	}
 
 	@Override
@@ -30,13 +30,13 @@ public class DCustomer implements IDCustomer, Comparable<DCustomer>{
 	}
 
 	@Override
-	public String getLastname() {
-		return lastName;
+	public String getName() {
+		return name;
 	}
 
 	@Override
 	public void setVorname(String firstName) {
-		this.firstName = firstName;
+		this.vorname = firstName;
 		
 	}
 
@@ -48,7 +48,7 @@ public class DCustomer implements IDCustomer, Comparable<DCustomer>{
 
 	@Override
 	public void setName(String lastName) {
-		this.lastName = lastName;
+		this.name = lastName;
 	}
 
 	@Override
@@ -61,8 +61,8 @@ public class DCustomer implements IDCustomer, Comparable<DCustomer>{
 	@ConstructorProperties({ "id", "name", "vorname" })
 	public DCustomer(long id, String name, String firstName) {
 		this.id = id;
-		this.lastName = name;
-		this.firstName = firstName;
+		this.name = name;
+		this.vorname = firstName;
 	}
 	
 	public DCustomer() {
@@ -70,8 +70,8 @@ public class DCustomer implements IDCustomer, Comparable<DCustomer>{
 	}
 	
 	public DCustomer(final String name, final String firstName) {
-		this.lastName = name;
-		this.firstName = firstName;
+		this.name = name;
+		this.vorname = firstName;
 	}
 
 }

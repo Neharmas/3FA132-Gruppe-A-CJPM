@@ -2,11 +2,11 @@ package dev.hv.db.model;
 
 public interface IDCustomer {
 
-   String getFirstname();
+   String getVorname();
 
    long getId();
 
-   String getLastname();
+   String getName();
 
    void setVorname(String firstName);
 

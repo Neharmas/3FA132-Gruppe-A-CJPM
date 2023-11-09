@@ -17,9 +17,9 @@ import dev.hv.db.model.DCustomer;
 public interface CustomerDAO extends IDAO<DCustomer> {
 	@SqlUpdate("""
 			CREATE TABLE IF NOT EXISTS Kunden (
-			id INTEGER PRIMARY KEY AUTOINCREMENT,
-			name TEXT,
-			VORNAME TEXT);
+			id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+			name TEXT NOT NULL,
+			VORNAME TEXT NOT NULL);
 			""")
 	void createTable();
 	
@@ -47,17 +47,17 @@ public interface CustomerDAO extends IDAO<DCustomer> {
 	//SQLUPDAte liefert die reihennummer zurück (oder nichts). Deshalb kann man hier nicht long als return-type verwenden
 	@SqlUpdate("""
 			INSERT INTO KUNDEN (name, vorname)
-			VALUES (:o.lastname, :o.firstname);
+			VALUES (:o.name, :o.vorname);
 			""")
 	public void insert(@BindBean("o") DCustomer o);
 
 	@Override
 	@SqlUpdate("""
-			update kunden set name = :o.firstname AND vorname = :o.firstname AND id=:id where id = :o.id;
+			update kunden set name = :o.vorname, vorname = :o.vorname where id = :id;
 			""")
 	public void update(@Bind("id") Long id, @BindBean("o") DCustomer o);
 
 	@Override
-	@SqlUpdate("update kunden set name = :o.lastname  AND vorname = :o.firstname where id = :o.id;")
+	@SqlUpdate("update kunden set name = :o.name, vorname = :o.vorname where id = :o.id;")
 	public void update(@BindBean("o") DCustomer o);	
 }

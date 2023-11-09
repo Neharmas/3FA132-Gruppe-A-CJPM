@@ -31,10 +31,16 @@ public class TEST {
 		
 		//dao.insert(test);
 		handle.registerRowMapper(ConstructorMapper.factory(DCustomer.class));
-		DCustomer test2 = dao.getAll().get(2);
-		System.out.println(test2.toString());
+		List<DCustomer> cList = dao.getAll();
+//		for (DCustomer c: cList) {
+//			System.out.println(c.toString());
+//		}
 		//SELECT last_insert_rowid()
 		//dao.delete(test2);
+		DCustomer c = cList.get(0);
+		//c.setName("Momo");
+		c.setVorname("Hallo");
+		dao.update(7l ,c);
 	
 		runQuery("SELECT last_insert_rowid()");
 		runQuery("SELECT * from KUNDEN");
