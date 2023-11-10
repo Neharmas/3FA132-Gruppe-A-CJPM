@@ -2,15 +2,16 @@ package dev.hv.db.model;
 
 public interface IDCustomer {
 
-   String getVorname();
+		String getFirstname();
 
-   long getId();
+		Long getId();
 
-   String getName();
+		String getLastname();
 
-   void setVorname(String firstName);
+		void setFirstname(String firstName);
 
-   void setId(long id);
+		void setId(Long id);
 
-   void setName(String lastName);
+		void setLastname(String lastName);
+	   
 }

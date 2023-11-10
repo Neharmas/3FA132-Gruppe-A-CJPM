@@ -2,15 +2,15 @@ package dev.hv.db.model;
 
 public interface IDReading {
 
-   String getComment();
+   String getKommentar();
 
-   IDCustomer getCustomer();
+   IDCustomer getKunde();
 
-   Long getDateofreading();
+   Long getLesedatum();
 
    Long getId();
 
-   String getKindofmeter();
+   String getMessart();
 
    Double getMetercount();
 
@@ -20,9 +20,9 @@ public interface IDReading {
 
    String printDateofreading();
 
-   void setComment(String comment);
+   void setKommentar(String Kommentar);
 
-   void setCustomer(IDCustomer customer);
+   void setCustomer(IDCustomer kunde);
 
    void setDateofreading(Long dateOfReading);
 

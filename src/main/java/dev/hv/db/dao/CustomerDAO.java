@@ -15,49 +15,48 @@ import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 import dev.hv.db.model.DCustomer;
 
 public interface CustomerDAO extends IDAO<DCustomer> {
-	@SqlUpdate("""
-			CREATE TABLE IF NOT EXISTS Kunden (
-			id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-			name TEXT NOT NULL,
-			VORNAME TEXT NOT NULL);
-			""")
-	void createTable();
-	
-    //List<DCustomer> customers = new ArrayList<>();
 	
 	@Override
-	@SqlUpdate("delete from kunden where id = :id;")
+	@SqlUpdate("delete from customer where id = :id;")
 	public void delete(@Bind("id") Long id);
 
 	@Override
-	@SqlUpdate("delete from kunden where id = :o.id;")
+	@SqlUpdate("delete from customer where id = :o.id;")
 	public void delete(@BindBean("o") DCustomer o);
 
 	@Override
-	@SqlQuery("SELECT * FROM kunden WHERE id=:id;")
+	@SqlQuery("SELECT * FROM customer WHERE id=:id;")
 	@RegisterBeanMapper(DCustomer.class)
 	public DCustomer findById(@Bind("id") Long id);
 
 	@Override
-	@SqlQuery("SELECT id, name, vorname FROM kunden;")
+	@SqlQuery("SELECT id, lastname, firstname FROM customer;")
 	@RegisterBeanMapper(DCustomer.class)
 	public List<DCustomer> getAll();
 
 	@Override
 	//SQLUPDAte liefert die reihennummer zurück (oder nichts). Deshalb kann man hier nicht long als return-type verwenden
 	@SqlUpdate("""
-			INSERT INTO KUNDEN (name, vorname)
-			VALUES (:o.name, :o.vorname);
+			INSERT INTO customer (lastname, firstname)
+			VALUES (:o.lastname, :o.firstname);
 			""")
 	public void insert(@BindBean("o") DCustomer o);
 
 	@Override
 	@SqlUpdate("""
-			update kunden set name = :o.vorname, vorname = :o.vorname where id = :id;
+			update customer set lastname = :o.firstname, firstname = :o.firstname where id = :id;
 			""")
 	public void update(@Bind("id") Long id, @BindBean("o") DCustomer o);
 
 	@Override
-	@SqlUpdate("update kunden set name = :o.name, vorname = :o.vorname where id = :o.id;")
+	@SqlUpdate("update customer set lastname = :o.lastname, firstname = :o.firstname where id = :o.id;")
 	public void update(@BindBean("o") DCustomer o);	
+	
 }
+
+
+
+
+
+
+

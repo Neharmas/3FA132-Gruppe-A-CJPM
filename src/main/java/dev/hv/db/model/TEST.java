@@ -10,6 +10,7 @@ import org.jdbi.v3.core.mapper.reflect.ConstructorMapper;
 import org.jdbi.v3.core.statement.Query;
 
 import dev.hv.db.dao.CustomerDAO;
+import dev.hv.db.dao.UserDAO;
 import dev.hv.db.init.DBConnect;
 
 public class TEST {
@@ -23,29 +24,41 @@ public class TEST {
 		//insertTestData();
 		
 		Handle handle = jdbi.open();
-		final CustomerDAO dao = handle.attach(CustomerDAO.class);
+		final UserDAO dao = handle.attach(UserDAO.class);
 		
 		//DCustomer test = new DCustomer("5555", "hannes");
 		
 		//dao.createTable();
 		
 		//dao.insert(test);
-		handle.registerRowMapper(ConstructorMapper.factory(DCustomer.class));
-		List<DCustomer> cList = dao.getAll();
+		//handle.registerRowMapper(ConstructorMapper.factory(DCustomer.class));
+//		List<DCustomer> cList = dao.getAll();
 //		for (DCustomer c: cList) {
 //			System.out.println(c.toString());
 //		}
 		//SELECT last_insert_rowid()
 		//dao.delete(test2);
-		DCustomer c = cList.get(0);
+		//DCustomer c = cList.get(0);
 		//c.setName("Momo");
-		c.setVorname("Hallo");
-		dao.update(7l ,c);
+		//c.setVorname("Hallo");
+		//dao.update(7l ,c);
 	
-		runQuery("SELECT last_insert_rowid()");
-		runQuery("SELECT * from KUNDEN");
+		//runQuery("SELECT last_insert_rowid()");
+		//runQuery("SELECT * from KUNDEN");
 		//DBConnect.getConnection().removeAllTables();
+		//DBConnect.getConnection().createAllTables();	
+		//DBConnect.getConnection().insertTestData();
 		
+//		List<DUser> cList = dao.getAll();
+//		
+//		for (DUser c: cList) {
+//			System.out.println(c.toString());
+//		}
+		
+		//DUser test = new DUser("Mandl", "Julian", "Bitch", "Cat");
+		
+		//dao.insert(test);
+		//runQuery("SELECT * from customer");
 	}
 	
 	public static void runQuery(String q) {
@@ -61,16 +74,5 @@ public class TEST {
 			handle.close();
 	}
 	
-	public static void insertTestData() {
-		DBConnect.getConnection().createAllTables();
-		
-		final Handle handle = DBConnect.getConnection().getJdbi().open();
-	
-		handle.execute("INSERT INTO KUNDEN (Name, Vorname) VALUES (\"Hasan\", \"Mouawia\"), (\"Maile\", \"Paul\"), (\"Mandl\", \"Julian\"), (\"Ajomale\", \"Christopher\");");
-		
-		
-		handle.close();
-		
-	}
 
 }

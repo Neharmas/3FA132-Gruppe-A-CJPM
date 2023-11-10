@@ -29,11 +29,43 @@ public class DBConnect implements IDbConnect{
 	@Override
 	public void createAllTables() {		
 		final Handle handle = jdbi.open();
-		handle.execute("CREATE TABLE IF NOT EXISTS Kunden (\r\n"
-				+ "	id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\r\n"
-				+ "	Name TEXT NOT NULL,\r\n"
-				+ "	Vorname TEXT NOT NULL\r\n"
+		//create table KUNDEN
+		handle.execute("CREATE TABLE IF NOT EXISTS Customer ("
+				+ "id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,"
+				+ "lastname TEXT NOT NULL,"
+				+ "firstName TEXT NOT NULL);");
+		//create table Nutzer
+		handle.execute("CREATE TABLE IF NOT EXISTS User ("
+				+ "id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,"
+				+ "lastname TEXT NOT NULL,"
+				+ "firstname TEXT NOT NULL,"
+				+ "token TEXT NOT NULL,"
+				+ "password TEXT NOT NULL);");
+		//create table Lesen
+		handle.execute("CREATE TABLE IF NOT EXISTS Lesen ("
+				+ "id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,"
+				+ "kommentar TEXT NOT NULL,"
+				+ "kunde INTEGER NOT NULL,"
+				+ "Lesedatum TEXT NOT NULL,"
+				+ "messart TEXT NOT NULL,"
+				+ "messId TEXT NOT NULL,"
+				+ "untertitle BOOLEAN NOT NULL,"
+				+ "datum TEXT NOT NULL,"
+				+ "Foreign key (kunde) references kunden (id)"
 				+ ");");
+		
+		handle.close();
+	}
+	
+	public void insertTestData() {
+		final Handle handle = jdbi.open();
+	
+		handle.execute("INSERT INTO CUSTOMER (lastname, firstname) VALUES (\"Hasan\", \"Mouawia\"), (\"Maile\", \"Paul\"), (\"Mandl\", \"Julian\"), (\"Ajomale\", \"Christopher\");");
+		
+		handle.execute("INSERT INTO USER (lastname, firstname, Token, Password) "
+				+ "VALUES ('Hitler', 'Adolf', '12345', '123456'), ('Frank', 'Anne', '88420', '66699'), ('Gandhi', 'Mahatma', '112', '42'), ('Moses', 'Hannes', '777', '100');");
+		
+		handle.close();
 		
 	}
 
