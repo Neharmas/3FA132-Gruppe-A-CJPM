@@ -71,14 +71,11 @@ public class DBConnect implements IDbConnect{
 
 	@Override
 	public Jdbi getJdbi(String uri, String user, String pw) {
-		if (this.jdbi == null) {
-	        final String dburl = uri; //DBURL
+      final String dburl = uri; //DBURL
 			final String dbuser = user; //DBUSER
 			final String dbpw = pw; //DBW
 			
-			jdbi = Jdbi.create(dburl, dbuser, dbpw);
-	      }
-	      return jdbi;
+			return Jdbi.create(dburl, dbuser, dbpw);
 	}
 
 	@Override
@@ -93,7 +90,7 @@ public class DBConnect implements IDbConnect{
 	            
 	            if (dbpw == null) dbpw = "";
 
-	            jdbi = Jdbi.create(dburl, dbuser, dbpw);
+	            jdbi = getJdbi(dburl, dbuser, dbpw);
 	         } catch (IOException e) {
 	            throw new RuntimeException(e);
 	         }
