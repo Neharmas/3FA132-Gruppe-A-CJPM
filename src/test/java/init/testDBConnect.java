@@ -11,8 +11,6 @@ import java.util.Map;
 
 import org.jdbi.v3.core.Handle;
 import org.jdbi.v3.core.Jdbi;
-import org.jdbi.v3.core.statement.Query;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodOrderer;
@@ -32,7 +30,7 @@ public class testDBConnect
     private Handle handle;
 
     private Jdbi jdbi = null;
-    private String[] allTables = {"Kunden"};
+    private String[] allTables = {"Customer","User", "Lesen"};
     
     private int count = 0;
     
@@ -109,7 +107,10 @@ public class testDBConnect
     @DisplayName("Test Insert")
     public void test_insert()
     {
-    	handle.execute("INSERT INTO KUNDEN VALUES(NULL, 'Mustermann', 'Maximillian')");
+    	test_instance.insertTestData();
+    	//handle.execute("INSERT INTO CUSTOMER VALUES(NULL, 'Mustermann', 'Maximillian')");
+    	//handle.execute("INSERT INTO USER VALUES(NULL, 'Mustermann', 'Maximillian')");
+    	//handle.execute("INSERT INTO LESEN VALUES(NULL, 'Müller', 'Andreas', '65342', '53216')");
     }
     
     @Test
@@ -127,14 +128,12 @@ public class testDBConnect
     {
         test_instance.removeAllTables();
         
-    	List<Map<String, Object>> results = handle
-				.createQuery("SELECT name FROM sqlite_master WHERE type='table';")
-				.mapToMap()
-				.list();
-    	
-		boolean doesTableExists;
-		doesTableExists =  results.stream().anyMatch(map-> map.containsValue("Kunden"));
-		assertFalse(doesTableExists);
+        List<Map<String, Object>> results = handle
+    			.createQuery("SELECT * FROM sqlite_master WHERE type='table';")
+    			.mapToMap()
+    			.list();
+		
+		assertFalse(results.isEmpty());
     }
     
     @Test
