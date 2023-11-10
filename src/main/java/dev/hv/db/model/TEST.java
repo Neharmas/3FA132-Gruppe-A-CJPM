@@ -10,6 +10,7 @@ import org.jdbi.v3.core.mapper.reflect.ConstructorMapper;
 import org.jdbi.v3.core.statement.Query;
 
 import dev.hv.db.dao.CustomerDAO;
+import dev.hv.db.dao.ReadingDAO;
 import dev.hv.db.dao.UserDAO;
 import dev.hv.db.init.DBConnect;
 
@@ -24,7 +25,7 @@ public class TEST {
 		//insertTestData();
 		
 		Handle handle = jdbi.open();
-		final UserDAO dao = handle.attach(UserDAO.class);
+		final ReadingDAO dao = handle.attach(ReadingDAO.class);
 		
 		//DCustomer test = new DCustomer("5555", "hannes");
 		
@@ -49,16 +50,16 @@ public class TEST {
 		//DBConnect.getConnection().createAllTables();	
 		//DBConnect.getConnection().insertTestData();
 		
-//		List<DUser> cList = dao.getAll();
-//		
-//		for (DUser c: cList) {
-//			System.out.println(c.toString());
-//		}
+		List<DReading> cList = dao.getAll();
+		
+		for (DReading c: cList) {
+			System.out.println(c.toString());
+		}
 		
 		//DUser test = new DUser("Mandl", "Julian", "Bitch", "Cat");
 		
 		//dao.insert(test);
-		//runQuery("SELECT * from customer");
+		//runQuery("SELECT * from reading");
 	}
 	
 	public static void runQuery(String q) {
