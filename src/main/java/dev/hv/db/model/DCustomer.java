@@ -69,9 +69,7 @@ public class DCustomer implements IDCustomer, Comparable<DCustomer>{
 
 		@Override
 		public int compareTo(DCustomer o) {
-			if (o.id == this.id) return 0;
-			else if (o.id > this.id) return 1;
-			else return -1; 
+			return o.id.compareTo(this.id);
 		}
 	
 }
