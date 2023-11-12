@@ -25,17 +25,18 @@ import org.junit.jupiter.api.TestMethodOrder;
 @TestInstance(Lifecycle.PER_CLASS) //otherwise 'static' would be required to update/use same value in multiple tests
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class testDCustomer {
-	private long id = 1;
-	private String lastname = "lastname";
-	private String firstname = "firstname";
-	
-	private String newFirstName = "Firstname";
-	private String newLastName = "Lastname";
-	private long newId = 999L;
-	
-	
-	DCustomer simple_customer, name_customer, id_customer;
-	
+    private long id = 1;
+    private String lastname = "lastname";
+    private String firstname = "firstname";
+
+    private String newFirstName = "Firstname";
+    private String newLastName = "Lastname";
+    private long newId = 999L;
+
+
+    private DCustomer simple_customer, name_customer, id_customer;
+
+    /*
     @Test
     @Order(3)
     @DisplayName("Test simple constructor")
@@ -44,7 +45,7 @@ class testDCustomer {
         simple_customer = new DCustomer();
         assertNotNull(simple_customer);
     }
-    
+
     @Test
     @Order(2)
     @DisplayName("Test names constructor")
@@ -52,17 +53,23 @@ class testDCustomer {
     {
         name_customer = new DCustomer(lastname, firstname);
         assertNotNull(name_customer);
-    }
-    
+    }*/
+
     @Test
     @Order(1)
     @DisplayName("Test id constructor")
     public void test_id_DCustomer()
     {
+        simple_customer = new DCustomer();
+        assertNotNull(simple_customer);
+
+        name_customer = new DCustomer(lastname, firstname);
+        assertNotNull(name_customer);
+
         id_customer = new DCustomer(id, lastname, firstname);
         assertNotNull(id_customer);
     }
-    
+
     @Test
     @Order(4)
     @DisplayName("Test names constructor")
@@ -72,7 +79,7 @@ class testDCustomer {
         String matches = "DCustomer [id=" + id + ", firstname=" + firstname + ", lastname=" + lastname + "]";
         assertEquals(entry, matches);
     }
-    
+
     @Test
     @Order(5)
     @DisplayName("Test all setters")
@@ -81,25 +88,45 @@ class testDCustomer {
         id_customer.setFirstname(newFirstName);
         id_customer.setLastname(newLastName);
         id_customer.setId(newId);
-        
+
         String matches = "DCustomer [id=" + newId + ", firstname=" + newFirstName + ", lastname=" + newLastName + "]";
         String newName = id_customer.toString();
-        
+
         assertEquals(newName, matches);
     }
-    
+
     @Test
     @Order(6)
     @DisplayName("Test all getters")
     public void test_getter()
-    {	
+    {
         id_customer.setFirstname(newFirstName);
         id_customer.setLastname(newLastName);
         id_customer.setId(newId);
-        
+
         String matches = "DCustomer [id=" + id_customer.getId() + ", firstname=" + id_customer.getFirstname() + ", lastname=" + id_customer.getLastname() + "]";
         String newName = id_customer.toString();
-        
+
         assertEquals(newName, matches);
+    }
+
+    @Test
+    @Order(7)
+    @DisplayName("Test Compare To")
+    public void test_compareTo()
+    {
+
+        name_customer.setId(newId);
+        int result = id_customer.compareTo(name_customer);
+        assertEquals(0, result);
+
+        name_customer.setId(1000L);
+        result = id_customer.compareTo(name_customer);
+        assertEquals(1, result);
+
+        name_customer.setId(1L);
+        result = id_customer.compareTo(name_customer);
+        assertEquals(-1, result);
+
     }
 }
