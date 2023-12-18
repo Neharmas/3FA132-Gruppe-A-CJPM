@@ -44,7 +44,7 @@ public interface CustomerDAO extends IDAO<DCustomer> {
 
 	@Override
 	@SqlUpdate("""
-			update customer set lastname = :o.firstname, firstname = :o.firstname where id = :id;
+			update customer set lastname = :o.lastname, firstname = :o.firstname where id = :id;
 			""")
 	public void update(@Bind("id") Long id, @BindBean("o") DCustomer o);
 

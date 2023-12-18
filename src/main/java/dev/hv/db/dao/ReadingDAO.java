@@ -52,7 +52,7 @@ public interface ReadingDAO extends IDAO<DReading> {
 	public void update(@Bind("id") Long id, @BindBean("o") DReading o);
 
 	@Override
-	@SqlUpdate("update customer set c.comment = :o.comment, c.id = c.id, c.kindofmeter = r.kindofmeter,"
+	@SqlUpdate("update reading set comment = :r.comment, c.id = c.id, c.kindofmeter = r.kindofmeter,"
 			+ "c.metercount = r.metercount, c.meterid = r.meterid, c.substitute = r.substitute, c.dateofreading = r.dateofreading"
 			+ "WHERE c.id = :r.id;")
 	@RegisterBeanMapper(value=DCustomer.class, prefix = "c")

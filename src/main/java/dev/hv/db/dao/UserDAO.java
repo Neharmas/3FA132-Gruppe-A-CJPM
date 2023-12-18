@@ -31,7 +31,7 @@ public interface UserDAO extends IDAO<DUser> {
 
 	@Override
 	@SqlUpdate("""
-			INSERT INTO NUTZER (lastname, firstname, token, password)
+			INSERT INTO user (lastname, firstname, token, password)
 			VALUES (:o.lastname, :o.firstname, :o.token, :o.password);
 			""")
 	public void insert(@BindBean("o") DUser o);
@@ -40,7 +40,7 @@ public interface UserDAO extends IDAO<DUser> {
 	@SqlUpdate("""
 			update user set lastname = :o.firstname, firstname = :o.firstname, token = :o.token, password = :o.password where id = :id;
 			""")
-	public void update(@Bind("id") Long id,@BindBean("o") DUser o);
+	public void update(@Bind("id") Long id, @BindBean("o") DUser o);
 
 	@Override
 	@SqlUpdate("update user set lastname = :o.lastname, firstname = :o.firstname, token = :o.token, password = :o.password where id = :o.id;")
