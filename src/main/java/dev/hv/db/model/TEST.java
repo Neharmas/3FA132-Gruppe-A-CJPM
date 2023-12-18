@@ -24,19 +24,22 @@ public class TEST {
 		//DBConnect.getConnection().createAllTables();
 		//insertTestData();
 		
+		//DBConnect.getConnection().removeAllTables();
+		DBConnect.getConnection().createAllTables();
+		System.out.println("CRATED.");
 		Handle handle = jdbi.open();
-		final ReadingDAO dao = handle.attach(ReadingDAO.class);
+		final CustomerDAO customer_dao = handle.attach(CustomerDAO.class);
 		
-		//DCustomer test = new DCustomer("5555", "hannes");
+		DCustomer test_customer = new DCustomer("Kakaro", "Hannes");
 		
-		//dao.createTable();
 		
-		//dao.insert(test);
-		//handle.registerRowMapper(ConstructorMapper.factory(DCustomer.class));
-//		List<DCustomer> cList = dao.getAll();
-//		for (DCustomer c: cList) {
-//			System.out.println(c.toString());
-//		}
+		customer_dao.insert(test_customer);
+		handle.registerRowMapper(ConstructorMapper.factory(DCustomer.class));
+		List<DCustomer> cList = customer_dao.getAll();
+		for (DCustomer c: cList) {
+			System.out.println(c.toString());
+		}
+		
 		//SELECT last_insert_rowid()
 		//dao.delete(test2);
 		//DCustomer c = cList.get(0);
@@ -50,11 +53,11 @@ public class TEST {
 		//DBConnect.getConnection().createAllTables();	
 		//DBConnect.getConnection().insertTestData();
 		
-		List<DReading> cList = dao.getAll();
+		/*List<DReading> cList = dao.getAll();
 		
 		for (DReading c: cList) {
 			System.out.println(c.toString());
-		}
+		}*/
 		
 		//DUser test = new DUser("Mandl", "Julian", "Bitch", "Cat");
 		

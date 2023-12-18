@@ -107,7 +107,9 @@ public class DBConnect implements IDbConnect{
 		Jdbi jdbi = getJdbi();
 		
 		final Handle handle = jdbi.open();
-		handle.execute("DROP TABLE Kunden");
+		handle.execute("DROP TABLE CUSTOMER IF EXISTS");
+		handle.execute("DROP TABLE READING IF EXISTS");
+		handle.execute("DROP TABLE USER IF EXISTS");
 		handle.close();
 	}
 

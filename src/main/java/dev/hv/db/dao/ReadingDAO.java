@@ -27,8 +27,8 @@ public interface ReadingDAO extends IDAO<DReading> {
 	public DReading findById(@Bind("id") Long id);
 
 	@Override
-	@SqlQuery("SELECT id as r_id, comment as r_comment, kindofmeter as r_kindofmeter, metercount as r_metercount,"
-			+ "meterid as r_meterid, substitute as r_substitute, dateofreading as r_dateofreading"
+	@SqlQuery("SELECT r.id as r_id, r.comment as r_comment, r.kindofmeter as r_kindofmeter, r.metercount as r_metercount,"
+			+ "r.meterid as r_meterid, r.substitute as r_substitute, r.dateofreading as r_dateofreading "
 			+ "FROM reading r INNER JOIN Customer c ON (r.customer = c.id);")
 	@RegisterBeanMapper(value=DReading.class, prefix="r")
 	@RegisterBeanMapper(value=DCustomer.class, prefix="c")
