@@ -9,7 +9,7 @@ public class DReading implements IDReading{
 	@ColumnName("string")
 	private String comment;
 	
-	@ColumnName("customer")
+	//@ColumnName("customer")
 	@Nested
 	private IDCustomer customer;
 	
