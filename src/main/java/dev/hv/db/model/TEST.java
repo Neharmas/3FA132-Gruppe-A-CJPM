@@ -6,9 +6,12 @@ import java.util.Map;
 
 import org.jdbi.v3.core.Handle;
 import org.jdbi.v3.core.Jdbi;
+import org.jdbi.v3.core.mapper.reflect.ConstructorMapper;
 import org.jdbi.v3.core.statement.Query;
 
 import dev.hv.db.dao.CustomerDAO;
+import dev.hv.db.dao.ReadingDAO;
+import dev.hv.db.dao.UserDAO;
 import dev.hv.db.init.DBConnect;
 
 public class TEST {
@@ -22,19 +25,41 @@ public class TEST {
 		//insertTestData();
 		
 		Handle handle = jdbi.open();
-		final CustomerDAO dao = handle.attach(CustomerDAO.class);
+		final ReadingDAO dao = handle.attach(ReadingDAO.class);
 		
-		DCustomer test = new DCustomer("julian", "hannes");
+		//DCustomer test = new DCustomer("5555", "hannes");
 		
-		dao.createTable();
+		//dao.createTable();
 		
-		dao.insert(test);
+		//dao.insert(test);
+		//handle.registerRowMapper(ConstructorMapper.factory(DCustomer.class));
+//		List<DCustomer> cList = dao.getAll();
+//		for (DCustomer c: cList) {
+//			System.out.println(c.toString());
+//		}
 		//SELECT last_insert_rowid()
+		//dao.delete(test2);
+		//DCustomer c = cList.get(0);
+		//c.setName("Momo");
+		//c.setVorname("Hallo");
+		//dao.update(7l ,c);
 	
-		runQuery("SELECT last_insert_rowid()");
-		runQuery("SELECT * from KUNDEN");
+		//runQuery("SELECT last_insert_rowid()");
+		//runQuery("SELECT * from KUNDEN");
 		//DBConnect.getConnection().removeAllTables();
+		//DBConnect.getConnection().createAllTables();	
+		//DBConnect.getConnection().insertTestData();
 		
+		List<DReading> cList = dao.getAll();
+		
+		for (DReading c: cList) {
+			System.out.println(c.toString());
+		}
+		
+		//DUser test = new DUser("Mandl", "Julian", "Bitch", "Cat");
+		
+		//dao.insert(test);
+		//runQuery("SELECT * from reading");
 	}
 	
 	public static void runQuery(String q) {
@@ -50,16 +75,5 @@ public class TEST {
 			handle.close();
 	}
 	
-	public static void insertTestData() {
-		DBConnect.getConnection().createAllTables();
-		
-		final Handle handle = DBConnect.getConnection().getJdbi().open();
-	
-		handle.execute("INSERT INTO KUNDEN (Name, Vorname) VALUES (\"Hasan\", \"Mouawia\"), (\"Maile\", \"Paul\"), (\"Mandl\", \"Julian\"), (\"Ajomale\", \"Christopher\");");
-		
-		
-		handle.close();
-		
-	}
 
 }

@@ -5,60 +5,73 @@ import java.beans.ConstructorProperties;
 import org.jdbi.v3.core.mapper.reflect.ColumnName;
 
 public class DCustomer implements IDCustomer, Comparable<DCustomer>{
-	@ColumnName("vorname")
-	private String firstName;
-	@ColumnName("id")
-	private long id;
-	@ColumnName("name")
-	private String lastName;
 	
-	@Override
-	public String getFirstname() {
-		return this.firstName;
-	}
-
-	@Override
-	public long getId() {
-		return id;
-	}
-
-	@Override
-	public String getLastname() {
-		return lastName;
-	}
-
-	@Override
-	public void setFirstname(String firstName) {
-		this.firstName = firstName;
+		@ColumnName("id")
+		private Long id;
 		
-	}
-
-	@Override
-	public void setId(long id) {
-		this.id = id;
+		@ColumnName("firstname")
+		private String firstname;
 		
-	}
-
-	@Override
-	public void setLastname(String lastName) {
-		this.lastName = lastName;
-	}
-
-	@Override
-	public int compareTo(DCustomer o) {
-		return (o.id == this.id) ? 1 : 0;
-	}
+		@ColumnName("lasstname")
+		private String lastname;
+		
+		
+		@ConstructorProperties({ "id", "lastname", "firstname" })
+		public DCustomer(long id, String lastname, String firstName) {
+			this.id = id;
+			this.lastname = lastname;
+			this.firstname = firstName;
+		}
+		
+		public DCustomer() {
+			
+		}
+		
+		public DCustomer(final String lastname, final String firstName) {
+			this.lastname = lastname;
+			this.firstname = firstName;
+		}
 	
-	@ConstructorProperties({ "id", "name", "vorname" })
-	public DCustomer(final long id, final String name, final String firstName) {
-		this.id = id;
-		this.lastName = name;
-		this.firstName = firstName;
-	}
-	
-	public DCustomer(final String name, final String firstName) {
-		this.lastName = name;
-		this.firstName = firstName;
-	}
+		@Override
+		public String toString() {
+			return "DCustomer [id=" + id + ", firstname=" + firstname + ", lastname=" + lastname + "]";
+		}
 
+		@Override
+		public Long getId() {
+			return id;
+		}
+		
+		@Override
+		public void setId(Long id) {
+			this.id = id;
+		}
+		
+		@Override
+		public String getFirstname() {
+			return firstname;
+		}
+		
+		@Override
+		public void setFirstname(String firstname) {
+			this.firstname = firstname;
+		}
+		
+		@Override
+		public String getLastname() {
+			return lastname;
+		}
+		
+		@Override
+		public void setLastname(String lastname) {
+			this.lastname = lastname;
+		}
+
+		@Override
+		public int compareTo(DCustomer o) {
+			if (o.id == this.id) return 0;
+			else if (o.id > this.id) return 1;
+			else return -1; 
+		}
+	
 }

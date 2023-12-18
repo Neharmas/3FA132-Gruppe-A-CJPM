@@ -2,6 +2,8 @@ package dev.hv.db.dao;
 
 import java.util.List;
 
+import dev.hv.db.model.DUser;
+
 public interface IDAO<T> {
 
    // DELETE

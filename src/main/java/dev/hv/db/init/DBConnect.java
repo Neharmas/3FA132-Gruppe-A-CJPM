@@ -29,24 +29,57 @@ public class DBConnect implements IDbConnect{
 	@Override
 	public void createAllTables() {		
 		final Handle handle = jdbi.open();
-		handle.execute("CREATE TABLE IF NOT EXISTS Kunden (\r\n"
-				+ "	id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\r\n"
-				+ "	Name TEXT NOT NULL,\r\n"
-				+ "	Vorname TEXT NOT NULL\r\n"
+		//create table KUNDEN
+		handle.execute("CREATE TABLE IF NOT EXISTS Customer ("
+				+ "id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,"
+				+ "lastname TEXT NOT NULL,"
+				+ "firstname TEXT NOT NULL);");
+		//create table Nutzer
+		handle.execute("CREATE TABLE IF NOT EXISTS User ("
+				+ "id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,"
+				+ "lastname TEXT NOT NULL,"
+				+ "firstname TEXT NOT NULL,"
+				+ "token TEXT NOT NULL,"
+				+ "password TEXT NOT NULL);");
+		//create table Lesen
+		handle.execute("CREATE TABLE IF NOT EXISTS Reading ("
+				+ "id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,"
+				+ "comment TEXT NOT NULL,"
+				+ "customer INTEGER NOT NULL,"
+				+ "dateofreading TEXT NOT NULL,"
+				+ "kindofmeter TEXT NOT NULL,"
+				+ "meterid TEXT NOT NULL,"
+				+ "metercount INTEGER NOT NULL,"
+				+ "substitute BOOLEAN NOT NULL,"
+				+ "FOREIGN KEY (customer) REFERENCES Customer (id)"
 				+ ");");
+		
+		handle.close();
+	}
+	
+	public void insertTestData() {
+		final Handle handle = jdbi.open();
+	
+		handle.execute("INSERT INTO CUSTOMER (lastname, firstname) VALUES (\"Hasan\", \"Mouawia\"), (\"Maile\", \"Paul\"), (\"Mandl\", \"Julian\"), (\"Ajomale\", \"Christopher\");");
+		
+		handle.execute("INSERT INTO USER (lastname, firstname, Token, Password) "
+				+ "VALUES ('Fittler', 'Arnold', '12345', '123456'), ('Franziska', 'Anne', '88420', '66699'), ('Gandhi', 'Mahatma', '112', '42'), ('Moses', 'Hannes', '777', '100');");
+		
+		handle.execute("INSERT INTO READING (comment, customer, kindofmeter, metercount, meterid, substitute, dateofreading)"
+				+ "VALUES ('test1', 1, 'pla', '22ss', 222, false, 12345),"
+				+ "('test2', 2, 'dlp', '1s1', 234, true, 8888);");
+		
+		handle.close();
 		
 	}
 
 	@Override
 	public Jdbi getJdbi(String uri, String user, String pw) {
-		if (this.jdbi == null) {
-	        final String dburl = uri; //DBURL
+      final String dburl = uri; //DBURL
 			final String dbuser = user; //DBUSER
 			final String dbpw = pw; //DBW
 			
-			jdbi = Jdbi.create(dburl, dbuser, dbpw);
-	      }
-	      return jdbi;
+			return Jdbi.create(dburl, dbuser, dbpw);
 	}
 
 	@Override
@@ -61,7 +94,7 @@ public class DBConnect implements IDbConnect{
 	            
 	            if (dbpw == null) dbpw = "";
 
-	            jdbi = Jdbi.create(dburl, dbuser, dbpw);
+	            jdbi = getJdbi(dburl, dbuser, dbpw);
 	         } catch (IOException e) {
 	            throw new RuntimeException(e);
 	         }
