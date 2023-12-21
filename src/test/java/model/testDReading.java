@@ -64,6 +64,7 @@ public class testDReading {
     {
         for(int i = 0; i<DReadings.length; i++)
         {
+            // arrange / act
             DReadings[i].setId(newid);
             DReadings[i].setComment(newcomment);
             DReadings[i].setCustomer(newcustomer);
@@ -73,6 +74,7 @@ public class testDReading {
             DReadings[i].setSubstitute(newsubstitute);
             DReadings[i].setDateofreading(newdateofreading);
 
+            // assert
             assertEquals(newid, DReadings[i].getId());
             assertEquals(newcomment, DReadings[i].getComment());
             assertEquals(newcustomer, DReadings[i].getCustomer());

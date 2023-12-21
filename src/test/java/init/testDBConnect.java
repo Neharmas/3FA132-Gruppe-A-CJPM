@@ -2,10 +2,6 @@ package init;
 
 import dev.hv.db.init.DBConnect;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import java.util.List;
 import java.util.Map;
 
@@ -21,6 +17,8 @@ import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.TestMethodOrder;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 @TestInstance(Lifecycle.PER_CLASS) //otherwise 'static' would be required to update/use same value in multiple tests
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class testDBConnect
@@ -30,7 +28,7 @@ public class testDBConnect
     private Handle handle;
 
     private Jdbi jdbi = null;
-    private String[] allTables = {"Customer","User", "Lesen"};
+    private String[] allTables = {"Customer", "User", "Reading"};
     
     private int count = 0;
     
@@ -38,16 +36,15 @@ public class testDBConnect
     public void test_set()
     {
     	count += 1;
-    	System.out.println(count);
     }
     
     @BeforeAll
     @RepeatedTest(2)
     @DisplayName("Set Class Singleton instance")
     public void test_getConnection() {
-    	
+    	// act
         test_instance = DBConnect.getConnection();
-        
+        // assert
         assertNotNull(test_instance);
     }
 
@@ -56,7 +53,10 @@ public class testDBConnect
     @DisplayName("Connect to Database")
     public void test_getJdbi()
     {
+        // act
         jdbi = test_instance.getJdbi();
+
+        // assert
         assertNotNull(jdbi);
     }
     
@@ -65,24 +65,24 @@ public class testDBConnect
     @DisplayName("Open Handler")
     public void test_openHandler()
     {
+        // act
     	handle = test_instance.getJdbi().open();
+        // assert
         assertNotNull(handle);
     }
-    
-    
-    
+
     public void call_createAllTables() {
     	test_instance.createAllTables();
     }
 
     public boolean test_if_table_was_created(String table)
-    {	
-    	
+    {
+        boolean doesTableExists;
 		List<Map<String, Object>> results = handle
 				.createQuery("SELECT name FROM sqlite_master WHERE type='table';")
 				.mapToMap()
 				.list();
-		boolean doesTableExists;
+
 		doesTableExists =  results.stream().anyMatch(map-> map.containsValue(table));
 		
 		return doesTableExists;
@@ -93,12 +93,13 @@ public class testDBConnect
     @Order(3)
     @DisplayName("Test if tables were created")
     public void tests_createAllTables() {
+        // act
     	call_createAllTables();
-    	
-    	for (int i=0; i<allTables.length; i++) {
-    		System.out.println(allTables[i]);
-    		assertTrue(test_if_table_was_created(allTables[i]), allTables[i] + " ist nicht als Tabelle vorhanden");
-    	}
+
+        // assert
+        for (String table : allTables) {
+            assertTrue(test_if_table_was_created(table), table + " ist nicht als Tabelle vorhanden");
+        }
     }
     
     
@@ -107,10 +108,36 @@ public class testDBConnect
     @DisplayName("Test Insert")
     public void test_insert()
     {
+        // arrange
+        boolean dataInTable;
+
+        // act
     	test_instance.insertTestData();
-    	//handle.execute("INSERT INTO CUSTOMER VALUES(NULL, 'Mustermann', 'Maximillian')");
-    	//handle.execute("INSERT INTO USER VALUES(NULL, 'Mustermann', 'Maximillian')");
-    	//handle.execute("INSERT INTO LESEN VALUES(NULL, 'Müller', 'Andreas', '65342', '53216')");
+
+        // assert
+        List<Map<String, Object>> results = handle
+                .createQuery("SELECT * FROM customer;")
+                .mapToMap()
+                .list();
+
+        dataInTable = !results.isEmpty();
+        assertTrue(dataInTable);
+
+        results = handle
+                .createQuery("SELECT * FROM user;")
+                .mapToMap()
+                .list();
+
+        dataInTable = !results.isEmpty();
+        assertTrue(dataInTable);
+
+        results = handle
+                .createQuery("SELECT * FROM reading;")
+                .mapToMap()
+                .list();
+
+        dataInTable = !results.isEmpty();
+        assertTrue(dataInTable);
     }
     
     @Test
@@ -126,13 +153,18 @@ public class testDBConnect
     @DisplayName("Remove all Tables")
     public void test_removeAllTables()
     {
+        // arrange
+        List<Map<String, Object>> results = null;
+
+        // act
         test_instance.removeAllTables();
-        
-        List<Map<String, Object>> results = handle
+
+        results = handle
     			.createQuery("SELECT * FROM sqlite_master WHERE type='table';")
     			.mapToMap()
     			.list();
-		
+
+        // assert
 		assertFalse(results.isEmpty());
     }
     
@@ -141,7 +173,8 @@ public class testDBConnect
     @DisplayName("Close Handler")
     public void test_closeHandler()
     {
-    	handle.close();
+        handle.close();
+        assertTrue(handle.isClosed());
     }
 
     

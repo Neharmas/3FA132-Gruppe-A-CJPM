@@ -60,13 +60,19 @@ class testDCustomer {
     @DisplayName("Test id constructor")
     public void test_id_DCustomer()
     {
+        // arrange / act
         simple_customer = new DCustomer();
+        // assert
         assertNotNull(simple_customer);
 
+        // arrange / act
         name_customer = new DCustomer(lastname, firstname);
+        // assert
         assertNotNull(name_customer);
 
+        // arrange / act
         id_customer = new DCustomer(id, lastname, firstname);
+        // assert
         assertNotNull(id_customer);
     }
 
@@ -75,8 +81,13 @@ class testDCustomer {
     @DisplayName("Test names constructor")
     public void test_toString()
     {
-        String entry = id_customer.toString();
+        // arrange
         String matches = "DCustomer [id=" + id + ", firstname=" + firstname + ", lastname=" + lastname + "]";
+
+        // act
+        String entry = id_customer.toString();
+
+        //assert
         assertEquals(entry, matches);
     }
 
@@ -85,13 +96,16 @@ class testDCustomer {
     @DisplayName("Test all setters")
     public void test_setter()
     {
+        // arrange
+        String matches = "DCustomer [id=" + newId + ", firstname=" + newFirstName + ", lastname=" + newLastName + "]";
+
+        // act
         id_customer.setFirstname(newFirstName);
         id_customer.setLastname(newLastName);
         id_customer.setId(newId);
 
-        String matches = "DCustomer [id=" + newId + ", firstname=" + newFirstName + ", lastname=" + newLastName + "]";
+        // assert
         String newName = id_customer.toString();
-
         assertEquals(newName, matches);
     }
 
@@ -100,13 +114,16 @@ class testDCustomer {
     @DisplayName("Test all getters")
     public void test_getter()
     {
+        // arrange
+        String matches = "DCustomer [id=" + id_customer.getId() + ", firstname=" + id_customer.getFirstname() + ", lastname=" + id_customer.getLastname() + "]";
+
+        // act
         id_customer.setFirstname(newFirstName);
         id_customer.setLastname(newLastName);
         id_customer.setId(newId);
 
-        String matches = "DCustomer [id=" + id_customer.getId() + ", firstname=" + id_customer.getFirstname() + ", lastname=" + id_customer.getLastname() + "]";
+        // assert
         String newName = id_customer.toString();
-
         assertEquals(newName, matches);
     }
 
@@ -115,17 +132,22 @@ class testDCustomer {
     @DisplayName("Test Compare To")
     public void test_compareTo()
     {
-
+        // arrange / act
         name_customer.setId(newId);
         int result = id_customer.compareTo(name_customer);
+        // assert
         assertEquals(0, result);
 
+        // arrange / act
         name_customer.setId(1000L);
         result = id_customer.compareTo(name_customer);
+        // assert
         assertEquals(1, result);
 
+        // arrange / act
         name_customer.setId(1L);
         result = id_customer.compareTo(name_customer);
+        // assert
         assertEquals(-1, result);
 
     }

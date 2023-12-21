@@ -3,6 +3,7 @@ package dev.hv.db.dao;
 import java.util.List;
 
 import org.jdbi.v3.sqlobject.config.RegisterBeanMapper;
+import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;
 import org.jdbi.v3.sqlobject.customizer.Bind;
 import org.jdbi.v3.sqlobject.customizer.BindBean;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
@@ -22,8 +23,8 @@ public interface ReadingDAO extends IDAO<DReading> {
 	public void delete(@BindBean("o") DReading o);
 
 	@Override
-	@SqlQuery("SELECT * FROM reading WHERE id=:id;")
-	@RegisterBeanMapper(DUser.class)
+	@SqlQuery("SELECT * FROM reading WHERE id = :id;")
+	@RegisterBeanMapper(DReading.class)
 	public DReading findById(@Bind("id") Long id);
 
 	@Override
@@ -35,27 +36,19 @@ public interface ReadingDAO extends IDAO<DReading> {
 	public List<DReading> getAll();
 
 	@Override
-	@SqlUpdate("""
-			INSERT INTO READING (comment, customer, kindofmeter, metercount, meterid, substitute, dateofreading) 
-			VALUES (:o.comment, :o.customer.id, :o.kindofmeter, :o.metercount, :o.meterid, :o.substitute, :o.dateofreading);
-			""")
-	public void insert(@BindBean("o") DReading o);
+	@SqlUpdate("INSERT INTO reading (comment, customer, kindofmeter, metercount, meterid, substitute, dateofreading) " +
+			"VALUES (:comment, :customer.id, :kindofmeter, :metercount, :meterid, :substitute, :dateofreading); ")
+	public void insert(@BindBean DReading reading);
 
 	@Override
-	@SqlUpdate("""
-			update reading set comment = :o.comment, customer = c.id, kindofmeter = o.kindofmeter, 
-			metercount = o.metercount, meterid = o.meterid, substitute = o.substitute, dateofreading = o.dateofreading
-			WHERE id = :id;
-			""")
-	//@RegisterBeanMapper(value=DReading.class, prefix = "o")
-	@RegisterBeanMapper(value=DCustomer.class, prefix = "c")
-	public void update(@Bind("id") Long id, @BindBean("o") DReading o);
+	@SqlUpdate("UPDATE reading SET comment = :comment, customer = :customer.id, dateofreading = :dateofreading, " +
+			"kindofmeter = :kindofmeter, meterid = :meterid, metercount = :metercount, substitute = :substitute " +
+			"WHERE id = :id; ")
 
+	public void update(@Bind("id") Long id, @BindBean DReading reading);
 	@Override
-	@SqlUpdate("update reading set comment = :r.comment, c.id = c.id, c.kindofmeter = r.kindofmeter,"
-			+ "c.metercount = r.metercount, c.meterid = r.meterid, c.substitute = r.substitute, c.dateofreading = r.dateofreading"
-			+ "WHERE c.id = :r.id;")
-	@RegisterBeanMapper(value=DCustomer.class, prefix = "c")
-	public void update(@BindBean("r") DReading r);
-
+	@SqlUpdate("UPDATE reading SET comment = :comment, customer = :customer.id, dateofreading = :dateofreading, " +
+			"kindofmeter = :kindofmeter, meterid = :meterid, metercount = :metercount, substitute = :substitute " +
+			"WHERE id = :id; ")
+	public void update(@BindBean DReading reading);
 }

@@ -38,13 +38,19 @@ class testDUser {
     @DisplayName("Test User constructor")
     public void test_User()
     {
+        // arrange / act
         DUsers[0] = new DUser();
+        // assert
         assertNotNull(DUsers[0]);
 
+        // arrange / act
         DUsers[1] = new DUser(id, lastname, firstname, token, password);
+        // assert
         assertNotNull(DUsers[1]);
 
+        // arrange / act
         DUsers[2] = new DUser(lastname, firstname, token, password);
+        // assert
         assertNotNull(DUsers[2]);
     }
     @Test
@@ -54,12 +60,14 @@ class testDUser {
     {
         for(int i = 0; i<DUsers.length; i++)
         {
+            // arrange / act
             DUsers[i].setId(newId);
             DUsers[i].setFirstname(newFirstname);
             DUsers[i].setLastname(newLastname);
             DUsers[i].setToken(newToken);
             DUsers[i].setPassword(newPassword);
 
+            // assert
             assertEquals(newId, DUsers[i].getId());
             assertEquals(newFirstname, DUsers[i].getFirstname());
             assertEquals(newLastname, DUsers[i].getLastname());
@@ -73,12 +81,19 @@ class testDUser {
     @DisplayName("Test all setters")
     public void test_toString()
     {
+        // arrange
         String equals = "DUser [id=" + newId + ", firstname=" + newFirstname + ", lastname=" + newLastname + ", token=" + newToken
                 + ", password=" + newPassword + "]";
 
-        assertEquals(equals, DUsers[0].toString());
-        assertEquals(equals, DUsers[1].toString());
-        assertEquals(equals, DUsers[2].toString());
+        // act
+        String firstUser = DUsers[0].toString();
+        String secondUser = DUsers[1].toString();
+        String thirdUser = DUsers[2].toString();
+
+        // assert
+        assertEquals(equals, firstUser);
+        assertEquals(equals, secondUser);
+        assertEquals(equals, thirdUser);
     }
 	
 }

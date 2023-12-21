@@ -1,0 +1,125 @@
+package dao;
+
+import dev.hv.db.dao.ReadingDAO;
+import dev.hv.db.dao.UserDAO;
+import dev.hv.db.init.DBConnect;
+import dev.hv.db.model.DCustomer;
+import dev.hv.db.model.DReading;
+import dev.hv.db.model.DUser;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.util.List;
+import java.util.Map;
+
+import org.jdbi.v3.core.Handle;
+import org.jdbi.v3.core.Jdbi;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.RepeatedTest;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
+import org.junit.jupiter.api.TestMethodOrder;
+
+@TestInstance(Lifecycle.PER_CLASS) //otherwise 'static' would be required to update/use same value in multiple tests
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class testUserDAO {
+    UserDAO userDAO;
+    DUser[] users = {null, null, null};
+    private DBConnect test_instance = null;
+    @Test
+    @Order(1)
+    @DisplayName("Setup Connection")
+    public void setupConnection()
+    {
+        // arrange
+        test_instance = DBConnect.getConnection();
+
+        // act
+        test_instance.getJdbi().installPlugins();
+        test_instance.createAllTables();
+
+        // assert
+        assertNotNull(test_instance);
+    }
+
+    @Test
+    @Order(2)
+    @DisplayName("Insert User Data")
+    public void testinsert()
+    {
+        // arrange
+        Handle handle = test_instance.getJdbi().open();
+        userDAO = handle.attach(UserDAO.class);
+
+        // act
+        for(int i = 0; i< users.length; i++) {
+            users[i] = new DUser(i + 1, "Ajomale", "Christopher", "token", "password");
+            userDAO.insert(users[i]);
+        }
+
+        // assert
+        List<Map<String, Object>> results = handle
+                .createQuery("SELECT * FROM user;")
+                .mapToMap()
+                .list();
+
+        assertEquals(3, results.size());
+    }
+
+    @Test
+    @Order(3)
+    @DisplayName("Update User")
+    public void testUpdate()
+    {
+        // arrange
+        Handle handle = test_instance.getJdbi().open();
+        DUser user = new DUser(2, "Hasan", "Mouawia", "newToken", "newPassword");
+
+        // act
+        userDAO.update(2L, user);
+
+        // assert
+        List<Map<String, Object>> results = handle
+                .createQuery("SELECT * FROM user;")
+                .mapToMap()
+                .list();
+
+        assertEquals("Mouawia", results.get(1).get("firstname") );
+
+        users[1] = user;
+    }
+
+    @Test
+    @Order(4)
+    @DisplayName("Delete User")
+    public void testDelete()
+    {
+        // act
+        userDAO.delete(1L);
+        boolean exists = userDAO.findById(1L) != null;
+
+        // assert
+        assertFalse(exists);
+
+        users = new DUser[]{users[1], users[2]};
+    }
+
+    @Test
+    @Order(5)
+    @DisplayName("Get all Users")
+    public void testGetAll()
+    {
+        // act
+        List<DUser> listUsers = userDAO.getAll();
+
+        // assert
+        assertEquals(2, listUsers.size());
+    }
+}

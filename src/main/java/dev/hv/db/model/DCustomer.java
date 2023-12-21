@@ -12,7 +12,7 @@ public class DCustomer implements IDCustomer, Comparable<DCustomer>{
 		@ColumnName("firstname")
 		private String firstname;
 		
-		@ColumnName("lasstname")
+		@ColumnName("lastname")
 		private String lastname;
 		
 		
