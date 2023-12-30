@@ -30,7 +30,7 @@ public interface CustomerDAO extends IDAO<DCustomer> {
 	public DCustomer findById(@Bind("id") Long id);
 
 	@Override
-	@SqlQuery("SELECT id, lastname, firstname FROM customer;")
+	@SqlQuery("SELECT * FROM customer;")
 	@RegisterBeanMapper(DCustomer.class)
 	public List<DCustomer> getAll();
 

@@ -1,9 +1,15 @@
 package dev.hv.db.dao;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 
+import dev.bsinfo.ressource.ReadingMapper;
+import org.jdbi.v3.core.statement.StatementContext;
 import org.jdbi.v3.sqlobject.config.RegisterBeanMapper;
-import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;
+
+import org.jdbi.v3.sqlobject.config.RegisterRowMapper;
+
 import org.jdbi.v3.sqlobject.customizer.Bind;
 import org.jdbi.v3.sqlobject.customizer.BindBean;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
@@ -23,16 +29,20 @@ public interface ReadingDAO extends IDAO<DReading> {
 	public void delete(@BindBean("o") DReading o);
 
 	@Override
-	@SqlQuery("SELECT * FROM reading WHERE id = :id;")
-	@RegisterBeanMapper(DReading.class)
+	@SqlQuery("SELECT r.id, r.comment, r.kindofmeter, r.metercount, r.meterid, r.substitute, r.dateofreading, " +
+			"c.id as customer, c.lastname, c.firstname " +
+			"FROM reading as r " +
+			"JOIN customer as c ON r.customer = c.id " +
+			"WHERE r.id = :id;")
+	@RegisterRowMapper(ReadingMapper.class)
 	public DReading findById(@Bind("id") Long id);
 
-	@Override
-	@SqlQuery("SELECT r.id as r_id, r.comment as r_comment, r.kindofmeter as r_kindofmeter, r.metercount as r_metercount,"
-			+ "r.meterid as r_meterid, r.substitute as r_substitute, r.dateofreading as r_dateofreading "
-			+ "FROM reading r INNER JOIN Customer c ON (r.customer = c.id);")
-	@RegisterBeanMapper(value=DReading.class, prefix="r")
-	@RegisterBeanMapper(value=DCustomer.class, prefix="c")
+
+	@SqlQuery("SELECT r.id, r.comment, r.kindofmeter, r.metercount, r.meterid, r.substitute, r.dateofreading, " +
+			"c.id as customer, c.lastname, c.firstname " +
+			"FROM reading as r " +
+			"JOIN customer as c ON r.customer = c.id;")
+	@RegisterRowMapper(ReadingMapper.class)
 	public List<DReading> getAll();
 
 	@Override

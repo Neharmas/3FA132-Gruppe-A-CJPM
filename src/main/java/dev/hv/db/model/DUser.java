@@ -2,22 +2,28 @@ package dev.hv.db.model;
 
 import java.beans.ConstructorProperties;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.jdbi.v3.core.mapper.reflect.ColumnName;
 
 public class DUser implements IDUser{
 
+	@JsonProperty("id")
 	@ColumnName("id")
 	private Long id;
-	
+
+	@JsonProperty("firstname")
 	@ColumnName("firstname")
 	private String firstname;
-	
+
+	@JsonProperty("lastname")
 	@ColumnName("lastname")
 	private String lastname;
-	
+
+	@JsonProperty("token")
 	@ColumnName("token")
 	private String token;
-	
+
+	@JsonProperty("password")
 	@ColumnName("password")
 	private String password;
 	

@@ -2,32 +2,41 @@ package dev.hv.db.model;
 
 import java.beans.ConstructorProperties;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.jdbi.v3.core.mapper.Nested;
 import org.jdbi.v3.core.mapper.reflect.ColumnName;
 
 public class DReading implements IDReading{
-	@ColumnName("string")
+	@JsonProperty("comment")
+	@ColumnName("comment")
 	private String comment;
 	
-	//@ColumnName("customer")
+	@ColumnName("customer")
+	@JsonProperty("customer")
 	@Nested
 	private IDCustomer customer;
-	
+
+	@JsonProperty("id")
 	@ColumnName("id")
-	private  Long id;
-	
+	private Long id;
+
+	@JsonProperty("kindofmeter")
 	@ColumnName("kindofmeter")
 	private String kindofmeter;
-	
+
+	@JsonProperty("metercount")
 	@ColumnName("metercount")
 	private double metercount;
-	
+
+	@JsonProperty("meterid")
 	@ColumnName("meterid")
 	private String meterid;
-	
+
+	@JsonProperty("substitute")
 	@ColumnName("substitute")
 	private Boolean substitute;
-	
+
+	@JsonProperty("dateofreading")
 	@ColumnName("dateofreading")
 	private Long dateofreading;
 	
@@ -46,7 +55,7 @@ public class DReading implements IDReading{
 	public DReading () {
 		
 	}
-	
+	@ConstructorProperties({ "comment", "customer", "kindofmeter", "metercount", "meterid", "substitute", "dateofreading" })
 	public DReading(String comment, IDCustomer customer, String kindofmeter, double metercount, String meterid, boolean substitute, long dateofreading) {
 		this.comment = comment;
 		this.customer = customer;

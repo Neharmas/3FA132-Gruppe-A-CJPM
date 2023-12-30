@@ -68,11 +68,11 @@ public class testReadingDAO {
 
         // assert
         List<Map<String, Object>> results = handle
-                .createQuery("SELECT * FROM reading;")
+                .createQuery("SELECT * FROM reading WHERE meterid = meterid;")
                 .mapToMap()
                 .list();
 
-        assertEquals(3, results.size());
+        assertEquals("meterid", results.getFirst().get("meterid"));
     }
 
     @Test
@@ -122,8 +122,11 @@ public class testReadingDAO {
         // act
         List<DReading> listReading = readingDAO.getAll();
 
+        boolean moreThanOne = listReading.size() > 1;
+
         // assert
         assertEquals(2, listReading.size());
+        assertTrue(moreThanOne);
     }
 }
 

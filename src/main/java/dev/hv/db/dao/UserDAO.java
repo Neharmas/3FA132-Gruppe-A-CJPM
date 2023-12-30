@@ -25,7 +25,7 @@ public interface UserDAO extends IDAO<DUser> {
 	public DUser findById(@Bind("id") Long id);
 
 	@Override
-	@SqlQuery("SELECT id, lastname, firstname, token, password FROM user;")
+	@SqlQuery("SELECT * FROM user;")
 	@RegisterBeanMapper(DUser.class)
 	public List<DUser> getAll();
 
