@@ -2,6 +2,8 @@ package dev.hv.db.dao;
 
 import java.util.List;
 
+import dev.hv.db.model.DUser;
+
 public interface IDAO<T> {
 
    // DELETE
@@ -17,7 +19,7 @@ public interface IDAO<T> {
    List<T> getAll();
 
    // CREATE
-   long insert(T o);
+   void insert(T o);
 
    // UPDATE
    void update(Long id, T o);

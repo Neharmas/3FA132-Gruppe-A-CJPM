@@ -1,107 +1,155 @@
 package dev.hv.db.model;
 
-public class DReading implements IDReading{
+import java.beans.ConstructorProperties;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import org.jdbi.v3.core.mapper.Nested;
+import org.jdbi.v3.core.mapper.reflect.ColumnName;
+
+public class DReading implements IDReading{
+	@JsonProperty("comment")
+	@ColumnName("comment")
+	private String comment;
+	
+	@ColumnName("customer")
+	@JsonProperty("customer")
+	@Nested
+	private IDCustomer customer;
+
+	@JsonProperty("id")
+	@ColumnName("id")
+	private Long id;
+
+	@JsonProperty("kindofmeter")
+	@ColumnName("kindofmeter")
+	private String kindofmeter;
+
+	@JsonProperty("metercount")
+	@ColumnName("metercount")
+	private double metercount;
+
+	@JsonProperty("meterid")
+	@ColumnName("meterid")
+	private String meterid;
+
+	@JsonProperty("substitute")
+	@ColumnName("substitute")
+	private Boolean substitute;
+
+	@JsonProperty("dateofreading")
+	@ColumnName("dateofreading")
+	private Long dateofreading;
+	
+	@ConstructorProperties({ "id", "comment", "customer", "kindofmeter", "metercount", "meterid", "substitute", "dateofreading" })
+	public DReading (long id, String comment, IDCustomer customer, String kindofmeter, double metercount, String meterid, boolean substitute, long dateofreading) {
+		this.id = id;
+		this.comment = comment;
+		this.customer = customer;
+		this.kindofmeter = kindofmeter;
+		this.metercount = metercount;
+		this.meterid = meterid;
+		this.substitute = substitute;
+		this.dateofreading = dateofreading;
+	}
+	
+	public DReading () {
+		
+	}
+	@ConstructorProperties({ "comment", "customer", "kindofmeter", "metercount", "meterid", "substitute", "dateofreading" })
+	public DReading(String comment, IDCustomer customer, String kindofmeter, double metercount, String meterid, boolean substitute, long dateofreading) {
+		this.comment = comment;
+		this.customer = customer;
+		this.kindofmeter = kindofmeter;
+		this.metercount = metercount;
+		this.meterid = meterid;
+		this.substitute = substitute;
+		this.dateofreading = dateofreading;
+	}
+	
 	@Override
 	public String getComment() {
-		// TODO Auto-generated method stub
-		return null;
+		return comment;
 	}
 
+	@Override
+	public void setComment(String comment) {
+		this.comment = comment;
+	}
+	
 	@Override
 	public IDCustomer getCustomer() {
-		// TODO Auto-generated method stub
-		return null;
+		return customer;
 	}
 
-	@Override
-	public Long getDateofreading() {
-		// TODO Auto-generated method stub
-		return null;
+	@Override	
+	public void setCustomer(IDCustomer customer) {
+		this.customer = customer;
 	}
 
 	@Override
 	public Long getId() {
-		// TODO Auto-generated method stub
-		return null;
+		return id;
+	}
+
+	@Override
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	@Override
 	public String getKindofmeter() {
-		// TODO Auto-generated method stub
-		return null;
+		return kindofmeter;
+	}
+
+	@Override
+	public void setKindofmeter(String kindofmeter) {
+		this.kindofmeter = kindofmeter;
 	}
 
 	@Override
 	public Double getMetercount() {
-		// TODO Auto-generated method stub
-		return null;
+		return metercount;
+	}
+
+	@Override
+	public void setMetercount(Double metercount) {
+		this.metercount = metercount;
 	}
 
 	@Override
 	public String getMeterid() {
-		// TODO Auto-generated method stub
-		return null;
+		return meterid;
+	}
+
+	@Override
+	public void setMeterid(String meterid) {
+		this.meterid = meterid;
 	}
 
 	@Override
 	public Boolean getSubstitute() {
-		// TODO Auto-generated method stub
-		return null;
+		return substitute;
+	}
+
+	@Override
+	public void setSubstitute(Boolean substitute) {
+		this.substitute = substitute;
+	}
+
+	@Override
+	public Long getDateofreading() {
+		return dateofreading;
+	}
+	
+	@Override
+	public void setDateofreading(Long dateofreading) {
+		this.dateofreading = dateofreading;
 	}
 
 	@Override
 	public String printDateofreading() {
 		// TODO Auto-generated method stub
 		return null;
-	}
-
-	@Override
-	public void setComment(String comment) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void setCustomer(IDCustomer customer) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void setDateofreading(Long dateOfReading) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void setId(Long id) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void setKindofmeter(String kindOfMeter) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void setMetercount(Double meterCount) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void setMeterid(String meterId) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void setSubstitute(Boolean substitute) {
-		// TODO Auto-generated method stub
-		
 	}
 
 }

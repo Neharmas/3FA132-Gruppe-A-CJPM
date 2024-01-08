@@ -1,65 +1,98 @@
 package dev.hv.db.model;
 
+import java.beans.ConstructorProperties;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+import org.jdbi.v3.core.mapper.reflect.ColumnName;
+
 public class DUser implements IDUser{
 
-	@Override
-	public String getFirstname() {
-		// TODO Auto-generated method stub
-		return null;
+	@JsonProperty("id")
+	@ColumnName("id")
+	private Long id;
+
+	@JsonProperty("firstname")
+	@ColumnName("firstname")
+	private String firstname;
+
+	@JsonProperty("lastname")
+	@ColumnName("lastname")
+	private String lastname;
+
+	@JsonProperty("token")
+	@ColumnName("token")
+	private String token;
+
+	@JsonProperty("password")
+	@ColumnName("password")
+	private String password;
+	
+	@ConstructorProperties({ "id", "lastname", "firstname", "password", "token" })
+	public DUser (long id, String lastname, String firstname, String token, String password) {
+		this.id = id;
+		this.lastname = lastname;
+		this.firstname = firstname;
+		this.token = token;
+		this.password = password;
+	}
+	
+	public DUser() {
+		
+	}
+	
+	public DUser(final String lastname, final String firstname, final String token, final String password) {
+		this.lastname = lastname;
+		this.firstname = firstname;
+		this.token = token;
+		this.password = password;
 	}
 
+	@Override
+	public String toString() {
+		return "DUser [id=" + id + ", firstname=" + firstname + ", lastname=" + lastname + ", token=" + token
+				+ ", password=" + password + "]";
+	}
+	
 	@Override
 	public Long getId() {
-		// TODO Auto-generated method stub
-		return null;
+		return id;
 	}
-
-	@Override
-	public String getLastname() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String getPassword() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String getToken() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void setFirstname(String firstName) {
-		// TODO Auto-generated method stub
-		
-	}
-
 	@Override
 	public void setId(Long id) {
-		// TODO Auto-generated method stub
-		
+		this.id = id;
 	}
-
 	@Override
-	public void setLastname(String lastName) {
-		// TODO Auto-generated method stub
-		
+	public String getFirstname() {
+		return firstname;
+	}
+	@Override
+	public void setFirstname(String firstname) {
+		this.firstname = firstname;
+	}
+	@Override
+	public String getLastname() {
+		return lastname;
+	}
+	@Override
+	public void setLastname(String lastname) {
+		this.lastname = lastname;
+	}
+	@Override
+	public String getToken() {
+		return token;
+	}
+	@Override
+	public void setToken(String token) {
+		this.token = token;
+	}
+	@Override
+	public String getPassword() {
+		return password;
 	}
 
 	@Override
 	public void setPassword(String password) {
-		// TODO Auto-generated method stub
-		
+		this.password = password;
 	}
-
-	@Override
-	public void setToken(String token) {
-		// TODO Auto-generated method stub
-		
-	}
-
+	
 }
