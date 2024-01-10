@@ -24,18 +24,15 @@ public class StartServer {
         return instance;
     }
 
-    public boolean run()
-    {
+    public boolean run() {
         System.out.println("Start server");
         System.out.println(url);
         final ResourceConfig rc = new ResourceConfig().packages(pack);
-        try
-        {
+        try {
             final HttpServer server = JdkHttpServerFactory.createHttpServer(URI.create(url), rc);
             System.out.println("Ready for Requests....");
             return true;
-        }
-        catch (ProcessingException e) {
+        } catch (ProcessingException e) {
             System.out.println("Server couldn't be initialized.");
         }
         return false;
