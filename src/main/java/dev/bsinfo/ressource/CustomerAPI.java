@@ -76,10 +76,11 @@ public class CustomerAPI {
     @Path("create")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
-    public void create(DCustomer cus)
+    public DCustomer create(DCustomer cus)
     {
         DCustomer customer = new DCustomer(cus.getLastname(), cus.getFirstname());
         customerDAO.insert(customer);
+        return customer;
     }
 
     @GET
