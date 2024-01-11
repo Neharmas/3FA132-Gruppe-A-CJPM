@@ -23,6 +23,7 @@ import org.junit.jupiter.api.TestMethodOrder;
 import dev.bsinfo.ressource.CustomerAPI;
 import dev.bsinfo.server.StartServer;
 import dev.hv.db.dao.CustomerDAO;
+import dev.hv.db.init.DBConnect;
 import dev.hv.db.model.DCustomer;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -36,22 +37,24 @@ class testCustomerAPI {
     static public void run() {
 		StartServer instance = StartServer.getInstance();
 		instance.run();
+		DBConnect db = DBConnect.getConnection();
+		db.removeAllTables();
+		db.createAllTables();
 	}
 
     // Api
-    private static CustomerAPI customerApi ;
-    Jdbi jdbi = null;
-    Handle handle = null;
+    private static CustomerAPI customerApi;
     
-    private String lastname1 = "lastname1";
-    private String lastname2 = "lastname2";
-    private String lastname3 = "lastname3";
-    private String firstname1 = "firstname1";
-    private String firstname2 = "firstname2";
-    private String firstname3 = "firstname3";
+    private String ln1 = "ln1";
+    private String ln2 = "ln2";
+    private String fn1 = "fn1";
+    private String fn2 = "fn2";
     private long id1 = 1L;
     private long id2 = 2L;
-    private long id3 = 3L;
+    //private long id2 = 2L;
+    //private long id3 = 3L;
+
+  	DCustomer shouldBe = new DCustomer(id1, ln1, fn1);
     
 
     @Test
@@ -62,54 +65,49 @@ class testCustomerAPI {
     	System.out.print(customerApi);
 		assertNotNull(customerApi);
 	}
-    
+
     @Test
     @Order(2)
-    @DisplayName("Test 'get/all' Endpoint")
-	public void testgetAll() {
-    	List<DCustomer> response = customerApi.getAll();
-    	List<DCustomer> shouldBe = Arrays.asList(new DCustomer(2L,"lastname1", "firstname1"), new DCustomer(3L, "lastname2", "firstname2"));
-		assertEquals(response.toString(), shouldBe.toString());
+    @DisplayName("Test InputStream")
+	public void testInputStream() {
+		assertNotNull(customerApi.getForm());
 	}
 
     @Test
     @Order(3)
-    @DisplayName("Test 'get/{id}' Endpoint")
-    //Problem: Es ist nicht klar welche IDs und Einträge in der DB sind
-	public void testget() {
-    	DCustomer gotten = customerApi.get(2L);
-    	DCustomer shouldBe = new DCustomer(2L,"lastname1", "firstname1");
-    	System.out.println(shouldBe);
-		assertTrue(shouldBe.isEqualTo(gotten));
-		// or assertEquals(shouldBe.toString(), gotten.toString()); so wäre isEqualTo methode nicht notwendig
-	}
-
-    @Test
-    @Order(4)
     @DisplayName("Test 'create' Endpoint")
 	public void testcreate() {
-    	customerApi.create(firstname3, lastname3);
-    	DCustomer created = customerApi.get(id3);
-    	System.out.println(created);
-    	DCustomer shouldBe = new DCustomer(id3, lastname3, firstname3);
-    	System.out.println(shouldBe);
+    	customerApi.create(fn1, ln1);
+    	DCustomer created = customerApi.get(id1);
 		assertTrue(created.isEqualTo(shouldBe));
 	}
     
     @Test
+    @Order(4)
+    @DisplayName("Test 'get/{id}' Endpoint")
+	public void testget() {
+    	DCustomer existing = customerApi.get(id1);
+    	DCustomer nonExisting = customerApi.get(id2);
+		assertTrue(shouldBe.isEqualTo(existing) && nonExisting == null);
+	}    
+
+    @Test
     @Order(5)
-    @DisplayName("Test 'delete/{id}' Endpoint")
-	public void testdelete() {
-    	customerApi.delete(id3);
-		assertNull(customerApi.get(id3));
+    @DisplayName("Test 'get/all' Endpoint")
+	public void testgetAll() {
+    	customerApi.create(fn2, ln2);
+    	List<DCustomer> response = customerApi.getAll();
+    	List<DCustomer> shouldBe = Arrays.asList(new DCustomer(id1, ln1, fn1), new DCustomer(id2, ln2, fn2));
+		assertEquals(response.toString(), shouldBe.toString());
 	}
-    
+
     @Test
     @Order(6)
-    @DisplayName("Test if Id increment Endpoint")
-	public void testIdincrement() {
-    	List<DCustomer> response = customerApi.getAll();
-    	System.out.println(response);
-		assertNull(customerApi.get(id3));
+    @DisplayName("Test 'delete/{id}' Endpoint")
+	public void testdelete() {
+    	customerApi.delete(id2);
+		assertNull(customerApi.get(id2));
 	}
+
+
 }
