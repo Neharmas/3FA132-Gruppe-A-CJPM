@@ -80,6 +80,16 @@ public class UserAPI {
         userDAO.insert(user);
     }
 
+    @POST
+    @Path("create")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes("application/json")
+    public DUser create(DUser user)
+    {
+        userDAO.insert(user);
+        return user;
+    }
+
     @GET
     @Path("delete/{id}")
     @Produces(MediaType.APPLICATION_JSON)
