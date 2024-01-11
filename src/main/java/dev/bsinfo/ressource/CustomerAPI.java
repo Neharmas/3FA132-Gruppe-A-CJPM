@@ -73,10 +73,11 @@ public class CustomerAPI {
 
     @POST
     @Path("create")
-    public void create(@FormParam("firstname") String firstName,
-                       @FormParam("lastname") String lastName)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes("application/json")
+    public void create(DCustomer cus)
     {
-        DCustomer customer = new DCustomer(lastName, firstName);
+        DCustomer customer = new DCustomer(cus.getLastname(), cus.getFirstname());
         customerDAO.insert(customer);
     }
 
