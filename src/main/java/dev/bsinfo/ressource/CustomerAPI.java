@@ -78,9 +78,8 @@ public class CustomerAPI {
     @Consumes("application/json")
     public DCustomer create(DCustomer cus)
     {
-        DCustomer customer = new DCustomer(cus.getLastname(), cus.getFirstname());
-        customerDAO.insert(customer);
-        return customer;
+        customerDAO.insert(cus);
+        return cus;
     }
 
     @GET
