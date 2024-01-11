@@ -68,6 +68,16 @@ public class UserAPI {
         return userDAO.findById(id);
     }
 
+    /*@POST
+    @Path("create")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes("application/json")
+    public DUser create(DUser user)
+    {
+        userDAO.insert(user);
+        return user;
+    }*/
+
     @POST
     @Path("create")
     @Produces(MediaType.APPLICATION_JSON)

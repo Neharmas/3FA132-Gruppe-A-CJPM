@@ -73,5 +73,8 @@ public class DCustomer implements IDCustomer, Comparable<DCustomer>{
 	public int compareTo(DCustomer o) {
 		return o.id.compareTo(this.id);
 	}
-
+	
+	public boolean isEqualTo(DCustomer o) {
+		return this.toString().equals(o.toString());
+	}
 }

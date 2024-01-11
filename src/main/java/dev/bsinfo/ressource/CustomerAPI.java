@@ -27,6 +27,7 @@ public class CustomerAPI {
 
         customerDAO = handle.attach(CustomerDAO.class);
     }
+
     @GET
     @Path("form")
     @Produces(MediaType.TEXT_HTML)
