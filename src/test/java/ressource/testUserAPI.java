@@ -139,5 +139,6 @@ public class testUserAPI {
             api.delete(user.getId());
         }
         handle.execute("UPDATE SQLITE_SEQUENCE SET SEQ=0 WHERE NAME='User'");
+        handle.close();
     }
 }
