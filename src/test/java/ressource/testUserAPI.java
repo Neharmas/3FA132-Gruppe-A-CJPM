@@ -1,5 +1,7 @@
 package ressource;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.bsinfo.ressource.UserAPI;
 import dev.bsinfo.server.StartServer;
 import dev.hv.db.init.DBConnect;
@@ -14,15 +16,19 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class testUserAPI {
     String url = "http://localhost:8080/rest";
     private static StartServer instance;
     private static UserAPI api;
+    private static Handle handle = null;
 
+    private testUserAPI()
+    {
+        handle = DBConnect.getConnection().getJdbi().open();
+    }
     @BeforeAll
     @DisplayName("Start Api Server")
     static public void run() {
@@ -30,14 +36,6 @@ public class testUserAPI {
         instance = StartServer.getInstance();
         instance.run();
         api = new UserAPI();
-    }
-
-
-    private static Handle handle = null;
-
-    private testUserAPI()
-    {
-        handle = DBConnect.getConnection().getJdbi().open();
     }
 
     @Test
@@ -55,9 +53,21 @@ public class testUserAPI {
                 .build();
 
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
         int statusCode = response.statusCode();
         assertEquals(204, statusCode);
+
+        DUser user = new DUser(
+                1L,
+                "testLastName",
+                "testFirstName",
+                "testToken",
+                "testPassWord"
+        );
+
+        assertTrue(user.equals(api.get(1L)));
     }
+
     @Test
     @Order(2)
     @DisplayName("Test GetAll")
@@ -75,6 +85,18 @@ public class testUserAPI {
 
         int statusCode = response.statusCode();
         assertEquals(200, statusCode);
+
+        DUser user = new DUser(
+                1L,
+                "testLastName",
+                "testFirstName",
+                "testToken",
+                "testPassWord"
+        );
+        ObjectMapper mapper = new ObjectMapper();
+
+        DUser responseBody = mapper.readValue(response.body(), new TypeReference<List<DUser>>(){}).getFirst();
+        assertTrue(user.equals(responseBody));
     }
 
     @Test
@@ -93,6 +115,18 @@ public class testUserAPI {
 
         int statusCode = response.statusCode();
         assertEquals( 200, statusCode);
+
+        DUser user = new DUser(
+                1L,
+                "testLastName",
+                "testFirstName",
+                "testToken",
+                "testPassWord"
+        );
+        ObjectMapper mapper = new ObjectMapper();
+
+        DUser responseBody = mapper.readValue(response.body(), new TypeReference<DUser>(){});
+        assertTrue(user.equals(responseBody));
     }
 
     @AfterAll

@@ -27,7 +27,7 @@ public class DUser implements IDUser{
 	@ColumnName("password")
 	private String password;
 	
-	@ConstructorProperties({ "id", "lastname", "firstname", "password", "token" })
+	@ConstructorProperties({ "id", "lastname", "firstname", "token", "password"  })
 	public DUser (long id, String lastname, String firstname, String token, String password) {
 		this.id = id;
 		this.lastname = lastname;
@@ -94,5 +94,15 @@ public class DUser implements IDUser{
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	
+
+
+	public boolean equals(DUser other)
+	{
+		boolean equalID = this.id.equals(other.id);
+		boolean equalFirstName = this.firstname.equals(other.firstname);
+		boolean equalLastName = this.lastname.equals(other.lastname);
+		boolean equalToken = this.token.equals(other.token);
+
+		return equalID && equalFirstName && equalLastName && equalToken;
+	}
 }
