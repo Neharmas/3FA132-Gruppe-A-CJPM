@@ -3,6 +3,7 @@ package dev.bsinfo.ressource;
 import dev.hv.db.dao.UserDAO;
 import dev.hv.db.init.DBConnect;
 
+import dev.hv.db.model.DCustomer;
 import dev.hv.db.model.DUser;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
@@ -33,6 +34,22 @@ public class UserAPI {
     @Produces(MediaType.TEXT_HTML)
     public InputStream getForm() {
         return getClass().getClassLoader().getResourceAsStream("user-form.html");
+    }
+
+    @PUT
+    @Path(("edit"))
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes("application/json")
+    public DUser edit(DUser user) {
+        if (userDAO.findById(user.getId()) != null) {
+            userDAO.update(user);
+            System.out.println("Updated customer " + user.toString());
+            return user;
+        } else {
+            //TODO Error message?
+            System.out.println("Couldn't find customer with id: " + user.getId());
+            return null;
+        }
     }
 
     @GET
