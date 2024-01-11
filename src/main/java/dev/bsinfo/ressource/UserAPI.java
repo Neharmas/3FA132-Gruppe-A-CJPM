@@ -43,7 +43,7 @@ public class UserAPI {
     public DUser edit(DUser user) {
         if (userDAO.findById(user.getId()) != null) {
             userDAO.update(user);
-            System.out.println("Updated customer " + user.toString());
+            System.out.println("Updated customer " + user);
             return user;
         } else {
             //TODO Error message?
@@ -66,18 +66,6 @@ public class UserAPI {
     public DUser get(@PathParam("id") Long id)
     {
         return userDAO.findById(id);
-    }
-
-
-    @POST
-    @Path("create")
-    public void create(@FormParam("firstname") String firstName,
-                       @FormParam("lastname") String lastName,
-                       @FormParam("password") String password,
-                       @FormParam("token") String token)
-    {
-        DUser user = new DUser(lastName, firstName, token, password);
-        userDAO.insert(user);
     }
 
     @POST
