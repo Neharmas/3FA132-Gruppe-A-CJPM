@@ -19,6 +19,7 @@ public class StartServer {
         if (instance == null)
         {
             instance = new StartServer();
+            
         }
         return instance;
     }
