@@ -3,6 +3,7 @@ package dev.bsinfo.ressource;
 import dev.hv.db.dao.UserDAO;
 import dev.hv.db.init.DBConnect;
 
+import dev.hv.db.model.DCustomer;
 import dev.hv.db.model.DUser;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
@@ -35,6 +36,22 @@ public class UserAPI {
         return getClass().getClassLoader().getResourceAsStream("user-form.html");
     }
 
+    @PUT
+    @Path(("edit"))
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes("application/json")
+    public DUser edit(DUser user) {
+        if (userDAO.findById(user.getId()) != null) {
+            userDAO.update(user);
+            System.out.println("Updated customer " + user);
+            return user;
+        } else {
+            //TODO Error message?
+            System.out.println("Couldn't find customer with id: " + user.getId());
+            return null;
+        }
+    }
+
     @GET
     @Path("get/all")
     @Produces(MediaType.APPLICATION_JSON)
@@ -51,16 +68,14 @@ public class UserAPI {
         return userDAO.findById(id);
     }
 
-
     @POST
     @Path("create")
-    public void create(@FormParam("firstname") String firstName,
-                       @FormParam("lastname") String lastName,
-                       @FormParam("password") String password,
-                       @FormParam("token") String token)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes("application/json")
+    public DUser create(DUser user)
     {
-        DUser user = new DUser(lastName, firstName, token, password);
         userDAO.insert(user);
+        return user;
     }
 
     @GET

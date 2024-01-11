@@ -9,8 +9,12 @@ import com.sun.net.httpserver.HttpServer;
 
 public class StartServer {
     private static StartServer instance;
-    final String pack = "dev.bsinfo.ressource";
-    String url = "http://localhost:8080/rest";
+    private String pack = "dev.bsinfo.ressource";
+    private String url = "http://localhost:8080/rest";
+
+    private ResourceConfig rc;
+    private HttpServer server;
+
     private StartServer() {}
 
     public static StartServer getInstance()
@@ -26,8 +30,14 @@ public class StartServer {
     {
         System.out.println("Start server");
         System.out.println(url);
-        final ResourceConfig rc = new ResourceConfig().packages(pack);
-        final HttpServer server = JdkHttpServerFactory.createHttpServer(URI.create(url), rc);
+        rc = new ResourceConfig().packages(pack);
+        server = JdkHttpServerFactory.createHttpServer(URI.create(url), rc);
         System.out.println("Ready for Requests....");
+    }
+
+    public void run(String url, String pack) {
+        this.url = url;
+        this.pack = pack;
+        run();
     }
 }

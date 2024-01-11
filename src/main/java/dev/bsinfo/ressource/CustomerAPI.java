@@ -34,6 +34,27 @@ public class CustomerAPI {
         return getClass().getClassLoader().getResourceAsStream("customer-form.html");
     }
 
+    /**
+     * Updates an user with the given id in the database
+     * @param customer
+     * @return DCustomer or null
+     */
+    @PUT
+    @Path("edit")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes("application/json")
+    public DCustomer edit(DCustomer customer) {
+        if (customerDAO.findById(customer.getId()) == null) {
+            System.out.println("Couldn't find customer with id: " + customer.getId());
+            return null;
+        }
+        else {
+            customerDAO.update(customer);
+            System.out.println("Updated customer " + customer.toString());
+            return customer;
+        }
+    }
+
     @GET
     @Path("get/all")
     @Produces(MediaType.APPLICATION_JSON)
@@ -52,11 +73,12 @@ public class CustomerAPI {
 
     @POST
     @Path("create")
-    public void create(@FormParam("firstname") String firstName,
-                       @FormParam("lastname") String lastName)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes("application/json")
+    public DCustomer create(DCustomer cus)
     {
-        DCustomer customer = new DCustomer(lastName, firstName);
-        customerDAO.insert(customer);
+        customerDAO.insert(cus);
+        return cus;
     }
 
     @GET
