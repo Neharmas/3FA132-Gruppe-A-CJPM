@@ -14,7 +14,7 @@ public class DReading implements IDReading{
 	@ColumnName("customer")
 	@JsonProperty("customer")
 	@Nested
-	private IDCustomer customer;
+	private DCustomer customer;
 
 	@JsonProperty("id")
 	@ColumnName("id")
@@ -40,8 +40,8 @@ public class DReading implements IDReading{
 	@ColumnName("dateofreading")
 	private Long dateofreading;
 	
-	@ConstructorProperties({ "id", "comment", "customer", "kindofmeter", "metercount", "meterid", "substitute", "dateofreading" })
-	public DReading (long id, String comment, IDCustomer customer, String kindofmeter, double metercount, String meterid, boolean substitute, long dateofreading) {
+	//@ConstructorProperties({ "id", "comment", "customer", "kindofmeter", "metercount", "meterid", "substitute", "dateofreading" })
+	public DReading (long id, String comment, DCustomer customer, String kindofmeter, double metercount, String meterid, boolean substitute, long dateofreading) {
 		this.id = id;
 		this.comment = comment;
 		this.customer = customer;
@@ -62,7 +62,7 @@ public class DReading implements IDReading{
 		
 	}
 	@ConstructorProperties({ "comment", "customer", "kindofmeter", "metercount", "meterid", "substitute", "dateofreading" })
-	public DReading(String comment, IDCustomer customer, String kindofmeter, double metercount, String meterid, boolean substitute, long dateofreading) {
+	public DReading(String comment, DCustomer customer, String kindofmeter, double metercount, String meterid, boolean substitute, long dateofreading) {
 		this.comment = comment;
 		this.customer = customer;
 		this.kindofmeter = kindofmeter;
@@ -88,7 +88,7 @@ public class DReading implements IDReading{
 	}
 
 	@Override	
-	public void setCustomer(IDCustomer customer) {
+	public void setCustomer(DCustomer customer) {
 		this.customer = customer;
 	}
 

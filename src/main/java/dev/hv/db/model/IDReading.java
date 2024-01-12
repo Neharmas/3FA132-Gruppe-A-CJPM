@@ -22,7 +22,7 @@ public interface IDReading {
 	
 	void setComment(String comment);
 	
-	void setCustomer(IDCustomer customer);
+	void setCustomer(DCustomer customer);
 	
 	void setDateofreading(Long dateOfReading);
 	

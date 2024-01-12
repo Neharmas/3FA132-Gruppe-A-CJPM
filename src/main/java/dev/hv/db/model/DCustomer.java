@@ -18,7 +18,7 @@ public class DCustomer implements IDCustomer, Comparable<DCustomer>{
 	@ColumnName("lastname")
 	private String lastname;
 
-	@ConstructorProperties({ "id", "lastname", "firstname" })
+	//@ConstructorProperties({ "id", "lastname", "firstname" })
 	public DCustomer(long id, String lastname, String firstName) {
 		this.id = id;
 		this.lastname = lastname;

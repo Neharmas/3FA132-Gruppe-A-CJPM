@@ -58,20 +58,17 @@ public class ReadingAPI {
 
     @POST
     @Path("create")
-    public void create(@FormParam("comment") String comment,
-                       @FormParam("customer") Long customerID,
-                       @FormParam("kindofmeter") String kindofmeter,
-                       @FormParam("metercount") double metercount,
-                       @FormParam("meterid") String meterid,
-                       @FormParam("substitute") String substitute,
-                       @FormParam("dateofreading") Long dateofreading
-                       )
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes("application/json")
+    public DReading create(DReading reading)
     {
-        boolean enableSubstitute = "on".equalsIgnoreCase(substitute);
+        /*boolean enableSubstitute = "true".equalsIgnoreCase(substitute);
 
         DCustomer customer = customerDAO.findById(customerID);
         DReading reading = new DReading(comment, customer, kindofmeter, metercount, meterid, enableSubstitute, dateofreading);
+        */
         readingDAO.insert(reading);
+        return reading;
     }
 
     @GET

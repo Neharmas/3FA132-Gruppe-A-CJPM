@@ -46,7 +46,7 @@ public class DBConnect implements IDbConnect{
 				+ "id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,"
 				+ "comment TEXT NOT NULL,"
 				+ "customer INTEGER NOT NULL,"
-				+ "dateofreading TEXT NOT NULL,"
+				+ "dateofreading INTEGER NOT NULL,"
 				+ "kindofmeter TEXT NOT NULL,"
 				+ "meterid TEXT NOT NULL,"
 				+ "metercount INTEGER NOT NULL,"
