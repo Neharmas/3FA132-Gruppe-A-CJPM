@@ -17,22 +17,15 @@ import java.util.Map;
 
 import org.jdbi.v3.core.Handle;
 import org.jdbi.v3.core.Jdbi;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.RepeatedTest;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
-import org.junit.jupiter.api.TestMethodOrder;
 
 @TestInstance(Lifecycle.PER_CLASS) //otherwise 'static' would be required to update/use same value in multiple tests
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class testUserDAO {
-    UserDAO userDAO;
+    static UserDAO userDAO;
     DUser[] users = {null, null, null};
-    private DBConnect test_instance = null;
+    private static DBConnect test_instance = null;
     @Test
     @Order(1)
     @DisplayName("Setup Connection")
@@ -121,5 +114,20 @@ public class testUserDAO {
 
         // assert
         assertEquals(2, listUsers.size());
+    }
+
+    @AfterAll
+    @DisplayName("Delete All Users")
+    public static void deleteAll()
+    {
+        List<DUser> users = userDAO.getAll();
+        for(DUser user: users)
+        {
+            userDAO.delete(user.getId());
+        }
+        Handle handle = DBConnect.getConnection().getJdbi().open();
+        handle.execute("UPDATE SQLITE_SEQUENCE SET SEQ=0 WHERE NAME='User'");
+        handle.execute("DELETE FROM User");
+        handle.close();
     }
 }

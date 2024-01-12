@@ -41,7 +41,7 @@ public interface ReadingDAO extends IDAO<DReading> {
 	@SqlQuery("SELECT r.id, r.comment, r.kindofmeter, r.metercount, r.meterid, r.substitute, r.dateofreading, " +
 			"c.id as customer, c.lastname, c.firstname " +
 			"FROM reading as r " +
-			"JOIN customer as c ON r.customer = c.id;")
+			"LEFT JOIN customer as c ON r.customer = c.id;")
 	@RegisterRowMapper(ReadingMapper.class)
 	public List<DReading> getAll();
 

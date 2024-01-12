@@ -3,12 +3,11 @@ package server;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import dev.bsinfo.server.StartServer;
 
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class testStartServer {
 	private static StartServer instance;
     final String pack = "dev.bsinfo.ressource";
@@ -18,7 +17,8 @@ class testStartServer {
     @Order(1)
     @DisplayName("Test Singelton")
 	public void testgetInstance() {
-		assertNotNull(instance.getInstance());
+		instance = StartServer.getInstance();
+		assertNotNull(instance);
 	}
 	
 	
@@ -26,7 +26,12 @@ class testStartServer {
     @Order(2)
     @DisplayName("Test Connection")
 	public void testrun() {
-		instance = instance.getInstance();
 		assertTrue(instance.run());
+	}
+	@Test
+	@Order(3)
+	@DisplayName("Stop Server")
+	public static void stopServer() {
+		instance.close();
 	}
 }

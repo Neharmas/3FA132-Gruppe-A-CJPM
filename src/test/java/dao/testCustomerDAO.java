@@ -14,22 +14,15 @@ import java.util.Map;
 
 import org.jdbi.v3.core.Handle;
 import org.jdbi.v3.core.Jdbi;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.RepeatedTest;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
-import org.junit.jupiter.api.TestMethodOrder;
 
 @TestInstance(Lifecycle.PER_CLASS) //otherwise 'static' would be required to update/use same value in multiple tests
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class testCustomerDAO {
     CustomerDAO customerDAO;
     DCustomer[] customers = {null, null, null};
-    private DBConnect test_instance = null;
+    private static DBConnect test_instance = null;
     @Test
     @Order(1)
     @DisplayName("Setup Connection")
@@ -118,5 +111,14 @@ public class testCustomerDAO {
 
         // assert
         assertEquals(2, listCustomer.size());
+    }
+    @AfterAll
+    @DisplayName("Delete all Customers")
+    public static void deleteAll()
+    {
+        Handle handle = test_instance.getJdbi().open();
+        handle.execute("UPDATE SQLITE_SEQUENCE SET SEQ=0 WHERE NAME='Customer'");
+        handle.execute("DELETE FROM Customer");
+        handle.close();
     }
 }

@@ -11,14 +11,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import dev.hv.db.model.DUser;
 import org.jdbi.v3.core.Handle;
 import org.jdbi.v3.core.Jdbi;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.*;
 
 import dev.bsinfo.ressource.CustomerAPI;
 import dev.bsinfo.server.StartServer;
@@ -51,11 +47,9 @@ class testCustomerAPI {
     private String fn2 = "fn2";
     private long id1 = 1L;
     private long id2 = 2L;
-    //private long id2 = 2L;
-    //private long id3 = 3L;
 
   	DCustomer shouldBe = new DCustomer(id1, ln1, fn1);
-    
+	DCustomer shouldBe2 = new DCustomer(id2, ln2, fn2);
 
     @Test
     @Order(1)
@@ -77,7 +71,8 @@ class testCustomerAPI {
     @Order(3)
     @DisplayName("Test 'create' Endpoint")
 	public void testcreate() {
-    	customerApi.create(fn1, ln1);
+    	customerApi.create(shouldBe);
+
     	DCustomer created = customerApi.get(id1);
 		assertTrue(created.isEqualTo(shouldBe));
 	}
@@ -95,10 +90,11 @@ class testCustomerAPI {
     @Order(5)
     @DisplayName("Test 'get/all' Endpoint")
 	public void testgetAll() {
-    	customerApi.create(fn2, ln2);
+    	customerApi.create(shouldBe2);
+
     	List<DCustomer> response = customerApi.getAll();
-    	List<DCustomer> shouldBe = Arrays.asList(new DCustomer(id1, ln1, fn1), new DCustomer(id2, ln2, fn2));
-		assertEquals(response.toString(), shouldBe.toString());
+    	List<DCustomer> listShouldBe = Arrays.asList(shouldBe, shouldBe2);
+		assertEquals(response.toString(), listShouldBe.toString());
 	}
 
     @Test
@@ -108,6 +104,5 @@ class testCustomerAPI {
     	customerApi.delete(id2);
 		assertNull(customerApi.get(id2));
 	}
-
 
 }

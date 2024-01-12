@@ -14,26 +14,20 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.List;
 import java.util.Map;
 
+import dev.hv.db.model.DUser;
 import dev.hv.db.model.IDCustomer;
 import org.jdbi.v3.core.Handle;
 import org.jdbi.v3.core.Jdbi;
 import org.jdbi.v3.sqlobject.SqlObjectPlugin;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.RepeatedTest;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
-import org.junit.jupiter.api.TestMethodOrder;
 
 @TestInstance(Lifecycle.PER_CLASS) //otherwise 'static' would be required to update/use same value in multiple tests
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class testReadingDAO {
     ReadingDAO readingDAO;
     DReading[] readings = {null, null, null};
-    private DBConnect test_instance = null;
+    private static DBConnect test_instance = null;
     @Test
     @Order(1)
     @DisplayName("Setup Connection")
@@ -60,7 +54,7 @@ public class testReadingDAO {
 
         // act
         for(int i = 0; i< readings.length; i++) {
-            DCustomer customer = new DCustomer(i + 1, "Ajomale", "Christopher");
+            DCustomer customer = new DCustomer(i+1,"Ajomale", "Christopher");
             readings[i] = new DReading( "comment", customer, "kindofmeter", 2, "meterid", false, 19122023L);
             readingDAO.insert(readings[i]);
         }
@@ -107,7 +101,7 @@ public class testReadingDAO {
         // act
         readingDAO.delete(1L);
         boolean exists = readingDAO.findById(1L) != null;
-
+        List<DReading> test = readingDAO.getAll();
         // assert
         assertFalse(exists);
 
@@ -120,13 +114,10 @@ public class testReadingDAO {
     public void testGetAll()
     {
         // act
-        List<DReading> listReading = readingDAO.getAll();
-
-        boolean moreThanOne = listReading.size() > 1;
+        List<DReading> listReadings = readingDAO.getAll();
 
         // assert
-        assertEquals(2, listReading.size());
-        assertTrue(moreThanOne);
+        assertEquals(2, listReadings.size());
     }
 }
 

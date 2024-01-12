@@ -2,6 +2,7 @@ package ressource;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import dev.bsinfo.ressource.UserAPI;
 import dev.bsinfo.server.StartServer;
 import dev.hv.db.init.DBConnect;
@@ -42,20 +43,6 @@ public class testUserAPI {
     @Order(1)
     @DisplayName("Test Create User")
     public void testCreate() throws IOException, InterruptedException {
-        String formData = "firstname=testFirstName&lastname=testLastName&password=testPassWord&token=testToken";
-
-        HttpClient client = HttpClient.newHttpClient();
-
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(url + "/user/create"))
-                .header("Content-Type", "application/x-www-form-urlencoded")
-                .POST(HttpRequest.BodyPublishers.ofString(formData))
-                .build();
-
-        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-
-        int statusCode = response.statusCode();
-        assertEquals(204, statusCode);
 
         DUser user = new DUser(
                 1L,
@@ -65,7 +52,26 @@ public class testUserAPI {
                 "testPassWord"
         );
 
-        assertTrue(user.equals(api.get(1L)));
+        ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
+        String json = ow.writeValueAsString(user);
+
+        // TODO: turn DUser into JSON string or something
+        HttpClient client = HttpClient.newHttpClient();
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(url + "/user/create"))
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(json))
+                .build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        int statusCode = response.statusCode();
+        assertEquals(200, statusCode);
+
+        DUser otherUser = api.get(1L);
+
+        assertTrue(user.equals(otherUser));
     }
 
     @Test

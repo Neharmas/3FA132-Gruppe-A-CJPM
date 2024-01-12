@@ -43,6 +43,11 @@ public class StartServer {
         }
         return false;
     }
+    public boolean close() {
+        server.stop(0);
+
+        return true;
+    }
 
     public void run(String url, String pack) {
         this.url = url;
