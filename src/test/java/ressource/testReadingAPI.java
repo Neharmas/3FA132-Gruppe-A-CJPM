@@ -8,16 +8,14 @@ import dev.hv.db.model.DCustomer;
 import dev.hv.db.model.DReading;
 import org.jdbi.v3.core.Handle;
 import org.jdbi.v3.core.Jdbi;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class testReadingAPI {
     // Server
     final String pack = "dev.bsinfo.ressource";
