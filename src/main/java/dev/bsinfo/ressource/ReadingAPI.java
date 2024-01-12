@@ -39,6 +39,31 @@ public class ReadingAPI {
         return getClass().getClassLoader().getResourceAsStream("reading-form.html");
     }
 
+    @PUT
+    @Path("edit")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes("application/json")
+    public DReading edit(DReading reading) {
+        if (readingDAO.findById(reading.getId()) == null) {
+            System.out.println("Couldn't find reading with id: " + reading.getId());
+            return null;
+        }
+        DCustomer customer = reading.getCustomer();
+        //check if customer exits/get customer by id
+        customer = customerDAO.findById(customer.getId());
+        if (customer == null) {
+            System.out.println("Couldn't find customer (id-check): "
+                    + reading.getCustomer().getId() +" will not be changed.");
+        } else {
+            //reset the customer to the one saved in the db (the data sent could contain a dummy-customer)
+            reading.setCustomer(customer);
+        }
+
+
+        readingDAO.update(reading);
+        return reading;
+    }
+
     @GET
     @Path("get/all")
     @Produces(MediaType.APPLICATION_JSON)

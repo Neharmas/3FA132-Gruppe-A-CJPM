@@ -29,19 +29,17 @@ public interface ReadingDAO extends IDAO<DReading> {
 	public void delete(@BindBean("o") DReading o);
 
 	@Override
-	@SqlQuery("SELECT r.id, r.comment, r.kindofmeter, r.metercount, r.meterid, r.substitute, r.dateofreading, " +
-			"c.id as customer, c.lastname, c.firstname " +
-			"FROM reading as r " +
-			"JOIN customer as c ON r.customer = c.id " +
+	@SqlQuery("SELECT r.*, c.lastname as c_lastname, c.firstname as c_firstname " +
+			"FROM reading r JOIN customer c ON r.customer = c.id " +
 			"WHERE r.id = :id;")
 	@RegisterRowMapper(ReadingMapper.class)
 	public DReading findById(@Bind("id") Long id);
 
 
-	@SqlQuery("SELECT r.id, r.comment, r.kindofmeter, r.metercount, r.meterid, r.substitute, r.dateofreading, " +
-			"c.id as customer, c.lastname, c.firstname " +
-			"FROM reading as r " +
-			"LEFT JOIN customer as c ON r.customer = c.id;")
+	@SqlQuery("SELECT r.*, " +
+			"c.lastname as c_lastname, c.firstname as c_firstname " +
+			"FROM reading r " +
+			"JOIN customer c ON r.customer = c.id;")
 	@RegisterRowMapper(ReadingMapper.class)
 	public List<DReading> getAll();
 

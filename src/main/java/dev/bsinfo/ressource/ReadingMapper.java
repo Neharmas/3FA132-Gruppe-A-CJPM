@@ -22,6 +22,7 @@ public class ReadingMapper implements RowMapper<DReading> {
 
         DCustomer customer = mapIDCustomer(rs);
         dReading.setCustomer(customer);
+        System.out.println(customer);
 
         dReading.setKindofmeter(rs.getString("kindofmeter"));
         dReading.setMetercount(rs.getDouble("metercount"));
@@ -33,8 +34,8 @@ public class ReadingMapper implements RowMapper<DReading> {
 
     private DCustomer mapIDCustomer(ResultSet rs) throws SQLException {
         long customerId = rs.getLong("customer");
-        String lastname = rs.getString("lastname");
-        String firstname = rs.getString("firstname");
+        String lastname = rs.getString("c_lastname");
+        String firstname = rs.getString("c_firstname");
         return new DCustomer(customerId, lastname, firstname);
     }
 
