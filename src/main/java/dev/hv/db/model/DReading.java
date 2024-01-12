@@ -51,6 +51,12 @@ public class DReading implements IDReading{
 		this.substitute = substitute;
 		this.dateofreading = dateofreading;
 	}
+
+	@Override
+	public String toString() {
+		return "DCustomer [id=" + id + ", comment=" + comment + ", customer=" + customer + ", kindofmeter=" + metercount +
+				", meterid=" + meterid + ", substitute=" + substitute + ", dateodreading=" + dateofreading +"]";
+	}
 	
 	public DReading () {
 		
@@ -150,6 +156,10 @@ public class DReading implements IDReading{
 	public String printDateofreading() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	public boolean isEqualTo(DReading o) {
+		return this.toString().equals(o.toString());
 	}
 
 }
