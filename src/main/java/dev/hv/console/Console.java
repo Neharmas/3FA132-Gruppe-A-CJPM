@@ -11,11 +11,25 @@ import dev.hv.db.init.DBConnect;
 public class Console implements IConsole {
 	private DBConnect db = DBConnect.getConnection();
 
-	private void setCliArgs(String[] args) {}
+	private void validateNumberOfArgs(String[] args) {
+		int empty = 0;
+		int toMany = 5;
+		if (!(args.length == empty || args.length >= toMany)) {
+			help();
+		}
+	}
+
+	private void readArgs(String[] args) {
+		validateNumberOfArgs(args);
+		for(int i = 0; i < args.length; i++) {
+			
+		}
+	}
+	private void validateArgs(String[] args) {}
+	private void executeArgs(String[] args) {}
 
 	public static void main(String[] args) {
 		Console c = new Console();
-		c.help();
 	}
 
 	@Override
