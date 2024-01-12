@@ -86,7 +86,7 @@ public class testReadingAPI {
     @Test
     @Order(5)
     @DisplayName("Test 'get/all' Endpoint")
-    public void testgetById() {
+    public void testgetAll() {
         new CustomerAPI().create(new DCustomer("lastname", "firstname"));
         readingAPI.create(comment,dCustomerID,kindofmeter,metercount,meterid,sub,dateofreading);
 
