@@ -22,7 +22,7 @@ import org.junit.jupiter.api.TestInstance.Lifecycle;
 public class testCustomerDAO {
     CustomerDAO customerDAO;
     DCustomer[] customers = {null, null, null};
-    private static DBConnect test_instance = null;
+    private DBConnect test_instance = null;
     @Test
     @Order(1)
     @DisplayName("Setup Connection")
@@ -114,7 +114,7 @@ public class testCustomerDAO {
     }
     @AfterAll
     @DisplayName("Delete all Customers")
-    public static void deleteAll()
+    public void deleteAll()
     {
         Handle handle = test_instance.getJdbi().open();
         handle.execute("UPDATE SQLITE_SEQUENCE SET SEQ=0 WHERE NAME='Customer'");
