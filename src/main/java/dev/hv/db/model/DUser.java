@@ -98,11 +98,6 @@ public class DUser implements IDUser{
 
 	public boolean equals(DUser other)
 	{
-		boolean equalID = this.id.equals(other.id);
-		boolean equalFirstName = this.firstname.equals(other.firstname);
-		boolean equalLastName = this.lastname.equals(other.lastname);
-		boolean equalToken = this.token.equals(other.token);
-
-		return equalID && equalFirstName && equalLastName && equalToken;
+		return this.toString().equals(other.toString());
 	}
 }

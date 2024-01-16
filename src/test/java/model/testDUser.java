@@ -95,5 +95,15 @@ class testDUser {
         assertEquals(equals, secondUser);
         assertEquals(equals, thirdUser);
     }
+
+    @Test
+    @Order(4)
+    @DisplayName("Test equals To another User")
+    public void test_equals()
+    {
+        DUser user = new DUser(1L, "ln", "fn", "tk", "pw");
+        DUser user2 = new DUser(1L, "ln", "fn", "tk", "pw");
+        assertTrue(user.equals(user2));
+    }
 	
 }
