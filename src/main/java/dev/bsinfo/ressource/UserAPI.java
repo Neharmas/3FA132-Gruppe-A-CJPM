@@ -84,7 +84,11 @@ public class UserAPI {
     @Consumes("application/json")
     public DUser create(DUser user)
     {
-        userDAO.insert(user);
+        Long lastID = userDAO.insert(user).longValue();
+        
+        user.setId(lastID);
+        if(!user.equals(get(lastID)))
+            return null;
         return user;
     }
 

@@ -1,16 +1,11 @@
 package dev.hv.db.dao;
 
-import java.beans.ConstructorProperties;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
-import org.jdbi.v3.sqlobject.config.RegisterBeanMapper;
+import org.jdbi.v3.sqlobject.config.*;
 import org.jdbi.v3.sqlobject.customizer.Bind;
 import org.jdbi.v3.sqlobject.customizer.BindBean;
-import org.jdbi.v3.sqlobject.statement.GetGeneratedKeys;
-import org.jdbi.v3.sqlobject.statement.SqlQuery;
-import org.jdbi.v3.sqlobject.statement.SqlUpdate;
+import org.jdbi.v3.sqlobject.statement.*;
 
 import dev.hv.db.model.DCustomer;
 
@@ -38,9 +33,9 @@ public interface CustomerDAO extends IDAO<DCustomer> {
 	//SQLUPDAte liefert die reihennummer zurück (oder nichts). Deshalb kann man hier nicht long als return-type verwenden
 	@SqlUpdate("""
 			INSERT INTO customer (lastname, firstname)
-			VALUES (:o.lastname, :o.firstname);
+			VALUES (:o.lastname, :o.firstname); SELECT last_insert_rowid();
 			""")
-	public void insert(@BindBean("o") DCustomer o);
+	public Integer insert(@BindBean("o") DCustomer o);
 
 	@Override
 	@SqlUpdate("""

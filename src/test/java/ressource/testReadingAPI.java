@@ -27,13 +27,15 @@ public class testReadingAPI {
         StartServer instance = StartServer.getInstance();
         instance.run();
         readingAPI = new ReadingAPI();
+        customerAPI = new CustomerAPI();
         DBConnect db = DBConnect.getConnection();
         db.removeAllTables();
         db.createAllTables();
     }
 
     // Api
-    private static ReadingAPI readingAPI ;
+    private static ReadingAPI readingAPI;
+    private static CustomerAPI customerAPI;
 
     Long id = 1L;
     Long id1 = 2L;
@@ -43,10 +45,10 @@ public class testReadingAPI {
     String kindofmeter = "ab";
     double metercount = 1.0;
     String meterid = "abc";
-    String sub = "true";
+    boolean sub = true;
     Long dateofreading = 1L;
 
-    DReading shouldBe = new DReading(id,comment,dCustomer,kindofmeter,metercount,meterid, false,dateofreading);
+    DReading shouldBe = new DReading(id,comment,dCustomer,kindofmeter,metercount,meterid, true,dateofreading);
 
     @Test
     @Order(1)
@@ -67,10 +69,9 @@ public class testReadingAPI {
     @Order(3)
     @DisplayName("Test 'create' Endpoint")
     public void testcreate() {
-        new CustomerAPI().create(new DCustomer("lastname", "firstname"));
-        readingAPI.create(comment,dCustomerID,kindofmeter,metercount,meterid,sub,dateofreading);
-        DReading created = readingAPI.get(id);
-        assertTrue(created.isEqualTo(shouldBe));
+        DCustomer customerID = customerAPI.create(new DCustomer("lastname", "firstname"));
+        DReading reading = readingAPI.create(new DReading(id, comment, customerID, kindofmeter, metercount, meterid, sub, dateofreading));
+        assertTrue(reading.isEqualTo(shouldBe));
     }
 
     @Test
@@ -87,12 +88,13 @@ public class testReadingAPI {
     @Order(5)
     @DisplayName("Test 'get/all' Endpoint")
     public void testgetAll() {
-        new CustomerAPI().create(new DCustomer("lastname", "firstname"));
-        readingAPI.create(comment,dCustomerID,kindofmeter,metercount,meterid,sub,dateofreading);
+        Long customerId = new CustomerAPI().create(new DCustomer("lastname", "firstname")).getId();
+        DReading reading = new DReading(comment, new CustomerAPI().get(customerId), kindofmeter, metercount, meterid, sub, dateofreading);
+        readingAPI.create(reading);
 
         List<DReading> response = readingAPI.getAll();
-        List<DReading> shouldBe = Arrays.asList(new DReading(id,comment,dCustomer,kindofmeter,metercount,meterid,false,dateofreading),
-                                                    new DReading(id1,comment,dCustomer,kindofmeter,metercount,meterid,false,dateofreading));
+        List<DReading> shouldBe = Arrays.asList(new DReading(id,comment,dCustomer,kindofmeter,metercount,meterid,sub,dateofreading),
+                                                    new DReading(id1,comment,dCustomer,kindofmeter,metercount,meterid,sub,dateofreading));
 
         assertEquals(response.toString(), shouldBe.toString());
     }
@@ -104,5 +106,17 @@ public class testReadingAPI {
     public void testdelete() {
         readingAPI.delete(id1);
         assertNull(readingAPI.get(id1));
+    }
+    
+    @AfterAll
+    @DisplayName("Delete All Readings")
+    public static void deleteAll()
+    {
+        Handle handle = DBConnect.getConnection().getJdbi().open();
+        handle.execute("DELETE FROM Reading");
+        handle.execute("UPDATE SQLITE_SEQUENCE SET SEQ=0 WHERE NAME='Reading'");
+        handle.execute("DELETE FROM Customer");
+        handle.execute("UPDATE SQLITE_SEQUENCE SET SEQ=0 WHERE NAME='Customer'");
+        handle.close();
     }
 }
