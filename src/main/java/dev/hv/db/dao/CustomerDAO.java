@@ -33,9 +33,12 @@ public interface CustomerDAO extends IDAO<DCustomer> {
 	//SQLUPDAte liefert die reihennummer zurück (oder nichts). Deshalb kann man hier nicht long als return-type verwenden
 	@SqlUpdate("""
 			INSERT INTO customer (lastname, firstname)
-			VALUES (:o.lastname, :o.firstname); SELECT last_insert_rowid();
+			VALUES (:o.lastname, :o.firstname); SELECT MAX(id) AS id FROM Customer;
 			""")
-	public Integer insert(@BindBean("o") DCustomer o);
+	public void insert(@BindBean("o") DCustomer o);
+
+	@SqlQuery("SELECT MAX(id) AS id FROM customer")
+	public Integer getLastInsertedId();
 
 	@Override
 	@SqlUpdate("""

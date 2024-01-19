@@ -3,14 +3,17 @@ package dev.hv.db.model;
 import java.beans.ConstructorProperties;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Data;
 import org.jdbi.v3.core.mapper.Nested;
 import org.jdbi.v3.core.mapper.reflect.ColumnName;
 
+@Data
 public class DReading implements IDReading{
+
 	@JsonProperty("comment")
 	@ColumnName("comment")
 	private String comment;
-	
+
 	@ColumnName("customer")
 	@JsonProperty("customer")
 	@Nested
@@ -27,7 +30,7 @@ public class DReading implements IDReading{
 	@JsonProperty("metercount")
 	@ColumnName("metercount")
 	private double metercount;
-
+	
 	@JsonProperty("meterid")
 	@ColumnName("meterid")
 	private String meterid;
@@ -35,7 +38,7 @@ public class DReading implements IDReading{
 	@JsonProperty("substitute")
 	@ColumnName("substitute")
 	private Boolean substitute;
-
+	
 	@JsonProperty("dateofreading")
 	@ColumnName("dateofreading")
 	private Long dateofreading;
@@ -73,91 +76,21 @@ public class DReading implements IDReading{
 	}
 	
 	@Override
-	public String getComment() {
-		return comment;
-	}
-
-	@Override
-	public void setComment(String comment) {
-		this.comment = comment;
-	}
-	
-	@Override
-	public DCustomer getCustomer() {
-		return customer;
-	}
-
-	@Override	
-	public void setCustomer(DCustomer customer) {
-		this.customer = customer;
-	}
-
-	@Override
-	public Long getId() {
-		return id;
-	}
-
-	@Override
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	@Override
-	public String getKindofmeter() {
-		return kindofmeter;
-	}
-
-	@Override
-	public void setKindofmeter(String kindofmeter) {
-		this.kindofmeter = kindofmeter;
-	}
-
-	@Override
-	public Double getMetercount() {
-		return metercount;
-	}
-
-	@Override
-	public void setMetercount(Double metercount) {
-		this.metercount = metercount;
-	}
-
-	@Override
-	public String getMeterid() {
-		return meterid;
-	}
-
-	@Override
-	public void setMeterid(String meterid) {
-		this.meterid = meterid;
-	}
-
-	@Override
-	public Boolean getSubstitute() {
-		return substitute;
-	}
-
-	@Override
-	public void setSubstitute(Boolean substitute) {
-		this.substitute = substitute;
-	}
-
-	@Override
-	public Long getDateofreading() {
-		return dateofreading;
-	}
-	
-	@Override
-	public void setDateofreading(Long dateofreading) {
-		this.dateofreading = dateofreading;
-	}
-
-	@Override
 	public String printDateofreading() {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
+	
+	// IDK why these don't generate the set/get method
+	@Override
+	public void setMetercount(Double meterCount) {
+		this.metercount = meterCount;
+	}
+	@Override
+	public Double getMetercount() {
+		return this.metercount;
+	}
+	
 	public boolean isEqualTo(DReading o) {
 		return this.toString().equals(o.toString());
 	}

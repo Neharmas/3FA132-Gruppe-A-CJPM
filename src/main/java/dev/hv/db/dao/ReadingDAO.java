@@ -39,8 +39,11 @@ public interface ReadingDAO extends IDAO<DReading> {
 
 	@Override
 	@SqlUpdate("INSERT INTO reading (comment, customer, kindofmeter, metercount, meterid, substitute, dateofreading) " +
-			"VALUES (:comment, :customer.id, :kindofmeter, :metercount, :meterid, :substitute, :dateofreading); SELECT last_insert_rowid();")
-	public Integer insert(@BindBean DReading reading);
+			"VALUES (:comment, :customer.id, :kindofmeter, :metercount, :meterid, :substitute, :dateofreading);")
+	public void insert(@BindBean DReading reading);
+
+	@SqlQuery("SELECT MAX(id) AS id FROM Reading")
+	public Integer getLastInsertedId();
 
 	@Override
 	@SqlUpdate("UPDATE reading SET comment = :comment, customer = :customer.id, dateofreading = :dateofreading, " +

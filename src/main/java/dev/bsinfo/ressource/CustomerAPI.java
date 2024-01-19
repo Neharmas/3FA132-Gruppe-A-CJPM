@@ -78,8 +78,8 @@ public class CustomerAPI {
     @Consumes("application/json")
     public DCustomer create(DCustomer cus)
     {
-        Long lastID = customerDAO.insert(cus).longValue();
-        
+        customerDAO.insert(cus);
+        Long lastID = customerDAO.getLastInsertedId().longValue();
         cus.setId(lastID);
         if(!cus.isEqualTo(get(lastID)))
             return null;

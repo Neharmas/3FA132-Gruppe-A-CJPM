@@ -2,7 +2,6 @@ package dev.bsinfo.ressource;
 
 import dev.hv.db.model.DCustomer;
 import dev.hv.db.model.DReading;
-import dev.hv.db.model.IDCustomer;
 import org.jdbi.v3.core.mapper.RowMapper;
 import org.jdbi.v3.core.statement.StatementContext;
 

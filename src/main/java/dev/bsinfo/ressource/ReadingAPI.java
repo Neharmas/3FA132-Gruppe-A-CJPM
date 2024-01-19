@@ -92,9 +92,9 @@ public class ReadingAPI {
         DCustomer customer = customerDAO.findById(customerID);
         DReading reading = new DReading(comment, customer, kindofmeter, metercount, meterid, enableSubstitute, dateofreading);
         */
-        Long lastID = readingDAO.insert(reading).longValue();
-        
-        reading.setId(lastID);
+        readingDAO.insert(reading);
+        Long lastID = readingDAO.getLastInsertedId().longValue();
+                reading.setId(lastID);
         if(!reading.isEqualTo(get(lastID)))
             return null;
         

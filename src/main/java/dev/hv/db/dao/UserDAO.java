@@ -32,9 +32,12 @@ public interface UserDAO extends IDAO<DUser> {
 	@Override
 	@SqlUpdate("""
 			INSERT INTO user (lastname, firstname, token, password)
-			VALUES (:o.lastname, :o.firstname, :o.token, :o.password); SELECT last_insert_rowid();
+			VALUES (:o.lastname, :o.firstname, :o.token, :o.password);
 			""")
-	public Integer insert(@BindBean("o") DUser o);
+	public void insert(@BindBean("o") DUser o);
+
+	@SqlQuery("SELECT MAX(id) AS id FROM User")
+	public Integer getLastInsertedId();
 
 	@Override
 	@SqlUpdate("""

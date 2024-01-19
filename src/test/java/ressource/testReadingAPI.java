@@ -41,6 +41,7 @@ public class testReadingAPI {
     Long id1 = 2L;
     String comment = "a";
     DCustomer dCustomer = new DCustomer(1L,"lastname", "firstname");
+    DCustomer dCustomer2 = new DCustomer(2L,"lastname", "firstname");
     Long dCustomerID = 1L;
     String kindofmeter = "ab";
     double metercount = 1.0;
@@ -94,7 +95,7 @@ public class testReadingAPI {
 
         List<DReading> response = readingAPI.getAll();
         List<DReading> shouldBe = Arrays.asList(new DReading(id,comment,dCustomer,kindofmeter,metercount,meterid,sub,dateofreading),
-                                                    new DReading(id1,comment,dCustomer,kindofmeter,metercount,meterid,sub,dateofreading));
+                                                    new DReading(id1,comment,dCustomer2,kindofmeter,metercount,meterid,sub,dateofreading));
 
         assertEquals(response.toString(), shouldBe.toString());
     }
