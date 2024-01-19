@@ -13,7 +13,7 @@
 		<java.version>21</java.version>
 
 		<jdbi.version>3.36.0</jdbi.version>
-		<lombok.version>1.18.24</lombok.version>
+		<lombok.version>1.18.30</lombok.version>
 		<mariadb.version>3.1.1</mariadb.version>
 		<slf4j.version>1.7.36</slf4j.version>
 		<jersey.version>3.1.5</jersey.version>
@@ -32,7 +32,7 @@
 		<dependency>
 			<groupId>org.xerial</groupId>
 			<artifactId>sqlite-jdbc</artifactId>
-			<version>3.43.0.0</version>
+			<version>3.44.1.0</version>
 		</dependency>
 
 		<dependency>

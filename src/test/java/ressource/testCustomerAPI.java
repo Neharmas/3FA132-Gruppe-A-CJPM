@@ -101,7 +101,10 @@ class testCustomerAPI {
     @Order(6)
     @DisplayName("Test 'delete/{id}' Endpoint")
 	public void testdelete() {
-    	customerApi.delete(id2);
+		customerApi.delete(id1);
+		assertNull(customerApi.get(id1));
+
+		customerApi.delete(id2);
 		assertNull(customerApi.get(id2));
 	}
 

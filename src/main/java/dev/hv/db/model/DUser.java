@@ -3,8 +3,10 @@ package dev.hv.db.model;
 import java.beans.ConstructorProperties;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Data;
 import org.jdbi.v3.core.mapper.reflect.ColumnName;
 
+@Data
 public class DUser implements IDUser{
 
 	@JsonProperty("id")
@@ -52,57 +54,9 @@ public class DUser implements IDUser{
 		return "DUser [id=" + id + ", firstname=" + firstname + ", lastname=" + lastname + ", token=" + token
 				+ ", password=" + password + "]";
 	}
-	
-	@Override
-	public Long getId() {
-		return id;
-	}
-	@Override
-	public void setId(Long id) {
-		this.id = id;
-	}
-	@Override
-	public String getFirstname() {
-		return firstname;
-	}
-	@Override
-	public void setFirstname(String firstname) {
-		this.firstname = firstname;
-	}
-	@Override
-	public String getLastname() {
-		return lastname;
-	}
-	@Override
-	public void setLastname(String lastname) {
-		this.lastname = lastname;
-	}
-	@Override
-	public String getToken() {
-		return token;
-	}
-	@Override
-	public void setToken(String token) {
-		this.token = token;
-	}
-	@Override
-	public String getPassword() {
-		return password;
-	}
-
-	@Override
-	public void setPassword(String password) {
-		this.password = password;
-	}
-
 
 	public boolean equals(DUser other)
 	{
-		boolean equalID = this.id.equals(other.id);
-		boolean equalFirstName = this.firstname.equals(other.firstname);
-		boolean equalLastName = this.lastname.equals(other.lastname);
-		boolean equalToken = this.token.equals(other.token);
-
-		return equalID && equalFirstName && equalLastName && equalToken;
+		return this.toString().equals(other.toString());
 	}
 }

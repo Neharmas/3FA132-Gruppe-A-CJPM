@@ -25,7 +25,7 @@ import org.junit.jupiter.api.TestInstance.Lifecycle;
 public class testUserDAO {
     static UserDAO userDAO;
     DUser[] users = {null, null, null};
-    private static DBConnect test_instance = null;
+    private DBConnect test_instance = null;
     @Test
     @Order(1)
     @DisplayName("Setup Connection")
@@ -118,13 +118,8 @@ public class testUserDAO {
 
     @AfterAll
     @DisplayName("Delete All Users")
-    public static void deleteAll()
+    public void deleteAll()
     {
-        List<DUser> users = userDAO.getAll();
-        for(DUser user: users)
-        {
-            userDAO.delete(user.getId());
-        }
         Handle handle = DBConnect.getConnection().getJdbi().open();
         handle.execute("UPDATE SQLITE_SEQUENCE SET SEQ=0 WHERE NAME='User'");
         handle.execute("DELETE FROM User");

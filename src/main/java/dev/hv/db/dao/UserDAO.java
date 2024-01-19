@@ -36,6 +36,9 @@ public interface UserDAO extends IDAO<DUser> {
 			""")
 	public void insert(@BindBean("o") DUser o);
 
+	@SqlQuery("SELECT MAX(id) AS id FROM User")
+	public Integer getLastInsertedId();
+
 	@Override
 	@SqlUpdate("""
 			update user set lastname = :o.firstname, firstname = :o.firstname, token = :o.token, password = :o.password where id = :id;

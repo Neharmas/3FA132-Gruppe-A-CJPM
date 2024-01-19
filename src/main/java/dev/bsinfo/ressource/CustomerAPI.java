@@ -79,6 +79,11 @@ public class CustomerAPI {
     public DCustomer create(DCustomer cus)
     {
         customerDAO.insert(cus);
+        Long lastID = customerDAO.getLastInsertedId().longValue();
+        cus.setId(lastID);
+        if(!cus.isEqualTo(get(lastID)))
+            return null;
+        
         return cus;
     }
 

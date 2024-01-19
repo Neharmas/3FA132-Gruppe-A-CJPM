@@ -8,6 +8,7 @@ import dev.bsinfo.server.StartServer;
 import dev.hv.db.init.DBConnect;
 import dev.hv.db.model.DUser;
 import org.jdbi.v3.core.Handle;
+import org.jdbi.v3.core.Jdbi;
 import org.junit.jupiter.api.*;
 
 import java.io.IOException;
@@ -24,12 +25,7 @@ public class testUserAPI {
     String url = "http://localhost:8080/rest";
     private static StartServer instance;
     private static UserAPI api;
-    private static Handle handle = null;
 
-    private testUserAPI()
-    {
-        handle = DBConnect.getConnection().getJdbi().open();
-    }
     @BeforeAll
     @DisplayName("Start Api Server")
     static public void run() {
@@ -55,7 +51,6 @@ public class testUserAPI {
         ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
         String json = ow.writeValueAsString(user);
 
-        // TODO: turn DUser into JSON string or something
         HttpClient client = HttpClient.newHttpClient();
 
         HttpRequest request = HttpRequest.newBuilder()
@@ -139,12 +134,9 @@ public class testUserAPI {
     @DisplayName("Delete all Users")
     public static void deleteAll()
     {
-        List<DUser> users = api.getAll();
-        for(DUser user: users)
-        {
-            api.delete(user.getId());
-        }
+        Handle handle = DBConnect.getConnection().getJdbi().open();
         handle.execute("UPDATE SQLITE_SEQUENCE SET SEQ=0 WHERE NAME='User'");
+        handle.execute("DELETE FROM User");
         handle.close();
     }
 }

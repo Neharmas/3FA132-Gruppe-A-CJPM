@@ -27,7 +27,7 @@ import org.junit.jupiter.api.TestInstance.Lifecycle;
 public class testReadingDAO {
     ReadingDAO readingDAO;
     DReading[] readings = {null, null, null};
-    private static DBConnect test_instance = null;
+    private DBConnect test_instance = null;
     @Test
     @Order(1)
     @DisplayName("Setup Connection")
@@ -67,6 +67,7 @@ public class testReadingDAO {
                 .list();
 
         assertEquals("meterid", results.getFirst().get("meterid"));
+
     }
 
     @Test
@@ -115,7 +116,6 @@ public class testReadingDAO {
     {
         // act
         List<DReading> listReadings = readingDAO.getAll();
-
         // assert
         assertEquals(2, listReadings.size());
     }

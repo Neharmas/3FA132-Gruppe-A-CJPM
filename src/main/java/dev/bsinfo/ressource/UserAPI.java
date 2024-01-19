@@ -85,6 +85,10 @@ public class UserAPI {
     public DUser create(DUser user)
     {
         userDAO.insert(user);
+        Long lastID = userDAO.getLastInsertedId().longValue();
+        user.setId(lastID);
+        if(!user.equals(get(lastID)))
+            return null;
         return user;
     }
 

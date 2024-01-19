@@ -3,8 +3,10 @@ package dev.hv.db.model;
 import java.beans.ConstructorProperties;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Data;
 import org.jdbi.v3.core.mapper.reflect.ColumnName;
 
+@Data
 public class DCustomer implements IDCustomer, Comparable<DCustomer>{
 
 	@JsonProperty("id")
@@ -14,6 +16,7 @@ public class DCustomer implements IDCustomer, Comparable<DCustomer>{
 	@JsonProperty("firstname")
 	@ColumnName("firstname")
 	private String firstname;
+	
 	@JsonProperty("lastname")
 	@ColumnName("lastname")
 	private String lastname;
@@ -38,37 +41,6 @@ public class DCustomer implements IDCustomer, Comparable<DCustomer>{
 	public String toString() {
 		return "DCustomer [id=" + id + ", firstname=" + firstname + ", lastname=" + lastname + "]";
 	}
-
-	@Override
-	public Long getId() {
-		return id;
-	}
-
-	@Override
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	@Override
-	public String getFirstname() {
-		return firstname;
-	}
-
-	@Override
-	public void setFirstname(String firstname) {
-		this.firstname = firstname;
-	}
-
-	@Override
-	public String getLastname() {
-		return lastname;
-	}
-
-	@Override
-	public void setLastname(String lastname) {
-		this.lastname = lastname;
-	}
-
 	@Override
 	public int compareTo(DCustomer o) {
 		return o.id.compareTo(this.id);
