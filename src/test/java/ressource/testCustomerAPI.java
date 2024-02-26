@@ -91,7 +91,7 @@ class testCustomerAPI {
     @DisplayName("Test 'get/all' Endpoint")
 	public void testgetAll() {
     	customerApi.create(shouldBe2);
-
+			shouldBe2.setId(2L);
     	List<DCustomer> response = customerApi.getAll();
     	List<DCustomer> listShouldBe = Arrays.asList(shouldBe, shouldBe2);
 		assertEquals(response.toString(), listShouldBe.toString());
