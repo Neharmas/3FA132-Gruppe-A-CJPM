@@ -92,15 +92,21 @@ public class ReadingAPI {
         DCustomer customer = customerDAO.findById(customerID);
         DReading reading = new DReading(comment, customer, kindofmeter, metercount, meterid, enableSubstitute, dateofreading);
         */
+        
+        DCustomer customer = customerDAO.findById(reading.getCustomer().getId());
+        if (customer == null) {
+            System.out.println("Es konnte kein Reading kreaiert werden, weil der Customer nicht existiert");
+            return null;
+        }
         readingDAO.insert(reading);
         Long lastID = readingDAO.getLastInsertedId().longValue();
-                reading.setId(lastID);
+        reading.setId(lastID);
         
         
         return reading;
     }
 
-    @GET
+    @DELETE
     @Path("delete/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public void delete(@PathParam("id") Long id)

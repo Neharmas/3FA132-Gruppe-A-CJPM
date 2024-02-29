@@ -51,7 +51,7 @@ public class DBConnect implements IDbConnect{
 				+ "meterid TEXT NOT NULL,"
 				+ "metercount INTEGER NOT NULL,"
 				+ "substitute BOOLEAN NOT NULL,"
-				+ "FOREIGN KEY (customer) REFERENCES Customer (id)"
+				+ "FOREIGN KEY (customer) REFERENCES Customer (id) ON DELETE SET NULL"
 				+ ");");
 		
 		handle.close();
