@@ -24,7 +24,7 @@ public interface ReadingDAO extends IDAO<DReading> {
 
 	@Override
 	@SqlQuery("SELECT r.*, c.lastname as c_lastname, c.firstname as c_firstname " +
-			"FROM reading r JOIN customer c ON r.customer = c.id " +
+			"FROM reading r LEFT JOIN customer c ON r.customer = c.id " +
 			"WHERE r.id = :id;")
 	@RegisterRowMapper(ReadingMapper.class)
 	public DReading findById(@Bind("id") Long id);

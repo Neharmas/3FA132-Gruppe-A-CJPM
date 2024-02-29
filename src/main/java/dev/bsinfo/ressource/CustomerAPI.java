@@ -81,8 +81,6 @@ public class CustomerAPI {
         customerDAO.insert(cus);
         Long lastID = customerDAO.getLastInsertedId().longValue();
         cus.setId(lastID);
-        if(!cus.isEqualTo(get(lastID)))
-            return null;
         
         return cus;
     }

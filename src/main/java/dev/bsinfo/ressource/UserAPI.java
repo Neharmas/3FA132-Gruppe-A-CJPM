@@ -87,8 +87,7 @@ public class UserAPI {
         userDAO.insert(user);
         Long lastID = userDAO.getLastInsertedId().longValue();
         user.setId(lastID);
-        if(!user.equals(get(lastID)))
-            return null;
+        
         return user;
     }
 

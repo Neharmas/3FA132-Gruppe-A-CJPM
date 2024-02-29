@@ -95,8 +95,7 @@ public class ReadingAPI {
         readingDAO.insert(reading);
         Long lastID = readingDAO.getLastInsertedId().longValue();
                 reading.setId(lastID);
-        if(!reading.isEqualTo(get(lastID)))
-            return null;
+        
         
         return reading;
     }
