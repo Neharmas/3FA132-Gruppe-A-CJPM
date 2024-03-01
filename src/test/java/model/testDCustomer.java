@@ -7,16 +7,9 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.List;
-import java.util.Map;
-
-import org.jdbi.v3.core.Handle;
-import org.jdbi.v3.core.Jdbi;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
@@ -74,26 +67,12 @@ class testDCustomer {
 
     @Test
     @Order(3)
-    @DisplayName("Test Compare To")
-    public void test_compareTo()
+    @DisplayName("Test equals")
+    public void test_equals()
     {
         // arrange / act
-        name_customer.setId(newId);
-        int result = id_customer.compareTo(name_customer);
-        // assert
-        assertEquals(1, result);
-
-        // arrange / act
-        name_customer.setId(1000L);
-        result = id_customer.compareTo(name_customer);
-        // assert
-        assertEquals(1, result);
-
-        // arrange / act
-        name_customer.setId(1L);
-        result = id_customer.compareTo(name_customer);
-        // assert
-        assertEquals(0L, result);
-
+        assertFalse(name_customer.equals(id_customer));
+        name_customer.setId(id);
+        assertTrue(name_customer.equals(id_customer));
     }
 }

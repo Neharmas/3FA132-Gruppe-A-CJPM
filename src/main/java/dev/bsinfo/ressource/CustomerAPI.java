@@ -9,7 +9,6 @@ import jakarta.ws.rs.core.MediaType;
 import org.jdbi.v3.core.Handle;
 import org.jdbi.v3.core.Jdbi;
 
-import java.io.InputStream;
 import java.util.List;
 
 @Path("customer")
@@ -78,7 +77,7 @@ public class CustomerAPI {
         return cus;
     }
 
-    @GET
+    @DELETE
     @Path("delete/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public void delete(@PathParam("id") Long id)

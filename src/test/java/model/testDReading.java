@@ -45,12 +45,12 @@ public class testDReading {
     }
     @Test
     @Order(2)
-    @DisplayName("Test Equal To")
-    public void test_isEqualTo()
+    @DisplayName("Test Equals")
+    public void test_equals()
     {
-        assertFalse(DReadings[0].isEqualTo(DReadings[1]));
+        assertFalse(DReadings[0].equals(DReadings[1]));
         DReadings[2].setId(id);
-        assertTrue(DReadings[1].isEqualTo(DReadings[2]));
+        assertTrue(DReadings[1].equals(DReadings[2]));
     }
 
     @Test

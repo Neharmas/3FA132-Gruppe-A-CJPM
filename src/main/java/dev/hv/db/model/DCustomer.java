@@ -7,7 +7,7 @@ import lombok.Data;
 import org.jdbi.v3.core.mapper.reflect.ColumnName;
 
 @Data
-public class DCustomer implements IDCustomer, Comparable<DCustomer>{
+public class DCustomer implements IDCustomer{
 
 	@JsonProperty("id")
 	@ColumnName("id")
@@ -21,7 +21,7 @@ public class DCustomer implements IDCustomer, Comparable<DCustomer>{
 	@ColumnName("lastname")
 	private String lastname;
 
-	//@ConstructorProperties({ "id", "lastname", "firstname" })
+	@ConstructorProperties({ "id", "lastname", "firstname" })
 	public DCustomer(long id, String lastname, String firstName) {
 		this.id = id;
 		this.lastname = lastname;
@@ -31,7 +31,7 @@ public class DCustomer implements IDCustomer, Comparable<DCustomer>{
 	public DCustomer() {
 
 	}
-	@ConstructorProperties({ "lastname", "firstname" })
+
 	public DCustomer(final String lastname, final String firstName) {
 		this.lastname = lastname;
 		this.firstname = firstName;
@@ -41,12 +41,8 @@ public class DCustomer implements IDCustomer, Comparable<DCustomer>{
 	public String toString() {
 		return "DCustomer [id=" + id + ", firstname=" + firstname + ", lastname=" + lastname + "]";
 	}
-	@Override
-	public int compareTo(DCustomer o) {
-		return o.id.compareTo(this.id);
-	}
 	
-	public boolean isEqualTo(DCustomer o) {
+	public boolean equals(DCustomer o) {
 		return this.toString().equals(o.toString());
 	}
 }

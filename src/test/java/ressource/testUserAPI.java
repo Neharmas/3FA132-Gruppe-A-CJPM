@@ -1,9 +1,7 @@
 package ressource;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
 import dev.bsinfo.ressource.UserAPI;
 import dev.bsinfo.server.StartServer;
 import dev.hv.db.init.DBConnect;
@@ -12,10 +10,8 @@ import org.jdbi.v3.core.Handle;
 import org.junit.jupiter.api.*;
 
 import java.io.IOException;
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -25,7 +21,6 @@ public class testUserAPI {
     String url = "http://localhost:8080/rest";
     private static StartServer instance;
     private static UserAPI api;
-    HttpClient client = HttpClient.newHttpClient();
 
     @BeforeAll
     @DisplayName("Start Api Server")
@@ -46,72 +41,53 @@ public class testUserAPI {
     @Order(1)
     @DisplayName("Test Create User")
     public void testCreate() throws IOException, InterruptedException {
-        ObjectMapper mapper = new ObjectMapper();
-        
-        ObjectWriter ow = mapper.writer().withDefaultPrettyPrinter();
-        String json = ow.writeValueAsString(user);
+        String json = ObjToJSON.convert(user);
 
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(url + "/user/create"))
-                .header("Content-Type", "application/json")
-                .POST(HttpRequest.BodyPublishers.ofString(json))
-                .build();
+        HttpResponse<String>response = HTTPRequestBuilder.create(url, HTTPRequestBuilder.ResourceTypes.USER, json);
 
-        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        
         int statusCode = response.statusCode();
         assertEquals(statusCode, 200);
-        DUser responseBody = mapper.readValue(response.body(), new TypeReference<DUser>(){});
+        DUser responseBody =  new ObjectMapper().readValue(response.body(), new TypeReference<>(){});
         assertTrue(user.equals(responseBody));
     }
 
     @Test
     @Order(2)
-    @DisplayName("Test GetAll")
-    public void testGetAll() throws IOException, InterruptedException {
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(url + "/user/get/all"))
-                .GET()
-                .header("Content-Type", "application/x-www-form-urlencoded")
-                .build();
-
-        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-
-        int statusCode = response.statusCode();
-        assertEquals(200, statusCode);
-        
-        ObjectMapper mapper = new ObjectMapper();
-
-        DUser responseBody = mapper.readValue(response.body(), new TypeReference<List<DUser>>(){}).getFirst();
-        assertTrue(user.equals(responseBody));
-    }
-
-    @Test
-    @Order(3)
     @DisplayName("Test Get By ID")
     public void testGet() throws IOException, InterruptedException {
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(url + "/user/get/1"))
-                .header("Content-Type", "application/x-www-form-urlencoded")
-                .GET()
-                .build();
-
-        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        HttpResponse<String>response = HTTPRequestBuilder.get(
+                url,
+                HTTPRequestBuilder.ResourceTypes.USER,
+                user.getId().toString());
 
         int statusCode = response.statusCode();
         assertEquals( 200, statusCode);
-        
-        ObjectMapper mapper = new ObjectMapper();
 
-        DUser responseBody = mapper.readValue(response.body(), new TypeReference<DUser>(){});
+        DUser responseBody = new ObjectMapper().readValue(response.body(), new TypeReference<>(){});
         assertTrue(user.equals(responseBody));
+    }
+
+    @Test
+    @Order(3)
+    @DisplayName("Test GetAll")
+    public void testGetAll() throws IOException, InterruptedException {
+        DUser newUser = new DUser(2L, "newLastName", "newFirstName", "newToken", "newPassword");
+        api.create(newUser);
+        HttpResponse<String>response = HTTPRequestBuilder.get(url, HTTPRequestBuilder.ResourceTypes.USER,"all");
+
+        int statusCode = response.statusCode();
+        assertEquals(200, statusCode);
+
+        List<DUser> responseBody = new ObjectMapper().readValue(response.body(), new TypeReference<>(){});
+        List<DUser> fullList = Arrays.asList(user, newUser);
+
+        assertEquals(fullList.toString(), responseBody.toString());
     }
     
     @Test
-    @Order(3)
+    @Order(4)
     @DisplayName("Test Edit User")
     public void testEdit() throws IOException, InterruptedException{
-        ObjectMapper mapper = new ObjectMapper();
         DUser newUser = new DUser(
             1L,
             "EditName",
@@ -119,51 +95,35 @@ public class testUserAPI {
             "editToken",
             "editPassword"
         );
-        
-        ObjectWriter ow = mapper.writer().withDefaultPrettyPrinter();
-        String json = ow.writeValueAsString(newUser);
-        
-        HttpRequest request = HttpRequest.newBuilder()
-            .uri(URI.create(url + "/user/edit"))
-            .header("Content-Type", "application/json")
-            .PUT(HttpRequest.BodyPublishers.ofString(json))
-            .build();
-        
-        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        
+
+        String json = ObjToJSON.convert(newUser);
+
+        HttpResponse<String> response = HTTPRequestBuilder.edit(url, HTTPRequestBuilder.ResourceTypes.USER, json);
+
         int statusCode = response.statusCode();
         assertEquals(statusCode, 200);
-        DUser responseBody = mapper.readValue(response.body(), new TypeReference<DUser>(){});
+        DUser responseBody = new ObjectMapper().readValue(response.body(), new TypeReference<>(){});
         assertTrue(newUser.equals(responseBody));
         
         // Assert NULL
         newUser.setId(999L);
-        
-        ow = mapper.writer().withDefaultPrettyPrinter();
-        json = ow.writeValueAsString(newUser);
-        
-        request = HttpRequest.newBuilder()
-            .uri(URI.create(url + "/user/edit"))
-            .header("Content-Type", "application/json")
-            .PUT(HttpRequest.BodyPublishers.ofString(json))
-            .build();
-        
-        response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        
+
+        json = ObjToJSON.convert(newUser);
+
+        response = HTTPRequestBuilder.edit(url, HTTPRequestBuilder.ResourceTypes.USER, json);
+
+
         statusCode = response.statusCode();
         assertEquals(statusCode, 204);
     }
     @Test
-    @Order(4)
+    @Order(5)
     @DisplayName("Delete User")
     public void test_delete() throws IOException, InterruptedException {
-        HttpRequest request = HttpRequest.newBuilder()
-            .uri(URI.create(url + "/user/delete/1"))
-            .header("Content-Type", "application/x-www-form-urlencoded")
-            .GET()
-            .build();
-        
-        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        api.delete(2L);
+        HttpResponse<String>response = HTTPRequestBuilder.delete(url,
+                HTTPRequestBuilder.ResourceTypes.USER,
+                user.getId().toString());
         
         int statusCode = response.statusCode();
         assertEquals( 204, statusCode);

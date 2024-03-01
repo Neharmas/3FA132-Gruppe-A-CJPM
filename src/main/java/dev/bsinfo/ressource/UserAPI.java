@@ -3,7 +3,6 @@ package dev.bsinfo.ressource;
 import dev.hv.db.dao.UserDAO;
 import dev.hv.db.init.DBConnect;
 
-import dev.hv.db.model.DCustomer;
 import dev.hv.db.model.DUser;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
@@ -11,7 +10,6 @@ import jakarta.ws.rs.core.MediaType;
 import org.jdbi.v3.core.Handle;
 import org.jdbi.v3.core.Jdbi;
 
-import java.io.InputStream;
 import java.util.List;
 
 @Path("user")
@@ -61,16 +59,6 @@ public class UserAPI {
         return userDAO.findById(id);
     }
 
-    /*@POST
-    @Path("create")
-    @Produces(MediaType.APPLICATION_JSON)
-    @Consumes("application/json")
-    public DUser create(DUser user)
-    {
-        userDAO.insert(user);
-        return user;
-    }*/
-
     @POST
     @Path("create")
     @Produces(MediaType.APPLICATION_JSON)
@@ -84,7 +72,7 @@ public class UserAPI {
         return user;
     }
 
-    @GET
+    @DELETE
     @Path("delete/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public void delete(@PathParam("id") Long id)

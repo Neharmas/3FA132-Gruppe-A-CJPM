@@ -29,7 +29,7 @@ public class DReading implements IDReading{
 
 	@JsonProperty("metercount")
 	@ColumnName("metercount")
-	private double metercount;
+	private Double metercount;
 	
 	@JsonProperty("meterid")
 	@ColumnName("meterid")
@@ -43,7 +43,7 @@ public class DReading implements IDReading{
 	@ColumnName("dateofreading")
 	private Long dateofreading;
 	
-	//@ConstructorProperties({ "id", "comment", "customer", "kindofmeter", "metercount", "meterid", "substitute", "dateofreading" })
+	@ConstructorProperties({ "id", "comment", "customer", "kindofmeter", "metercount", "meterid", "substitute", "dateofreading" })
 	public DReading (long id, String comment, DCustomer customer, String kindofmeter, double metercount, String meterid, boolean substitute, long dateofreading) {
 		this.id = id;
 		this.comment = comment;
@@ -64,7 +64,7 @@ public class DReading implements IDReading{
 	public DReading () {
 		
 	}
-	@ConstructorProperties({ "comment", "customer", "kindofmeter", "metercount", "meterid", "substitute", "dateofreading" })
+
 	public DReading(String comment, DCustomer customer, String kindofmeter, double metercount, String meterid, boolean substitute, long dateofreading) {
 		this.comment = comment;
 		this.customer = customer;
@@ -81,17 +81,7 @@ public class DReading implements IDReading{
 		return null;
 	}
 	
-	// IDK why these don't generate the set/get method
-	@Override
-	public void setMetercount(Double meterCount) {
-		this.metercount = meterCount;
-	}
-	@Override
-	public Double getMetercount() {
-		return this.metercount;
-	}
-	
-	public boolean isEqualTo(DReading o) {
+	public boolean equals(DReading o) {
 		return this.toString().equals(o.toString());
 	}
 

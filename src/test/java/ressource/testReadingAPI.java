@@ -1,5 +1,7 @@
 package ressource;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.bsinfo.ressource.CustomerAPI;
 import dev.bsinfo.ressource.ReadingAPI;
 import dev.bsinfo.server.StartServer;
@@ -9,6 +11,8 @@ import dev.hv.db.model.DReading;
 import org.jdbi.v3.core.Handle;
 import org.junit.jupiter.api.*;
 
+import java.io.IOException;
+import java.net.http.HttpResponse;
 import java.util.Arrays;
 import java.util.List;
 
@@ -40,15 +44,14 @@ public class testReadingAPI {
     Long id1 = 2L;
     String comment = "a";
     DCustomer dCustomer = new DCustomer(1L,"lastname", "firstname");
-    DCustomer dCustomer2 = new DCustomer(2L,"lastname", "firstname");
-    Long dCustomerID = 1L;
+    DCustomer dCustomer2 = new DCustomer(2L, "newLastname", "newFirstname");
     String kindofmeter = "ab";
     double metercount = 1.0;
     String meterid = "abc";
-    boolean sub = true;
     Long dateofreading = 1L;
 
-    DReading shouldBe = new DReading(id,comment,dCustomer,kindofmeter,metercount,meterid, true,dateofreading);
+    DReading shouldBe1 = new DReading(id,comment,dCustomer,kindofmeter,metercount,meterid, true,dateofreading);
+    DReading shouldBe2 = new DReading(id,comment,dCustomer2,kindofmeter,metercount,meterid, true,dateofreading);
 
     @Test
     @Order(1)
@@ -56,48 +59,102 @@ public class testReadingAPI {
     public void testReadingAPI() {
         System.out.print(readingAPI);
         assertNotNull(readingAPI);
+        customerAPI.create(dCustomer);
+        customerAPI.create(dCustomer2);
+    }
+
+    @Test
+    @Order(2)
+    @DisplayName("Test 'create' Endpoint")
+    public void testcreate() throws IOException, InterruptedException {
+        String json = ObjToJSON.convert(shouldBe1);
+        HttpResponse<String> response = HTTPRequestBuilder.create(url, HTTPRequestBuilder.ResourceTypes.READING, json);
+        DReading newReading = new ObjectMapper().readValue(response.body(), new TypeReference<>(){});
+
+        int statusCode = response.statusCode();
+        assertEquals(200, statusCode);
+
+        assertTrue(newReading.equals(shouldBe1));
+
+        DReading falseCustomerReading = shouldBe1;
+        falseCustomerReading.setCustomer(new DCustomer());
+
+        json = ObjToJSON.convert(falseCustomerReading);
+        response = HTTPRequestBuilder.create(url, HTTPRequestBuilder.ResourceTypes.READING, json);
+        assertEquals(response.body(), "");
     }
 
     @Test
     @Order(3)
-    @DisplayName("Test 'create' Endpoint")
-    public void testcreate() {
-        DCustomer customerID = customerAPI.create(new DCustomer("lastname", "firstname"));
-        DReading reading = readingAPI.create(new DReading(id, comment, customerID, kindofmeter, metercount, meterid, sub, dateofreading));
-        assertTrue(reading.isEqualTo(shouldBe));
+    @DisplayName("Test 'get/{id}' Endpoint")
+    public void testget() throws IOException, InterruptedException {
+        HttpResponse<String> response = HTTPRequestBuilder.get(url, HTTPRequestBuilder.ResourceTypes.READING, id.toString());
+
+        int statusCode = response.statusCode();
+        assertEquals(statusCode, 200);
+
+        DReading existing = new ObjectMapper().readValue(response.body(), new TypeReference<>(){});
+
+        response = HTTPRequestBuilder.get(url, HTTPRequestBuilder.ResourceTypes.READING, id1.toString());
+
+        assertEquals(response.body(), "");
+        assertTrue(shouldBe1.equals(existing));
     }
+
 
     @Test
     @Order(4)
-    @DisplayName("Test 'get/{id}' Endpoint")
-    public void testget() {
-        DReading existing = readingAPI.get(id);
-        DReading nonExisting = readingAPI.get(id1);
-        assertTrue(shouldBe.isEqualTo(existing) && nonExisting == null);
-    }
+    @DisplayName("Test 'get/all' Endpoint")
+    public void testgetAll() throws IOException, InterruptedException {
+        readingAPI.create(shouldBe2);
 
+        HttpResponse<String> response = HTTPRequestBuilder.get(url, HTTPRequestBuilder.ResourceTypes.READING, "all");
+
+        int statusCode = response.statusCode();
+        assertEquals(statusCode, 200);
+        List<DReading> listResponse = new ObjectMapper().readValue(response.body(), new TypeReference<>(){});
+        List<DReading> shouldBeList = Arrays.asList(shouldBe1, shouldBe2);
+
+        assertEquals(shouldBeList.toString(), listResponse.toString());
+    }
 
     @Test
     @Order(5)
-    @DisplayName("Test 'get/all' Endpoint")
-    public void testgetAll() {
-        Long customerId = new CustomerAPI().create(new DCustomer("lastname", "firstname")).getId();
-        DReading reading = new DReading(comment, new CustomerAPI().get(customerId), kindofmeter, metercount, meterid, sub, dateofreading);
-        readingAPI.create(reading);
+    @DisplayName("Test 'edit' Endpoint")
+    public void testEdit() throws IOException, InterruptedException{
+        DReading newReading = new DReading(id,comment,dCustomer,kindofmeter,metercount,meterid, false,dateofreading);
+        String json = ObjToJSON.convert(newReading);
 
-        List<DReading> response = readingAPI.getAll();
-        List<DReading> shouldBe = Arrays.asList(new DReading(id,comment,dCustomer,kindofmeter,metercount,meterid,sub,dateofreading),
-                                                    new DReading(id1,comment,dCustomer2,kindofmeter,metercount,meterid,sub,dateofreading));
+        HttpResponse<String>response = HTTPRequestBuilder.edit(url, HTTPRequestBuilder.ResourceTypes.READING, json);
 
-        assertEquals(response.toString(), shouldBe.toString());
+        int statusCode = response.statusCode();
+        assertEquals(200, statusCode);
+        DReading responseBody = new ObjectMapper().readValue(response.body(), new TypeReference<>(){});
+        assertEquals(newReading.toString(), responseBody.toString());
+
+        // Assert NULL
+        newReading.setId(999L);
+        json = ObjToJSON.convert(newReading);
+        response = HTTPRequestBuilder.edit(url, HTTPRequestBuilder.ResourceTypes.READING, json);
+        statusCode = response.statusCode();
+        assertEquals(204,statusCode);
+
+        // Assert Customer Null
+        newReading.setId(1L);
+        newReading.setCustomer(new DCustomer(999L, null, null));
+        json = ObjToJSON.convert(newReading);
+        response = HTTPRequestBuilder.edit(url, HTTPRequestBuilder.ResourceTypes.READING, json);
+        statusCode = response.statusCode();
+        assertEquals(200, statusCode);
     }
-
-
     @Test
     @Order(6)
     @DisplayName("Test 'delete/{id}' Endpoint")
-    public void testdelete() {
-        readingAPI.delete(id1);
+    public void testdelete() throws IOException, InterruptedException {
+        HTTPRequestBuilder.delete(url,
+                HTTPRequestBuilder.ResourceTypes.READING,
+                id1.toString());
+
         assertNull(readingAPI.get(id1));
     }
     
