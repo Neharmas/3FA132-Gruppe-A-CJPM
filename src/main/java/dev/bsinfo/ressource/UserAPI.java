@@ -29,15 +29,9 @@ public class UserAPI {
 
         userDAO = handle.attach(UserDAO.class);
     }
-    @GET
-    @Path("form")
-    @Produces(MediaType.TEXT_HTML)
-    public InputStream getForm() {
-        return getClass().getClassLoader().getResourceAsStream("user-form.html");
-    }
-
+    
     @PUT
-    @Path(("edit"))
+    @Path("edit")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
     public DUser edit(DUser user) {
@@ -45,11 +39,10 @@ public class UserAPI {
             userDAO.update(user);
             System.out.println("Updated customer " + user);
             return user;
-        } else {
-            //TODO Error message?
-            System.out.println("Couldn't find customer with id: " + user.getId());
-            return null;
         }
+        //TODO Error message?
+        System.out.println("Couldn't find customer with id: " + user.getId());
+        return null;
     }
 
     @GET

@@ -7,7 +7,6 @@ import dev.hv.db.init.DBConnect;
 import dev.hv.db.model.DCustomer;
 import dev.hv.db.model.DReading;
 import org.jdbi.v3.core.Handle;
-import org.jdbi.v3.core.Jdbi;
 import org.junit.jupiter.api.*;
 
 import java.util.Arrays;

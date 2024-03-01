@@ -2,23 +2,16 @@ package ressource;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import dev.hv.db.model.DUser;
-import org.jdbi.v3.core.Handle;
-import org.jdbi.v3.core.Jdbi;
 import org.junit.jupiter.api.*;
 
 import dev.bsinfo.ressource.CustomerAPI;
 import dev.bsinfo.server.StartServer;
-import dev.hv.db.dao.CustomerDAO;
 import dev.hv.db.init.DBConnect;
 import dev.hv.db.model.DCustomer;
 
