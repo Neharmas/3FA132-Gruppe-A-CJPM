@@ -27,7 +27,11 @@ public class StartServer {
         }
         return instance;
     }
-
+    public boolean run(String url, String pack) {
+        this.url = url;
+        this.pack = pack;
+        return run();
+    }
     public boolean run() {
         System.out.println("Start server");
         System.out.println(url);
@@ -47,11 +51,5 @@ public class StartServer {
         server.stop(0);
 
         return true;
-    }
-
-    public void run(String url, String pack) {
-        this.url = url;
-        this.pack = pack;
-        run();
     }
 }

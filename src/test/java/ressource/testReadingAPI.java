@@ -59,13 +59,6 @@ public class testReadingAPI {
     }
 
     @Test
-    @Order(2)
-    @DisplayName("Test InputStream")
-    public void testInputStream() {
-        assertNotNull(readingAPI.getForm());
-    }
-
-    @Test
     @Order(3)
     @DisplayName("Test 'create' Endpoint")
     public void testcreate() {

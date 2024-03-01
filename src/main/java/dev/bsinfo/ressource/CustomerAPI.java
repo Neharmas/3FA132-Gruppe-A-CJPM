@@ -27,14 +27,7 @@ public class CustomerAPI {
 
         customerDAO = handle.attach(CustomerDAO.class);
     }
-
-    @GET
-    @Path("form")
-    @Produces(MediaType.TEXT_HTML)
-    public InputStream getForm() {
-        return getClass().getClassLoader().getResourceAsStream("customer-form.html");
-    }
-
+    
     /**
      * Updates an user with the given id in the database
      * @param customer

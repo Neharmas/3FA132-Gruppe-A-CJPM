@@ -54,13 +54,6 @@ class testCustomerAPI {
 	}
 
     @Test
-    @Order(2)
-    @DisplayName("Test InputStream")
-	public void testInputStream() {
-		assertNotNull(customerApi.getForm());
-	}
-
-    @Test
     @Order(3)
     @DisplayName("Test 'create' Endpoint")
 	public void testcreate() {

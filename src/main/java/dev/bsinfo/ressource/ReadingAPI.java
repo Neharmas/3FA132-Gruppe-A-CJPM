@@ -32,13 +32,7 @@ public class ReadingAPI {
         readingDAO = handle.attach(ReadingDAO.class);
         customerDAO = handle.attach(CustomerDAO.class);
     }
-    @GET
-    @Path("form")
-    @Produces(MediaType.TEXT_HTML)
-    public InputStream getForm() {
-        return getClass().getClassLoader().getResourceAsStream("reading-form.html");
-    }
-
+    
     @PUT
     @Path("edit")
     @Produces(MediaType.APPLICATION_JSON)
