@@ -41,8 +41,4 @@ public class DCustomer implements IDCustomer{
 	public String toString() {
 		return "DCustomer [id=" + id + ", firstname=" + firstname + ", lastname=" + lastname + "]";
 	}
-	
-	public boolean equals(DCustomer o) {
-		return this.toString().equals(o.toString());
-	}
 }

@@ -54,9 +54,4 @@ public class DUser implements IDUser{
 		return "DUser [id=" + id + ", firstname=" + firstname + ", lastname=" + lastname + ", token=" + token
 				+ ", password=" + password + "]";
 	}
-
-	public boolean equals(DUser other)
-	{
-		return this.toString().equals(other.toString());
-	}
 }

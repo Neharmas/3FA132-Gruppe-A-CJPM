@@ -80,9 +80,5 @@ public class DReading implements IDReading{
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
-	public boolean equals(DReading o) {
-		return this.toString().equals(o.toString());
-	}
 
 }
