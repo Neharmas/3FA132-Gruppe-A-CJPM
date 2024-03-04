@@ -8,7 +8,6 @@ import org.jdbi.v3.core.mapper.reflect.ColumnName;
 
 @Data
 public class DCustomer implements IDCustomer{
-
 	@JsonProperty("id")
 	@ColumnName("id")
 	private Long id;
@@ -40,35 +39,5 @@ public class DCustomer implements IDCustomer{
 	@Override
 	public String toString() {
 		return "DCustomer [id=" + id + ", firstname=" + firstname + ", lastname=" + lastname + "]";
-	}
-
-	@Override
-	public String getFirstname() {
-		return firstname;
-	}
-
-	@Override
-	public Long getId() {
-		return id;
-	}
-
-	@Override
-	public String getLastname() {
-		return lastname;
-	}
-
-	@Override
-	public void setFirstname(String firstName) {
-		this.firstname = firstName;
-	}
-
-	@Override
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	@Override
-	public void setLastname(String lastName) {
-		this.lastname = lastName;
 	}
 }

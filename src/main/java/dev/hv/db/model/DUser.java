@@ -54,4 +54,55 @@ public class DUser implements IDUser{
 		return "DUser [id=" + id + ", firstname=" + firstname + ", lastname=" + lastname + ", token=" + token
 				+ ", password=" + password + "]";
 	}
+
+	@Override
+	public String getFirstname() {
+		return this.firstname;
+	}
+
+	@Override
+	public Long getId() {
+		return this.id;
+	}
+
+	@Override
+	public String getLastname() {
+		return this.lastname;
+	}
+
+	@Override
+	public String getPassword() {
+		return this.password;
+	}
+
+	@Override
+	public String getToken() {
+		return this.token;
+	}
+
+	@Override
+	public void setFirstname(String firstName) {
+		this.firstname = firstName;
+	}
+
+	@Override
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	@Override
+	public void setLastname(String lastName) {
+		this.lastname = lastName;
+	}
+
+	@Override
+	public void setPassword(String password) {
+		this.password = password;
+		
+	}
+
+	@Override
+	public void setToken(String token) {
+		this.token = token;
+	}
 }
