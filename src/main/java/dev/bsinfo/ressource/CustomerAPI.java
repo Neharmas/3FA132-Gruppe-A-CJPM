@@ -38,10 +38,10 @@ public class CustomerAPI {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
     public Response edit(DCustomer customer) {
-        if (customerDAO.findById(customer.getId()) == null) {
-            System.out.println("Couldn't find customer with id: " + customer.getId());
+        if (customerDAO.findById(customer.getID()) == null) {
+            System.out.println("Couldn't find customer with id: " + customer.getID());
             //return null;
-            return Response.serverError().entity("Couldn't find Customer with id:" + customer.getId()).build();
+            return Response.serverError().entity("Couldn't find Customer with id:" + customer.getID()).build();
         }
         else {
             customerDAO.update(customer);
@@ -82,7 +82,7 @@ public class CustomerAPI {
     {
         customerDAO.insert(cus);
         Long lastID = customerDAO.getLastInsertedId().longValue();
-        cus.setId(lastID);
+        cus.setID(lastID);
         
         return Response.ok(cus, MediaType.APPLICATION_JSON).build();
     }

@@ -79,8 +79,8 @@ public class testCustomerDAO {
                 .createQuery("SELECT * FROM customer;")
                 .mapToMap()
                 .list();
-        assertEquals(newCustomer.getLastname(), results.getFirst().get("lastname"));
-        assertEquals(newCustomer.getFirstname(), results.getFirst().get("firstname"));
+        assertEquals(newCustomer.getLastName(), results.getFirst().get("lastname"));
+        assertEquals(newCustomer.getFirstName(), results.getFirst().get("firstname"));
         assertEquals(1, results.getFirst().get("id"));
 
         customers[0] = newCustomer;

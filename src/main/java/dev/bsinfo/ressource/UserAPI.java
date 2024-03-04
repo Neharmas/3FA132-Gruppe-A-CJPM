@@ -11,8 +11,6 @@ import jakarta.ws.rs.core.Response;
 import org.jdbi.v3.core.Handle;
 import org.jdbi.v3.core.Jdbi;
 
-import java.util.List;
-
 @Path("user")
 public class UserAPI {
     UserDAO userDAO;
@@ -34,13 +32,13 @@ public class UserAPI {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
     public Response edit(DUser user) {
-        if (userDAO.findById(user.getId()) != null) {
+        if (userDAO.findById(user.getID()) != null) {
             userDAO.update(user);
             System.out.println("Updated customer " + user);
             return Response.ok(user, MediaType.APPLICATION_JSON).build();
         }
         //TODO Error message?
-        return Response.serverError().entity("Couldn't find customer with id: " + user.getId()).build();
+        return Response.serverError().entity("Couldn't find customer with id: " + user.getID()).build();
     }
 
     @GET
@@ -67,7 +65,7 @@ public class UserAPI {
     {
         userDAO.insert(user);
         Long lastID = userDAO.getLastInsertedId().longValue();
-        user.setId(lastID);
+        user.setID(lastID);
         
         return Response.ok(user, MediaType.APPLICATION_JSON).build();
     }

@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.net.http.HttpResponse;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -69,7 +70,7 @@ class testCustomerAPI {
 		DCustomer responseBody = new ObjectMapper().readValue(response.body(), new TypeReference<>() {});
 		assertTrue(shouldBe.equals(responseBody));
 
-    	DCustomer created = customerApi.get(id1);
+    	DCustomer created = (DCustomer) customerApi.get(id1).getEntity();
 		assertTrue(created.equals(shouldBe));
 	}
     
@@ -86,7 +87,7 @@ class testCustomerAPI {
 				HTTPRequestBuilder.ResourceTypes.CUSTOMER,
 				id2.toString());
 
-		assertEquals(response.body(), "");
+		assertEquals(response.body(), "Couldn't find Customer with ID: 2");
 		assertTrue(shouldBe.equals(existing));
 	}    
 
@@ -100,7 +101,7 @@ class testCustomerAPI {
 		List<DCustomer> response = new ObjectMapper().readValue(HTTPresponse.body(), new TypeReference<>(){});
 
     	List<DCustomer> listShouldBe = Arrays.asList(shouldBe, shouldBe2);
-		assertEquals(response.toString(), listShouldBe.toString());
+		assertEquals(listShouldBe.toString(), response.toString());
 	}
 	@Test
 	@Order(6)
@@ -117,19 +118,19 @@ class testCustomerAPI {
 		HttpResponse<String>response = HTTPRequestBuilder.edit(url, HTTPRequestBuilder.ResourceTypes.CUSTOMER, json);
 
 		int statusCode = response.statusCode();
-		assertEquals(statusCode, 200);
+		assertEquals(200, statusCode);
 		DCustomer responseBody = new ObjectMapper().readValue(response.body(), new TypeReference<>(){});
 		assertTrue(newCustomer.equals(responseBody));
 
 		// Assert NULL
-		newCustomer.setId(999L);
+		newCustomer.setID(999L);
 
 		json = ObjToJSON.convert(newCustomer);
 
 		response = HTTPRequestBuilder.edit(url, HTTPRequestBuilder.ResourceTypes.CUSTOMER, json);
 
 		statusCode = response.statusCode();
-		assertEquals(statusCode, 204);
+		assertEquals(500, statusCode);
 	}
     @Test
     @Order(7)
@@ -144,7 +145,9 @@ class testCustomerAPI {
 				HTTPRequestBuilder.ResourceTypes.CUSTOMER,
 				id2.toString());
 
-		assertTrue(customerApi.getAll().isEmpty());
+		boolean isListEmpty = ((ArrayList<DCustomer>) customerApi.getAll().getEntity()).isEmpty();
+
+		assertTrue(isListEmpty);
 	}
 
 }

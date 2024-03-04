@@ -72,7 +72,7 @@ class testDCustomer {
     {
         // arrange / act
         assertFalse(name_customer.equals(id_customer));
-        name_customer.setId(id);
+        name_customer.setID(id);
         assertTrue(name_customer.equals(id_customer));
     }
 }

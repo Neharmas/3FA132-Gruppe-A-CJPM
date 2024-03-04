@@ -49,21 +49,19 @@ public class testDReading {
     public void test_equals()
     {
         assertFalse(DReadings[0].equals(DReadings[1]));
-        DReadings[2].setId(id);
+        DReadings[2].setID(id);
         assertTrue(DReadings[1].equals(DReadings[2]));
     }
 
     @Test
-    @Order(2)
-    @DisplayName("Test print Date of Reading")
+    @Order(3)
+    @DisplayName("Test Print Date Of Reading")
     public void test_printDateOfReading()
     {
-        // Wait for Function to be written
-        for(int i = 0; i<DReadings.length; i++)
+        for(int i = 1; i<DReadings.length; i++)
         {
-            String result = null;
-            assertEquals(result, DReadings[i].printDateofreading());
-
+            String result = DReadings[i].getDateOfReading().toString();
+            assertEquals(result, DReadings[i].printDateOfReading());
         }
     }
 }

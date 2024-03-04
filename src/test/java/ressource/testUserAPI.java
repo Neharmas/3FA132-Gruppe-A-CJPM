@@ -6,11 +6,13 @@ import dev.bsinfo.ressource.UserAPI;
 import dev.bsinfo.server.StartServer;
 import dev.hv.db.init.DBConnect;
 import dev.hv.db.model.DUser;
+import jakarta.ws.rs.core.Response;
 import org.jdbi.v3.core.Handle;
 import org.junit.jupiter.api.*;
 
 import java.io.IOException;
 import java.net.http.HttpResponse;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -58,7 +60,7 @@ public class testUserAPI {
         HttpResponse<String>response = HTTPRequestBuilder.get(
                 url,
                 HTTPRequestBuilder.ResourceTypes.USER,
-                user.getId().toString());
+                user.getID().toString());
 
         int statusCode = response.statusCode();
         assertEquals( 200, statusCode);
@@ -106,7 +108,7 @@ public class testUserAPI {
         assertTrue(newUser.equals(responseBody));
         
         // Assert NULL
-        newUser.setId(999L);
+        newUser.setID(999L);
 
         json = ObjToJSON.convert(newUser);
 
@@ -114,7 +116,7 @@ public class testUserAPI {
 
 
         statusCode = response.statusCode();
-        assertEquals(statusCode, 204);
+        assertEquals(statusCode, 500);
     }
     @Test
     @Order(5)
@@ -123,11 +125,12 @@ public class testUserAPI {
         api.delete(2L);
         HttpResponse<String>response = HTTPRequestBuilder.delete(url,
                 HTTPRequestBuilder.ResourceTypes.USER,
-                user.getId().toString());
+                user.getID().toString());
         
         int statusCode = response.statusCode();
-        assertEquals( 204, statusCode);
-        assertTrue(api.getAll().isEmpty());
+        assertEquals( 200, statusCode);
+        ArrayList<DUser> test = (ArrayList<DUser>) api.getAll().getEntity();
+        assertTrue(test.isEmpty());
     }
     
     @AfterAll

@@ -15,19 +15,18 @@ public class ReadingMapper implements RowMapper<DReading> {
     {
         DReading dReading = new DReading();
 
-        dReading.setId(rs.getLong("id"));
+        dReading.setID(rs.getLong("id"));
 
         dReading.setComment(rs.getString("comment"));
 
         DCustomer customer = mapIDCustomer(rs);
         dReading.setCustomer(customer);
-        System.out.println(customer);
 
-        dReading.setKindofmeter(rs.getString("kindofmeter"));
-        dReading.setMetercount(rs.getDouble("metercount"));
-        dReading.setMeterid(rs.getString("meterid"));
+        dReading.setKindOfMeter(rs.getString("kindofmeter"));
+        dReading.setMeterCount(rs.getDouble("metercount"));
+        dReading.setMeterID(rs.getString("meterid"));
         dReading.setSubstitute(rs.getBoolean("substitute"));
-        dReading.setDateofreading(rs.getLong("dateofreading"));
+        dReading.setDateOfReading(rs.getLong("dateofreading"));
         return dReading;
     }
 

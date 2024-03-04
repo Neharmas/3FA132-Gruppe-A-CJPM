@@ -81,7 +81,7 @@ public class testReadingAPI {
 
         json = ObjToJSON.convert(falseCustomerReading);
         response = HTTPRequestBuilder.create(url, HTTPRequestBuilder.ResourceTypes.READING, json);
-        assertEquals(response.body(), "");
+        assertEquals("Couldn't create Reading: The customer doesnt exist.", response.body());
     }
 
     @Test
@@ -133,14 +133,14 @@ public class testReadingAPI {
         assertEquals(newReading.toString(), responseBody.toString());
 
         // Assert NULL
-        newReading.setId(999L);
+        newReading.setID(999L);
         json = ObjToJSON.convert(newReading);
         response = HTTPRequestBuilder.edit(url, HTTPRequestBuilder.ResourceTypes.READING, json);
         statusCode = response.statusCode();
         assertEquals(204,statusCode);
 
         // Assert Customer Null
-        newReading.setId(1L);
+        newReading.setID(1L);
         newReading.setCustomer(new DCustomer(999L, null, null));
         json = ObjToJSON.convert(newReading);
         response = HTTPRequestBuilder.edit(url, HTTPRequestBuilder.ResourceTypes.READING, json);
@@ -155,7 +155,7 @@ public class testReadingAPI {
                 HTTPRequestBuilder.ResourceTypes.READING,
                 id1.toString());
 
-        assertNull(readingAPI.get(id1));
+        assertNull(readingAPI.get(id1).getEntity());
     }
     
     @AfterAll

@@ -40,16 +40,16 @@ public class ReadingAPI {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
     public Response edit(DReading reading) {
-        if (readingDAO.findById(reading.getId()) == null) {
-            System.out.println("Couldn't find reading with id: " + reading.getId());
+        if (readingDAO.findById(reading.getID()) == null) {
+            System.out.println("Couldn't find reading with id: " + reading.getID());
             return null;
         }
         DCustomer customer = (DCustomer) reading.getCustomer();
         //check if customer exits/get customer by id
-        customer = customerDAO.findById(customer.getId());
+        customer = customerDAO.findById(customer.getID());
         if (customer == null) {
             System.out.println("Couldn't find customer (id-check): "
-                    + reading.getCustomer().getId() +" will not be changed.");
+                    + reading.getCustomer().getID() +" will not be changed.");
         } else {
             //reset the customer to the one saved in the db (the data sent could contain a dummy-customer)
             reading.setCustomer(customer);
@@ -90,7 +90,7 @@ public class ReadingAPI {
         DReading reading = new DReading(comment, customer, kindofmeter, metercount, meterid, enableSubstitute, dateofreading);
         */
         
-        DCustomer customer = customerDAO.findById(reading.getCustomer().getId());
+        DCustomer customer = customerDAO.findById(reading.getCustomer().getID());
         if (customer == null) {
             System.out.println("Es konnte kein Reading kreaiert werden, weil der Customer nicht existiert");
             //ToDo: This actually is a required functionality
@@ -98,7 +98,7 @@ public class ReadingAPI {
         }
         readingDAO.insert(reading);
         Long lastID = readingDAO.getLastInsertedId().longValue();
-        reading.setId(lastID);
+        reading.setID(lastID);
         
         
         return Response.ok(reading, MediaType.APPLICATION_JSON).build();

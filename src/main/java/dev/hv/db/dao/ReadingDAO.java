@@ -16,10 +16,10 @@ import dev.hv.db.model.DReading;
 public interface ReadingDAO extends IDAO<DReading> {
 	@Override
 	@SqlUpdate("delete from reading where id = :id;")
-	public boolean delete(@Bind("id") Long id);
+	public boolean delete(@Bind("id") Long ID);
 
 	@Override
-	@SqlUpdate("delete from reading where id = :o.id;")
+	@SqlUpdate("delete from reading where id = :o.ID;")
 	public boolean delete(@BindBean("o") DReading o);
 
 	@Override
@@ -27,7 +27,7 @@ public interface ReadingDAO extends IDAO<DReading> {
 			"FROM reading r LEFT JOIN customer c ON r.customer = c.id " +
 			"WHERE r.id = :id;")
 	@RegisterRowMapper(ReadingMapper.class)
-	public DReading findById(@Bind("id") Long id);
+	public DReading findById(@Bind("id") Long ID);
 
 
 	@SqlQuery("SELECT r.*, " +
@@ -39,20 +39,20 @@ public interface ReadingDAO extends IDAO<DReading> {
 
 	@Override
 	@SqlUpdate("INSERT INTO reading (comment, customer, kindofmeter, metercount, meterid, substitute, dateofreading) " +
-			"VALUES (:comment, :customer.id, :kindofmeter, :metercount, :meterid, :substitute, :dateofreading);")
+			"VALUES (:comment, :customer.ID, :kindOfMeter, :meterCount, :meterID, :substitute, :dateOfReading);")
 	public void insert(@BindBean DReading reading);
 
 	@SqlQuery("SELECT MAX(id) AS id FROM Reading")
 	public Integer getLastInsertedId();
 
 	@Override
-	@SqlUpdate("UPDATE reading SET comment = :comment, customer = :customer.id, dateofreading = :dateofreading, " +
-			"kindofmeter = :kindofmeter, meterid = :meterid, metercount = :metercount, substitute = :substitute " +
+	@SqlUpdate("UPDATE reading SET comment = :comment, customer = :customer.ID, dateofreading = :dateOfReading, " +
+			"kindofmeter = :kindOfMeter, meterid = :meterID, metercount = :meterCount, substitute = :substitute " +
 			"WHERE id = :id; ")
-	public void update(@Bind("id") Long id, @BindBean DReading reading);
+	public void update(@Bind("id") Long ID, @BindBean DReading reading);
 	@Override
-	@SqlUpdate("UPDATE reading SET comment = :comment, customer = :customer.id, dateofreading = :dateofreading, " +
-			"kindofmeter = :kindofmeter, meterid = :meterid, metercount = :metercount, substitute = :substitute " +
-			"WHERE id = :id; ")
+	@SqlUpdate("UPDATE reading SET comment = :comment, customer = :customer.ID, dateofreading = :dateOfReading, " +
+			"kindofmeter = :kindOfMeter, meterid = :meterID, metercount = :meterCount, substitute = :substitute " +
+			"WHERE id = :ID; ")
 	public void update(@BindBean DReading reading);
 }
