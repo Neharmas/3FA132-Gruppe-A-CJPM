@@ -8,10 +8,10 @@ public interface IDCustomer {
 
 		String getLastname();
 
-		void setFirstname(String firstName);
+		void setFirstname(String firstname);
 
 		void setId(Long id);
 
-		void setLastname(String lastName);
+		void setLastname(String lastname);
 	   
 }

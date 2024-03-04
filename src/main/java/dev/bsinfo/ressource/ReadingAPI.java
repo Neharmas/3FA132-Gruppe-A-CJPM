@@ -42,7 +42,7 @@ public class ReadingAPI {
             System.out.println("Couldn't find reading with id: " + reading.getId());
             return null;
         }
-        DCustomer customer = reading.getCustomer();
+        DCustomer customer = (DCustomer) reading.getCustomer();
         //check if customer exits/get customer by id
         customer = customerDAO.findById(customer.getId());
         if (customer == null) {
