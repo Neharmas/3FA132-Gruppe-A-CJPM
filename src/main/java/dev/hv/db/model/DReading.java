@@ -87,8 +87,7 @@ public class DReading implements IDReading{
 
 	@Override
 	public IDCustomer getCustomer() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.customer;
 	}
 
 	@Override
