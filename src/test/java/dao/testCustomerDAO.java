@@ -33,6 +33,7 @@ public class testCustomerDAO {
 
         // act
         test_instance.getJdbi().installPlugins();
+        test_instance.removeAllTables();
         test_instance.createAllTables();
 
         // assert
