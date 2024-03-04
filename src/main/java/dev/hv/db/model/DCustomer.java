@@ -41,4 +41,34 @@ public class DCustomer implements IDCustomer{
 	public String toString() {
 		return "DCustomer [id=" + id + ", firstname=" + firstname + ", lastname=" + lastname + "]";
 	}
+
+	@Override
+	public String getFirstname() {
+		return firstname;
+	}
+
+	@Override
+	public Long getId() {
+		return id;
+	}
+
+	@Override
+	public String getLastname() {
+		return lastname;
+	}
+
+	@Override
+	public void setFirstname(String firstName) {
+		this.firstname = firstName;
+	}
+
+	@Override
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	@Override
+	public void setLastname(String lastName) {
+		this.lastname = lastName;
+	}
 }

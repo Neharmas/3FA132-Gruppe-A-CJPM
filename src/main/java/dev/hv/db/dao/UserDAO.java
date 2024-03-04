@@ -13,11 +13,11 @@ public interface UserDAO extends IDAO<DUser> {
 
 	@Override
 	@SqlUpdate("delete from user where id = :id;")
-	public void delete(@Bind("id") Long id);
+	public boolean delete(@Bind("id") Long id);
 
 	@Override
 	@SqlUpdate("delete from user where id = :o.id;")
-	public void delete(@BindBean("o") DUser o);
+	public boolean delete(@BindBean("o") DUser o);
 
 	@Override
 	@SqlQuery("SELECT * FROM user WHERE id=:id;")

@@ -16,11 +16,11 @@ import dev.hv.db.model.DReading;
 public interface ReadingDAO extends IDAO<DReading> {
 	@Override
 	@SqlUpdate("delete from reading where id = :id;")
-	public void delete(@Bind("id") Long id);
+	public boolean delete(@Bind("id") Long id);
 
 	@Override
 	@SqlUpdate("delete from reading where id = :o.id;")
-	public void delete(@BindBean("o") DReading o);
+	public boolean delete(@BindBean("o") DReading o);
 
 	@Override
 	@SqlQuery("SELECT r.*, c.lastname as c_lastname, c.firstname as c_firstname " +

@@ -64,6 +64,8 @@ public class CustomerAPI {
     public Response get(@PathParam("id") Long id) {
 
         DCustomer c = customerDAO.findById(id);
+        System.out.println(c);
+
         if (c == null) {
             return  Response.serverError().entity("Couldn't find Customer with ID: " + id).build();
         } else {
@@ -90,7 +92,7 @@ public class CustomerAPI {
     @Produces(MediaType.APPLICATION_JSON)
     public Response delete(@PathParam("id") Long id)
     {
-        customerDAO.delete(id);
-        return Response.ok(id, MediaType.APPLICATION_JSON).build(); //Todo usually this method should return <id> if deleted and smth like 0 if not but rn it just returns the id
+        boolean i = customerDAO.delete(id);
+        return Response.ok(i, MediaType.APPLICATION_JSON).build(); //Todo usually this method should return <id> if deleted and smth like 0 if not but rn it just returns the id
     }
 }

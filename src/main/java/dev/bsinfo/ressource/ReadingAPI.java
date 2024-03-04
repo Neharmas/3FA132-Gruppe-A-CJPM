@@ -9,9 +9,11 @@ import dev.hv.db.model.DReading;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 
+import jakarta.ws.rs.core.Response;
 import org.jdbi.v3.core.Handle;
 import org.jdbi.v3.core.Jdbi;
 
+import javax.print.attribute.standard.Media;
 import java.io.InputStream;
 import java.util.List;
 
@@ -37,12 +39,12 @@ public class ReadingAPI {
     @Path("edit")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
-    public DReading edit(DReading reading) {
+    public Response edit(DReading reading) {
         if (readingDAO.findById(reading.getId()) == null) {
             System.out.println("Couldn't find reading with id: " + reading.getId());
             return null;
         }
-        DCustomer customer = reading.getCustomer();
+        DCustomer customer = (DCustomer) reading.getCustomer();
         //check if customer exits/get customer by id
         customer = customerDAO.findById(customer.getId());
         if (customer == null) {
@@ -55,23 +57,24 @@ public class ReadingAPI {
 
 
         readingDAO.update(reading);
-        return reading;
+        return Response.ok(reading, MediaType.APPLICATION_JSON).build();
     }
 
     @GET
     @Path("get/all")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<DReading> getAll()
+    public Response getAll()
     {
-        return readingDAO.getAll();
+        return Response.ok(readingDAO.getAll(), MediaType.APPLICATION_JSON).build();
     }
 
     @GET
     @Path("get/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public DReading get(@PathParam("id") Long id)
+    public Response get(@PathParam("id") Long id)
     {
-        return readingDAO.findById(id);
+
+        return Response.ok(readingDAO.findById(id), MediaType.APPLICATION_JSON).build();
     }
 
 
@@ -79,7 +82,7 @@ public class ReadingAPI {
     @Path("create")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
-    public DReading create(DReading reading)
+    public Response create(DReading reading)
     {
         /*boolean enableSubstitute = "true".equalsIgnoreCase(substitute);
 
@@ -90,21 +93,23 @@ public class ReadingAPI {
         DCustomer customer = customerDAO.findById(reading.getCustomer().getId());
         if (customer == null) {
             System.out.println("Es konnte kein Reading kreaiert werden, weil der Customer nicht existiert");
-            return null;
+            //ToDo: This actually is a required functionality
+            return Response.serverError().entity("Couldn't create Reading: The customer doesnt exist.").build();
         }
         readingDAO.insert(reading);
         Long lastID = readingDAO.getLastInsertedId().longValue();
         reading.setId(lastID);
         
         
-        return reading;
+        return Response.ok(reading, MediaType.APPLICATION_JSON).build();
     }
 
     @DELETE
     @Path("delete/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public void delete(@PathParam("id") Long id)
+    public Response delete(@PathParam("id") Long id)
     {
-        readingDAO.delete(id);
+
+        return Response.ok(readingDAO.delete(id), MediaType.APPLICATION_JSON).build();
     }
 }

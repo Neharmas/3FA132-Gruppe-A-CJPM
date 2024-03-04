@@ -5,10 +5,10 @@ import java.util.List;
 public interface IDAO<T> {
 
    // DELETE
-   void delete(Long id);
+   boolean delete(Long id);
 
    // DELETE
-   void delete(T o);
+   boolean delete(T o);
 
    // READ
    T findById(Long id);

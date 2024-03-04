@@ -13,11 +13,11 @@ public interface CustomerDAO extends IDAO<DCustomer> {
 	
 	@Override
 	@SqlUpdate("delete from customer where id = :id;")
-	public void delete(@Bind("id") Long id);
+	public boolean delete(@Bind("id") Long id);
 
 	@Override
 	@SqlUpdate("delete from customer where id = :o.id;")
-	public void delete(@BindBean("o") DCustomer o);
+	public boolean delete(@BindBean("o") DCustomer o);
 
 	@Override
 	@SqlQuery("SELECT * FROM customer WHERE id=:id;")
