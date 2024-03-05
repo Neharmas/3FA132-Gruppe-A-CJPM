@@ -84,18 +84,31 @@ public class ReadingAPI {
     @Consumes("application/json")
     public Response create(DReading reading)
     {
-        /*boolean enableSubstitute = "true".equalsIgnoreCase(substitute);
-
-        DCustomer customer = customerDAO.findById(customerID);
-        DReading reading = new DReading(comment, customer, kindofmeter, metercount, meterid, enableSubstitute, dateofreading);
-        */
-        
+    	//if the response doesn't have a customer, something is a bit wrong:
+    	if (reading.getCustomer() == null) {
+    		return Response.serverError().encoding("No customer sent with the reading. Please try again").build();
+    	}
+    	
         DCustomer customer = customerDAO.findById(reading.getCustomer().getID());
+        //if the customer doesnt exist yet, we create it.
+        //create customer and set the name 
         if (customer == null) {
-            System.out.println("Es konnte kein Reading kreaiert werden, weil der Customer nicht existiert");
-            //ToDo: This actually is a required functionality
-            return Response.serverError().entity("Couldn't create Reading: The customer doesnt exist.").build();
+        	//if the name and first_name are empty, we replace them with EMTPY. This can be changed later, as it isn't really best practice
+        	if (reading.getCustomer().getFirstName() == "") reading.getCustomer().setFirstName("EMPTY");
+        	if (reading.getCustomer().getLastName() == "") reading.getCustomer().setLastName("EMPTY");
+
+        	
+        	customerDAO.insert((DCustomer)reading.getCustomer()); //the id doesn't have to stay the same on insert!
+            
+        	//technically could be simplified a bit by just resetting the id (how woould the other data change?
+        	reading.setCustomer(customerDAO.findById(Long.valueOf(customerDAO.getLastInsertedId())));
+        
+        //if the customer (id) already exists, we update name and firstname
+        } else {
+        	customerDAO.update(customer);
         }
+            
+        
         readingDAO.insert(reading);
         Long lastID = readingDAO.getLastInsertedId().longValue();
         reading.setID(lastID);
