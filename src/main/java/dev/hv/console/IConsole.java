@@ -13,9 +13,9 @@ public interface IConsole {
 // - Davon erhaltene Daten erstmal in Json
 // [- Json in 'Dict' parsen ]
 // - Von Json mit libs in csv, xml & text-tabellenformat
-	   // /** - <flag> = <description> */
-	   // returnValue method();
-	   // - help Bei jeglichem Error auch printen
+// - <flag> = <description> 
+// returnValue method();
+// - help Bei jeglichem Error auch printen
 	   /** -h = print Hilfetext + Versionsnummer des Runtime Environment*/
 	   void help();
 
