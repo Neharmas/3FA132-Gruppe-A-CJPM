@@ -16,6 +16,7 @@ import org.jdbi.v3.core.Jdbi;
 import javax.print.attribute.standard.Media;
 import java.io.InputStream;
 import java.util.List;
+import java.util.Objects;
 
 @Path("reading")
 public class ReadingAPI {
@@ -44,7 +45,7 @@ public class ReadingAPI {
             System.out.println("Couldn't find reading with id: " + reading.getID());
             return null;
         }
-        DCustomer customer = (DCustomer) reading.getCustomer();
+        DCustomer customer = reading.getCustomer();
         //check if customer exits/get customer by id
         customer = customerDAO.findById(customer.getID());
         if (customer == null) {
@@ -84,35 +85,34 @@ public class ReadingAPI {
     @Consumes("application/json")
     public Response create(DReading reading)
     {
-    	//if the response doesn't have a customer, something is a bit wrong:
-    	if (reading.getCustomer() == null) {
-    		return Response.serverError().encoding("No customer sent with the reading. Please try again").build();
-    	}
-    	
+        //if the response doesn't have a customer, something is a bit wrong:
+        if (reading.getCustomer() == null)
+    		    return Response.serverError().encoding("No customer sent with the reading. Please try again").build();
+        
         DCustomer customer = customerDAO.findById(reading.getCustomer().getID());
-        //if the customer doesnt exist yet, we create it.
-        //create customer and set the name 
+        
+        //if the customer doesn't exist yet, we create it.
+        //create customer and set the name
         if (customer == null) {
-        	//if the name and first_name are empty, we replace them with EMTPY. This can be changed later, as it isn't really best practice
-        	if (reading.getCustomer().getFirstName() == "") reading.getCustomer().setFirstName("EMPTY");
-        	if (reading.getCustomer().getLastName() == "") reading.getCustomer().setLastName("EMPTY");
-
-        	
-        	customerDAO.insert((DCustomer)reading.getCustomer()); //the id doesn't have to stay the same on insert!
-            
-        	//technically could be simplified a bit by just resetting the id (how woould the other data change?
-        	reading.setCustomer(customerDAO.findById(Long.valueOf(customerDAO.getLastInsertedId())));
+            //if the name and first_name are empty, we replace them with EMTPY. This can be changed later, as it isn't really best practice
+            if (reading.getCustomer().getFirstName().isEmpty())
+                reading.getCustomer().setFirstName("EMPTY");
+            if (reading.getCustomer().getLastName().isEmpty())
+                reading.getCustomer().setLastName("EMPTY");
+        
+        customerDAO.insert(reading.getCustomer()); //the id doesn't have to stay the same on insert!
+        
+        //technically could be simplified a bit by just resetting the id (how would the other data change?
+        reading.setCustomer(customerDAO.findById(Long.valueOf(customerDAO.getLastInsertedId())));
         
         //if the customer (id) already exists, we update name and firstname
         } else {
-        	customerDAO.update(customer);
+            customerDAO.update(customer);
         }
-            
         
         readingDAO.insert(reading);
         Long lastID = readingDAO.getLastInsertedId().longValue();
         reading.setID(lastID);
-        
         
         return Response.ok(reading, MediaType.APPLICATION_JSON).build();
     }

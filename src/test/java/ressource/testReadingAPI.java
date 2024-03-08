@@ -10,18 +10,21 @@ import dev.hv.db.model.DCustomer;
 import dev.hv.db.model.DReading;
 import org.jdbi.v3.core.Handle;
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.io.IOException;
 import java.net.http.HttpResponse;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class testReadingAPI {
-    // Server
-    final String pack = "dev.bsinfo.ressource";
     String url = "http://localhost:8080/rest";
 
     @BeforeAll
@@ -51,67 +54,85 @@ public class testReadingAPI {
     Long dateofreading = 1L;
 
     DReading shouldBe1 = new DReading(id,comment,dCustomer,kindofmeter,metercount,meterid, true,dateofreading);
-    DReading shouldBe2 = new DReading(id,comment,dCustomer2,kindofmeter,metercount,meterid, true,dateofreading);
-
+    DReading shouldBe2 = new DReading(id1,comment,dCustomer2,kindofmeter,metercount,meterid, true,dateofreading);
+    
+    
+    Stream<DReading> generateDReading(){
+        return Stream.of(
+            null,
+            new DReading(1L,"a", dCustomer, "ab",1.0,"abc", true, 1L),
+            shouldBe2,
+            new DReading(3L,"a", null, "ab",1.0,"abc", true, 1L),
+            new DReading(3L,"a", new DCustomer(3L, "lastName", ""), "ab",1.0,"abc", true, 1L),
+            new DReading(4L,"a", new DCustomer(4L, "", ""), "ab",1.0,"abc", true, 1L),
+            new DReading(5L,"a", new DCustomer(5L, "falseLastName", "falseFirstName"), "ab",1.0,"abc", true, 1L),
+            new DReading(6L,"a",  new DCustomer(6L, "", "firstname"), "ab",1.0,"abc", true, 1L)
+            );
+    }
+    
     @Test
     @Order(1)
     @DisplayName("Test Constructor")
-    public void testReadingAPI() {
-        System.out.print(readingAPI);
+    public void testReadingAPIConstructor() {
         assertNotNull(readingAPI);
         customerAPI.create(dCustomer);
         customerAPI.create(dCustomer2);
     }
-
-    @Test
+    @ParameterizedTest
     @Order(2)
+    @MethodSource("generateDReading")
     @DisplayName("Test 'create' Endpoint")
-    public void testcreate() throws IOException, InterruptedException {
-        String json = ObjToJSON.convert(shouldBe1);
+    public void testCreate(DReading reading) throws IOException, InterruptedException {
+        String json = ObjToJSON.convert(reading);
         HttpResponse<String> response = HTTPRequestBuilder.create(url, HTTPRequestBuilder.ResourceTypes.READING, json);
+        
+        
+        if (reading == null || reading.getCustomer() == null) {
+            assertEquals(500, response.statusCode());
+            return;
+        }else{
+            int statusCode = response.statusCode();
+            assertEquals(200, statusCode);
+        }
+        if (reading.getCustomer().getFirstName().isEmpty())
+            reading.getCustomer().setFirstName("EMPTY");
+        
+        if (reading.getCustomer().getLastName().isEmpty())
+            reading.getCustomer().setLastName("EMPTY");
         DReading newReading = new ObjectMapper().readValue(response.body(), new TypeReference<>(){});
-
-        int statusCode = response.statusCode();
-        assertEquals(200, statusCode);
-
-        assertTrue(newReading.equals(shouldBe1));
-
-        DReading falseCustomerReading = shouldBe1;
-        falseCustomerReading.setCustomer(new DCustomer());
-
-        json = ObjToJSON.convert(falseCustomerReading);
-        response = HTTPRequestBuilder.create(url, HTTPRequestBuilder.ResourceTypes.READING, json);
-        assertEquals("Couldn't create Reading: The customer doesnt exist.", response.body());
+        System.out.println(newReading.getID());
+        
+        
+        assertEquals(newReading, reading);
     }
-
     @Test
     @Order(3)
     @DisplayName("Test 'get/{id}' Endpoint")
-    public void testget() throws IOException, InterruptedException {
+    public void testGet() throws IOException, InterruptedException {
         HttpResponse<String> response = HTTPRequestBuilder.get(url, HTTPRequestBuilder.ResourceTypes.READING, id.toString());
 
         int statusCode = response.statusCode();
         assertEquals(statusCode, 200);
 
         DReading existing = new ObjectMapper().readValue(response.body(), new TypeReference<>(){});
-
-        response = HTTPRequestBuilder.get(url, HTTPRequestBuilder.ResourceTypes.READING, id1.toString());
-
-        assertEquals(response.body(), "");
-        assertTrue(shouldBe1.equals(existing));
+        
+        
+        assertEquals(shouldBe1, existing);
     }
 
 
     @Test
     @Order(4)
     @DisplayName("Test 'get/all' Endpoint")
-    public void testgetAll() throws IOException, InterruptedException {
-        readingAPI.create(shouldBe2);
-
+    public void testGetAll() throws IOException, InterruptedException {
+        readingAPI.delete(3L);
+        readingAPI.delete(4L);
+        readingAPI.delete(5L);
+        readingAPI.delete(6L);
         HttpResponse<String> response = HTTPRequestBuilder.get(url, HTTPRequestBuilder.ResourceTypes.READING, "all");
-
+        
         int statusCode = response.statusCode();
-        assertEquals(statusCode, 200);
+        assertEquals(200, statusCode);
         List<DReading> listResponse = new ObjectMapper().readValue(response.body(), new TypeReference<>(){});
         List<DReading> shouldBeList = Arrays.asList(shouldBe1, shouldBe2);
 
@@ -150,7 +171,7 @@ public class testReadingAPI {
     @Test
     @Order(6)
     @DisplayName("Test 'delete/{id}' Endpoint")
-    public void testdelete() throws IOException, InterruptedException {
+    public void testDelete() throws IOException, InterruptedException {
         HTTPRequestBuilder.delete(url,
                 HTTPRequestBuilder.ResourceTypes.READING,
                 id1.toString());
@@ -158,6 +179,14 @@ public class testReadingAPI {
         assertNull(readingAPI.get(id1).getEntity());
     }
     
+    @ParameterizedTest
+    @MethodSource("generateDReading")
+    @DisplayName("Test Parameterized Tests")
+    public void testpara(DReading hello){
+        if (hello == null)
+            return;
+        System.out.println(hello);
+    }
     @AfterAll
     @DisplayName("Delete All Readings")
     public static void deleteAll()
