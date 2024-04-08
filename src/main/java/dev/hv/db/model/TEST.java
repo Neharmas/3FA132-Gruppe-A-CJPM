@@ -15,7 +15,7 @@ import dev.hv.db.dao.UserDAO;
 import dev.hv.db.init.DBConnect;
 
 public class TEST {
-
+	/*
 	public static void main(String[] args) {
 		Jdbi jdbi = DBConnect.getConnection().getJdbi();
 		jdbi.installPlugins();
@@ -84,8 +84,8 @@ public class TEST {
 		
 		//dao.insert(test);
 		//runQuery("SELECT * from reading");
-	}
-	
+	/*}
+
 	public static void runQuery(String q) {
 		Handle handle = DBConnect.getConnection().getJdbi().open();
 		List<Map<String, Object>> results = handle
@@ -99,5 +99,5 @@ public class TEST {
 			handle.close();
 	}
 	
-
+	*/
 }

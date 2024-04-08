@@ -6,6 +6,7 @@
 	<groupId>dev.hv0</groupId>
 	<artifactId>Hausverwaltung0</artifactId>
 	<version>0.0.1</version>
+	<packaging>jar</packaging>
 
 	<properties>
 		<maven.compiler.source>21</maven.compiler.source>
@@ -21,7 +22,52 @@
 		<jackson.version>2.13.3</jackson.version>
 	</properties>
 
+	<build>
+		<finalName>Hausverwaltung0</finalName>
+		<plugins>
+
+			<!-- other Maven plugins ... -->
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<version>3.1.1</version>
+
+				<configuration>
+					<descriptorRefs>
+						<descriptorRef>jar-with-dependencies</descriptorRef>
+					</descriptorRefs>
+					<archive>
+						<manifest>
+							<mainClass>dev.hv.console.Console</mainClass>
+						</manifest>
+					</archive>
+
+				</configuration>
+
+				<executions>
+					<execution>
+						<id>make-assembly</id>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+
+					</execution>
+				</executions>
+
+			</plugin>
+		</plugins>
+	</build>
+
 	<dependencies>
+		<!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-assembly-plugin -->
+		<dependency>
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-assembly-plugin</artifactId>
+			<version>3.1.1</version>
+		</dependency>
+
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>

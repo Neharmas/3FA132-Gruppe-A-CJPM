@@ -2,6 +2,7 @@ package dev.hv.db.init;
 
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -69,7 +70,8 @@ public class DBConnect implements IDbConnect{
 		if (this.jdbi == null) {
 			 try {
 	            final Properties prop = new Properties();
-	            prop.load(new FileReader("hausverwaltung.properties"));
+				InputStream inputStream = DBConnect.class.getClassLoader().getResourceAsStream("hausverwaltung.properties");
+	            prop.load(inputStream);
 	            final String dburl = prop.getProperty("DBURL"); //DBURL
 	            final String dbuser = prop.getProperty("DBUSER"); //DBUSER
 	            String dbpw = prop.getProperty("DBPW"); //DBW
@@ -193,8 +195,9 @@ public class DBConnect implements IDbConnect{
 		
 		return res;
 	}
-	
+	/*
 	public static void main(String[] args) {
+
 		DBConnect db = new DBConnect();
 		Jdbi jdbi = db.getJdbi();
 		db.createAllTables();
@@ -218,8 +221,8 @@ public class DBConnect implements IDbConnect{
 			[{id=1, lastname=Fittler, firstname=Arnold, token=12345, password=123456}, {id=2, lastname=Franziska, firstname=Anne, token=88420, password=66699}, {id=3, lastname=Gandhi, firstname=Mahatma, token=112, password=42}, {id=4, lastname=Moses, firstname=Hannes, token=777, password=100}, {id=5, lastname=Fittler, firstname=Arnold, token=12345, password=123456}, {id=6, lastname=Franziska, firstname=Anne, token=88420, password=66699}, {id=7, lastname=Gandhi, firstname=Mahatma, token=112, password=42}, {id=8, lastname=Moses, firstname=Hannes, token=777, password=100}, {id=9, lastname=Fittler, firstname=Arnold, token=12345, password=123456}, {id=10, lastname=Franziska, firstname=Anne, token=88420, password=66699}, {id=11, lastname=Gandhi, firstname=Mahatma, token=112, password=42}, {id=12, lastname=Moses, firstname=Hannes, token=777, password=100}, {id=13, lastname=Fittler, firstname=Arnold, token=12345, password=123456}, {id=14, lastname=Franziska, firstname=Anne, token=88420, password=66699}, {id=15, lastname=Gandhi, firstname=Mahatma, token=112, password=42}, {id=16, lastname=Moses, firstname=Hannes, token=777, password=100}, {id=17, lastname=Fittler, firstname=Arnold, token=12345, password=123456}, {id=18, lastname=Franziska, firstname=Anne, token=88420, password=66699}, {id=19, lastname=Gandhi, firstname=Mahatma, token=112, password=42}, {id=20, lastname=Moses, firstname=Hannes, token=777, password=100}, {id=21, lastname=Fittler, firstname=Arnold, token=12345, password=123456}, {id=22, lastname=Franziska, firstname=Anne, token=88420, password=66699}, {id=23, lastname=Gandhi, firstname=Mahatma, token=112, password=42}, {id=24, lastname=Moses, firstname=Hannes, token=777, password=100}, {id=25, lastname=Fittler, firstname=Arnold, token=12345, password=123456}, {id=26, lastname=Franziska, firstname=Anne, token=88420, password=66699}, {id=27, lastname=Gandhi, firstname=Mahatma, token=112, password=42}, {id=28, lastname=Moses, firstname=Hannes, token=777, password=100}, {id=29, lastname=Fittler, firstname=Arnold, token=12345, password=123456}, {id=30, lastname=Franziska, firstname=Anne, token=88420, password=66699}, {id=31, lastname=Gandhi, firstname=Mahatma, token=112, password=42}, {id=32, lastname=Moses, firstname=Hannes, token=777, password=100}, {id=33, lastname=Fittler, firstname=Arnold, token=12345, password=123456}, {id=34, lastname=Franziska, firstname=Anne, token=88420, password=66699}, {id=35, lastname=Gandhi, firstname=Mahatma, token=112, password=42}, {id=36, lastname=Moses, firstname=Hannes, token=777, password=100}]
 			[{id=1, comment=test1, customer=1, dateofreading=12345, kindofmeter=pla, meterid=222, metercount=22ss, substitute=0}, {id=2, comment=test2, customer=2, dateofreading=8888, kindofmeter=dlp, meterid=234, metercount=1s1, substitute=1}, {id=3, comment=test1, customer=1, dateofreading=12345, kindofmeter=pla, meterid=222, metercount=22ss, substitute=0}, {id=4, comment=test2, customer=2, dateofreading=8888, kindofmeter=dlp, meterid=234, metercount=1s1, substitute=1}, {id=5, comment=test1, customer=1, dateofreading=12345, kindofmeter=pla, meterid=222, metercount=22ss, substitute=0}, {id=6, comment=test2, customer=2, dateofreading=8888, kindofmeter=dlp, meterid=234, metercount=1s1, substitute=1}, {id=7, comment=test1, customer=1, dateofreading=12345, kindofmeter=pla, meterid=222, metercount=22ss, substitute=0}, {id=8, comment=test2, customer=2, dateofreading=8888, kindofmeter=dlp, meterid=234, metercount=1s1, substitute=1}, {id=9, comment=test1, customer=1, dateofreading=12345, kindofmeter=pla, meterid=222, metercount=22ss, substitute=0}, {id=10, comment=test2, customer=2, dateofreading=8888, kindofmeter=dlp, meterid=234, metercount=1s1, substitute=1}, {id=11, comment=test1, customer=1, dateofreading=12345, kindofmeter=pla, meterid=222, metercount=22ss, substitute=0}, {id=12, comment=test2, customer=2, dateofreading=8888, kindofmeter=dlp, meterid=234, metercount=1s1, substitute=1}, {id=13, comment=test1, customer=1, dateofreading=12345, kindofmeter=pla, meterid=222, metercount=22ss, substitute=0}, {id=14, comment=test2, customer=2, dateofreading=8888, kindofmeter=dlp, meterid=234, metercount=1s1, substitute=1}, {id=15, comment=test1, customer=1, dateofreading=12345, kindofmeter=pla, meterid=222, metercount=22ss, substitute=0}, {id=16, comment=test2, customer=2, dateofreading=8888, kindofmeter=dlp, meterid=234, metercount=1s1, substitute=1}, {id=17, comment=test1, customer=1, dateofreading=12345, kindofmeter=pla, meterid=222, metercount=22ss, substitute=0}, {id=18, comment=test2, customer=2, dateofreading=8888, kindofmeter=dlp, meterid=234, metercount=1s1, substitute=1}] **/
 		//System.out.println(fictional);
+
 		
-		
-	}
+	//}
 	
 }
