@@ -19,6 +19,8 @@ import org.json.JSONObject;
 import dev.bsinfo.ressource.CustomerAPI;
 import dev.bsinfo.ressource.ReadingAPI;
 import dev.bsinfo.ressource.UserAPI;
+import dev.bsinfo.server.StartServer;
+import dev.bsinfo.server.test;
 import dev.hv.db.init.DBConnect;
 
 /** 
@@ -95,7 +97,7 @@ public class Console implements IConsole {
 		add("firstname");
 		add("lastname");
 		add("token");
-		add("password");
+//		add("password");
 	}};
 	
 	private ArrayList<String> readingKeys = new ArrayList<String>() {{ 
@@ -115,19 +117,37 @@ public class Console implements IConsole {
 	private boolean flagProvided(ArrayList<String> providedArgs) {
 		return providedArgs.contains("-");
 	}
+	
+	private String getTableName(JSONObject table) {
+		String tablename;
+		
+		tablename = table.names().toString(); //["<tablename>"]
+		tablename = tablename.substring(2, tablename.length() - 2);
+		
+		return tablename;
+	}
 			
 	private String getValidFileName(ArrayList<String> providedArgs) {
 		String filename;
+		int c = 0;
 		for (String entry: providedArgs) {
-			int c = 0;
 			if (entry.contains("--output=")) {
-					filename = entry.substring(9); // oder 8?
+					filename = entry.substring(9); // '='
 					return filename;
 			} 
 			if (entry.contains("-o")) {
-				filename = providedArgs.get(c+1); //theoretisch mit check
+				filename = providedArgs.get(c+1);
 				return filename;
 			}
+			if (entry.contains("--input=")) {
+					filename = entry.substring(8); // '='
+					return filename;
+			} 
+			if (entry.contains("-i")) {
+				filename = providedArgs.get(c+1);
+				return filename;
+			}
+			c++;
 		}
 		return "NoFilenameProvided";
 	}
@@ -148,13 +168,27 @@ public class Console implements IConsole {
 		return "NoFlagProvided";
 	}
 	
+	private String getValidFileExtension(String filename) {
+		ArrayList<String> validFileExtension = new ArrayList<String>();
+		validFileExtension.add(".csv");
+		validFileExtension.add(".jso"); // 
+		validFileExtension.add(".xml");
+		validFileExtension.add(".txt");
+		for (int i = 1;  i <= validFileExtension.size(); i++) {
+			if (filename.subSequence(filename.length() - 3, filename.length()).equals(validFileExtension.get(i))) {
+					return validFileExtension.get(i);
+			}
+		}
+		return "NoExtensionProvided";
+	}
+	
 	private String getValidTablename(ArrayList<String> providedArgs) {
 		ArrayList<String> validTableNames = new ArrayList<String>();
 		validTableNames.add("Customer");
 		validTableNames.add("User");
 		validTableNames.add("Reading");
 		for (String entry : providedArgs) {
-			for (int i = 0;  i <= 3; i++) {
+			for (int i = 0;  i <= 3; i++) { // use validTableNames.size() instead if time for more generical use
 				if (entry.contains(validTableNames.get(i))) {
 						return entry;
 				}
@@ -187,6 +221,35 @@ public class Console implements IConsole {
 			help();
 	}
 	
+	private void processImport(ArrayList<String> convertedArgs) {
+		// count of Args is valid ?
+		if (convertedArgs.size() == 2) {
+			help();
+		}
+		// flags provided ?-> abort : exportTable
+		if (flagProvided(convertedArgs)) {
+			// getValidFilename
+			String filename = getValidFileName(convertedArgs);
+			if (filename == "NoFilenameProvided") {
+				System.out.println("Please provide a filename!");
+				help();
+			}
+			// get filetype by .extention
+			String filetype = getValidFileExtension(filename);
+			if (filetype == "NoExtensionProvided") {
+				System.out.println("Please provide a valid file extention!");
+				help();
+			}
+			// file exists ?
+			// read <filetype> (sowie layout<filetype> bei export)
+			// getTableName -> table name out of 3 ?
+			// table already exists ?-> addEntrys() : createTable(s)
+			// write table to db
+			
+		}
+		help();
+	}
+	
 	private void processExport(ArrayList<String> convertedArgs) {
 		// check if tablename valid
 		String tableName = getValidTablename(convertedArgs);
@@ -200,7 +263,7 @@ public class Console implements IConsole {
 		if (convertedArgs.size() == 2) {
 			exportTableToConsole(table);
 		}
-		// flags provided? -> abort : exportTable
+		// flags provided ?-> abort : exportTable
 		if (flagProvided(convertedArgs)) {
 			String filename;
 			filename = getValidFileName(convertedArgs);
@@ -209,17 +272,15 @@ public class Console implements IConsole {
 				help();
 			}
 			exportTable(convertedArgs, table, filename);
-			//+ writeFile
 		}
 	}
 	
 	private String layoutCSV(JSONObject table) {
-		String csv, tablename, header, rows = "";
+		String csv, tablename, header = "", rows = "";
 		ArrayList<String> keys = new ArrayList<String>();
 		
-		// determine if Customer, User or Reading
-		tablename = table.names().toString(); //["<tablename>"]
-		tablename = tablename.substring(2, tablename.length() - 2);
+		tablename = getTableName(table);
+		
 		System.out.println("Tablename: " + tablename);
 		switch(tablename) {
 			case "Customer": keys = customerKeys; break;
@@ -227,20 +288,15 @@ public class Console implements IConsole {
 			case "Reading": keys = readingKeys; break;
 		}
 
-		// set Heading Accordingly
-		String heading = "";
 		for (String element : keys) {
-			heading = heading + element + ";";
+			header = header + element + ";";
 		}
-		heading = heading.substring(0, heading.length() - 1);
+		header = header.substring(0, header.length() - 1);
 
 		// append Column Values Accordingly
-		JSONArray firstRow = new JSONArray();
 		int entrys = table.getJSONArray(tablename).length();
 		String row = "";
 		for (int i=0; i < entrys; i++) {
-			//dict = table.getJSONArray(tablename).getJSONObject(i).toString();
-			
 			row = row + "\n";
 			for (String key: keys) {
 				String value = table.getJSONArray(tablename).getJSONObject(i).get(key).toString();
@@ -249,30 +305,106 @@ public class Console implements IConsole {
 			row = row.substring(0, row.length() - 2);
 		}
 		
-		//firstRow = table.getJSONArray(tablename).getJSONObject(0);
-		csv = heading + row;
+		csv = header + row + "\n";
 		
 		return csv;
 	}
+
+	private String layoutXML(JSONObject table) {
+		String xml, tablename, header = "", rows = "";
+		ArrayList<String> keys = new ArrayList<String>();
+		
+		tablename = getTableName(table);
+
+		switch(tablename) {
+			case "Customer": keys = customerKeys; break;
+			case "User": keys = userKeys; break; 
+			case "Reading": keys = readingKeys; break;
+		}
+
+		// set Heading Accordingly
+		header = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\n";
+		header = header + "<" + tablename + ">" + "\n";
+
+		// append Column Values Accordingly
+		int entrys = table.getJSONArray(tablename).length();
+		String row = "";
+		for (int i=0; i < entrys; i++) {
+			row = row + "  <Entry> \n";
+			for (String key: keys) {
+				String value = table.getJSONArray(tablename).getJSONObject(i).get(key).toString();
+				row = row + "\t<" + key + ">" + value + "</" + key + ">\n";
+			}
+			row = row + "  </Entry> \n";
+		}
+
+		String footer = "</" + tablename + ">" + "\n";
+		xml = header + row + footer;
+		
+		return xml;
+	}
+
+
+	private String layoutText(JSONObject table) {
+		String text, tablename,header = "", rows = "";
+		ArrayList<String> keys = new ArrayList<String>();
+		
+		tablename = getTableName(table);
+
+		switch(tablename) {
+			case "Customer": keys = customerKeys; break;
+			case "User": keys = userKeys; break; 
+			case "Reading": keys = readingKeys; break;
+		}
+
+		// set Header Accordingly
+		for (String element : keys) {
+			header = header + element + " | ";
+		}
+		header = header.substring(0, header.length() - 2);
+		header = header + "\n============================================ \n";
+
+		// append Column Values Accordingly
+		int entrys = table.getJSONArray(tablename).length();
+		String row = "";
+		for (int i=0; i < entrys; i++) {
+			for (String key: keys) {
+				String value = table.getJSONArray(tablename).getJSONObject(i).get(key).toString();
+				row = row + value + " | ";
+			}
+			row = row.substring(0, row.length() - 2);
+			row = row + "\n-------------------------------------------- \n";
+		}
+		
+		text = header + row;
+		
+		return text;
+	}
+
 
 	private void exportTableToCSV(JSONObject table, String filename) {
 		String layouted = layoutCSV(table);
 		writeFile(layouted, filename);
 	}
 	
-	private void exportTableToText(JSONObject table, String filename) {
-		String layouted = layoutJSON(table);
+	private void exportTableToTxt(JSONObject table, String filename) {
+		String layouted = layoutText(table);
 		writeFile(layouted, filename);
 	}
 
 	private void exportTableToXML(JSONObject table, String filename) {
-		String layouted = layoutJSON(table);
+		String layouted = layoutXML(table);
 		writeFile(layouted, filename);
 	}
 	
 	private void exportTableToJSON(JSONObject table, String filename) {
 		String layouted = layoutJSON(table);
 		writeFile(layouted, filename);
+	}	
+
+	private void exportTableToConsole(JSONObject table) {
+		String layouted = layoutJSON(table);
+		System.out.println(layouted);
 	}
 
 	private void writeFile(String content, String filename) {
@@ -288,29 +420,12 @@ public class Console implements IConsole {
 	
 	public void exportTable(ArrayList<String> convertedArgs, JSONObject table, String filename) {
 		switch(getValidFileFlag(convertedArgs)) {
-			case "-c": exportTableToCSV(table, filename);
-			case "-x": exportTableToXML(table, filename);
-			case "-t": exportTableToText(table, filename);
+			case "-c": exportTableToCSV(table, filename + ".csv");
+			case "-x": exportTableToXML(table, filename + ".xml");
+			case "-t": exportTableToTxt(table, filename + ".txt");
 			case "-j":
-			default: exportTableToJSON(table, filename);
+			default: exportTableToJSON(table, filename + ".json");
 		}
-	}
-			
-	
-	private void exportTableToConsole(JSONObject table) {
-		String layouted = layoutJSON(table);
-		System.out.println(layouted);
-	}
-	
-	private String convertToText(JSONObject json) {
-		String tableString = "";
-		
-		//get all Keys
-		ArrayList<String> keys = new ArrayList();
-		//build column heading
-		//fill in table
-		
-		return tableString;
 	}
 	
 	private JSONArray listMapToJSON(List<Map<String, Object>> table) {
@@ -322,7 +437,7 @@ public class Console implements IConsole {
 		JSONArray tableListJSON = listMapToJSON(db.readTable(tablename));
 		
 		String buildString = "{" + tablename + ": " + tableListJSON + "}";
-		System.out.println(buildString);
+		//System.out.println(buildString);
 
 		JSONObject wholeTableJSON = new JSONObject(buildString);
 		
@@ -365,7 +480,7 @@ public class Console implements IConsole {
 				+ "\t -j = as .json" + "\n"
 				+ "\t -x = as .xml" + "\n"
 				+ "\t -t = as .txt" + "\n"
-				+ "import [-f] <table> = import <table> from <file> into db" + "\n"
+				+ "import [-i/--input=] <file> = import <table> from <file> into db" + "\n"
 				+ " -i, --input=<file> = define <file> which should be imported" + "\n" + "\n"
 				+ "--delete = drop all tables" + "\n"
 				+ "--help = print this menu" + "\n";
@@ -381,6 +496,7 @@ public class Console implements IConsole {
 
 	@Override
 	public File exportTable() {
+		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -393,6 +509,9 @@ public class Console implements IConsole {
 
 	public static void main(String[] args) {
 		Console c = new Console();
+		StartServer server = StartServer.getInstance();
+		server.run();
+		
 
 		Jdbi jdbi = db.getJdbi();
 		
@@ -406,8 +525,10 @@ public class Console implements IConsole {
 		customer = c.readTable("Customer");
 		reading = c.readTable("Reading");
 		
-		c.exportTableToConsole(user);
-		System.out.println(c.exportTable());
+		c.exportTableToConsole(reading);
+		c.exportTableToCSV(reading, "reading.csv");
+		c.exportTableToTxt(reading, "reading.txt");
+		c.exportTableToXML(reading, "reading.xml");
 		
 	}
 	
