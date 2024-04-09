@@ -39,7 +39,7 @@
 					</descriptorRefs>
 					<archive>
 						<manifest>
-							<mainClass>dev.hv.console.Console</mainClass>
+							<mainClass>dev.hv.console.StartHV</mainClass>
 						</manifest>
 					</archive>
 

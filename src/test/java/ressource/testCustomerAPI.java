@@ -17,7 +17,7 @@ import org.jdbi.v3.core.Jdbi;
 import org.junit.jupiter.api.*;
 
 import dev.bsinfo.ressource.CustomerAPI;
-import dev.bsinfo.server.StartServer;
+import dev.bsinfo.server.RESTServer;
 import dev.hv.db.dao.CustomerDAO;
 import dev.hv.db.init.DBConnect;
 import dev.hv.db.model.DCustomer;
@@ -31,7 +31,7 @@ class testCustomerAPI {
     @BeforeAll
     @DisplayName("Start Api Server")
     static public void run() {
-		StartServer instance = StartServer.getInstance();
+		RESTServer instance = RESTServer.getInstance();
 		instance.run();
 		DBConnect db = DBConnect.getConnection();
 		db.removeAllTables();

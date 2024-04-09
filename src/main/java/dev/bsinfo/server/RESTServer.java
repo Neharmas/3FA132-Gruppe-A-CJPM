@@ -2,27 +2,26 @@ package dev.bsinfo.server;
 
 import java.net.URI;
 
-import dev.hv.db.init.DBConnect;
 import jakarta.ws.rs.ProcessingException;
 import org.glassfish.jersey.jdkhttp.JdkHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
 import com.sun.net.httpserver.HttpServer;
 
-public class StartServer {
-    private static StartServer instance;
+public class RESTServer {
+    private static RESTServer instance;
     private String pack = "dev.bsinfo.ressource";
     private String url = "http://localhost:8080/rest";
 
     private ResourceConfig rc;
     private HttpServer server;
 
-    private StartServer() {}
+    private RESTServer() {}
     
-    public static StartServer getInstance()
+    public static RESTServer getInstance()
     {
         if (instance == null)
         {
-            instance = new StartServer();
+            instance = new RESTServer();
             
         }
         return instance;

@@ -5,11 +5,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.*;
 
-import dev.bsinfo.server.StartServer;
+import dev.bsinfo.server.RESTServer;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class testStartServer {
-	private static StartServer instance;
+	private static RESTServer instance;
     final String pack = "dev.bsinfo.ressource";
     String url = "http://localhost:8080/rest";
     
@@ -17,7 +17,7 @@ class testStartServer {
     @Order(1)
     @DisplayName("Test Singelton")
 	public void testgetInstance() {
-		instance = StartServer.getInstance();
+		instance = RESTServer.getInstance();
 		assertNotNull(instance);
 	}
 	

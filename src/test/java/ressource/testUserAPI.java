@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import dev.bsinfo.ressource.UserAPI;
-import dev.bsinfo.server.StartServer;
+import dev.bsinfo.server.RESTServer;
 import dev.hv.db.init.DBConnect;
 import dev.hv.db.model.DUser;
 import org.jdbi.v3.core.Handle;
@@ -22,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class testUserAPI {
     String url = "http://localhost:8080/rest";
-    private static StartServer instance;
+    private static RESTServer instance;
     private static UserAPI api;
     private static Handle handle = null;
 
@@ -34,7 +34,7 @@ public class testUserAPI {
     @DisplayName("Start Api Server")
     static public void run() {
         // Server
-        instance = StartServer.getInstance();
+        instance = RESTServer.getInstance();
         instance.run();
         api = new UserAPI();
     }
