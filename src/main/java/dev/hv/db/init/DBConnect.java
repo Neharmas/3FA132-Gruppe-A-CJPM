@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import org.jdbi.v3.core.Handle;
@@ -112,5 +114,54 @@ public class DBConnect implements IDbConnect{
 		handle.execute("DROP TABLE IF EXISTS USER");
 		handle.close();
 	}
+	
+	// Generic Methods for use in Console 
+	// ToDo: Could be in need for more JUnit Tests
+	private String getValueType(Object value) {
+		try {
+			return value.getClass().getSimpleName();
+		} catch (Exception e) {
+			return "TEXT";
+		}
+	}
 
+	private String determineColumnType(Object value) {
+		// Used for Inports
+		switch(getValueType(value)) {
+			case "Float": return "FLOAT";
+			case "Integer": return "INT";
+			case "Boolean": return "BOOL";
+			default: return "TEXT";
+		}
+	}
+	
+	private String buildColumnsSpecification(String[] columnNames, String[] columnType, String[] constrains) {
+		String columnSpecification = " (";
+		for (int i = 0; i < columnNames.length; i++) {
+			columnSpecification += " " + columnNames[i] + " " + columnType[i] + /** " NOT NULL "+*/ constrains[i] + " ,";
+		}
+		columnSpecification.replaceFirst(".$", ");");
+		
+		return columnSpecification;
+	}
+	
+	public void createSpecifiedTable(String tablename, String[] columnNames, String[] columnType, String[] constrains) {
+		String columnSpecification = buildColumnsSpecification(columnNames, columnType, constrains);
+
+		final Handle handle = jdbi.open();
+		handle.execute("CREATE TABLE IF NOT EXISTS " + tablename + columnSpecification );
+		
+		handle.close();
+	}
+
+	public List<Map<String, Object>> readTable(String tablename) {
+		final Handle handle = jdbi.open();
+		List<Map<String, Object>> res = handle.select("SELECT * FROM TABLE " + tablename + " ;").mapToMap().list();
+		handle.close();
+		
+		return res;
+	}
+	
+	
+	
 }
