@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.bsinfo.ressource.CustomerAPI;
 import dev.bsinfo.ressource.ReadingAPI;
-import dev.bsinfo.server.StartServer;
+import dev.bsinfo.server.RESTServer;
 import dev.hv.db.init.DBConnect;
 import dev.hv.db.model.DCustomer;
 import dev.hv.db.model.DReading;
@@ -30,7 +30,7 @@ public class testReadingAPI {
     @BeforeAll
     @DisplayName("Start Api Server")
     static public void run() {
-        StartServer instance = StartServer.getInstance();
+        RESTServer instance = RESTServer.getInstance();
         instance.run();
         readingAPI = new ReadingAPI();
         customerAPI = new CustomerAPI();

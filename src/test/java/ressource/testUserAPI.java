@@ -3,7 +3,7 @@ package ressource;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.bsinfo.ressource.UserAPI;
-import dev.bsinfo.server.StartServer;
+import dev.bsinfo.server.RESTServer;
 import dev.hv.db.init.DBConnect;
 import dev.hv.db.model.DUser;
 import jakarta.ws.rs.core.Response;
@@ -21,14 +21,14 @@ import static org.junit.jupiter.api.Assertions.*;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class testUserAPI {
     String url = "http://localhost:8080/rest";
-    private static StartServer instance;
+    private static RESTServer instance;
     private static UserAPI api;
 
     @BeforeAll
     @DisplayName("Start Api Server")
     static public void run() {
         // Server
-        instance = StartServer.getInstance();
+        instance = RESTServer.getInstance();
         instance.run();
         api = new UserAPI();
     }
