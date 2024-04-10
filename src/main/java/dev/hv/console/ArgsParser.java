@@ -1,7 +1,8 @@
 package dev.hv.console;
 
+import dev.hv.console.util.NoValidTableNameException;
+
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class ArgsParser {
@@ -84,15 +85,16 @@ public class ArgsParser {
         }
         throw new NoValidTableNameException("Could not find a tablename. please use one of " + validTableNames.toString());
     }
-    public static class NoValidTableNameException extends Exception {
-        public NoValidTableNameException(String errorMessage) {
-            super(errorMessage);
-        }
-    }
+
     ArrayList<String> convertStringArgsToArrayList(String[] args) {
         return new ArrayList<>(List.of(args)); //if i understand .asList returns a list that stays synced with the og-array, lol.
     }
 
+    /**
+     * checks wether or not there is at least one flag provided in the arguments (e.g. --input / -o)
+     * @param providedArgs
+     * @return
+     */
     boolean flagProvided(ArrayList<String> providedArgs) {
         for (String args: providedArgs) {
             if (args.startsWith("-")) return true;

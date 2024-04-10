@@ -1,8 +1,9 @@
 package dev.hv.console;
 
+import dev.hv.console.util.FileUtil;
+import dev.hv.console.util.NoValidTableNameException;
 import org.json.JSONObject;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -18,7 +19,7 @@ public class Exporter {
         this.argsParser = argsParser;
         this.dbdao = dbdao;
     }
-    boolean processExport(ArrayList<String> args) throws IOException, ArgsParser.NoValidTableNameException {
+    boolean processExport(ArrayList<String> args) throws IOException, NoValidTableNameException {
         // check if tablename valid
         String tableName = ArgsParser.getValidTableNameIfExists(args);
         if (tableName.equals("NoMatch")) {

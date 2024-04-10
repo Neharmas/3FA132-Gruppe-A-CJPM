@@ -21,7 +21,7 @@ public class CustomerAPI {
     public CustomerAPI()
     {
         jdbi = DBConnect.getConnection().getJdbi();
-        jdbi.installPlugins();
+        jdbi.installPlugins(); //TODO THIS METHOD GETS CALLED 3X in the whole code and i am almost once would be fine.
 
         handle = jdbi.open();
 

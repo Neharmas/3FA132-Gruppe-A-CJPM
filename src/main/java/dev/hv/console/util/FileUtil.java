@@ -1,4 +1,4 @@
-package dev.hv.console;
+package dev.hv.console.util;
 
 import org.json.JSONObject;
 
@@ -36,7 +36,7 @@ public class FileUtil {
             }
         }*/
     }
-    static void writeFile(String content, String filename) throws IOException {
+    public static void writeFile(String content, String filename) throws IOException {
         //The filename could be a path, which is bad af....
         createFoldersForFile(filename);
         System.out.println("FILENAME: " + filename);
@@ -45,7 +45,7 @@ public class FileUtil {
         w.close();
     }
 
-    static String layoutCSV(JSONObject table) {
+    public static String layoutCSV(JSONObject table) {
         String csv, tablename, header = "", rows = "";
         ArrayList<String> keys = new ArrayList<String>();
 
@@ -80,7 +80,7 @@ public class FileUtil {
         return csv;
     }
 
-    static String layoutXML(JSONObject table) {
+    public static String layoutXML(JSONObject table) {
         String xml, tablename, header = "", rows = "";
         ArrayList<String> keys = new ArrayList<String>();
 
@@ -114,7 +114,7 @@ public class FileUtil {
         return xml;
     }
 
-    static String layoutText(JSONObject table) {
+    public static String layoutText(JSONObject table) {
         String text, tablename,header = "", rows = "";
         ArrayList<String> keys = new ArrayList<String>();
 
@@ -151,7 +151,7 @@ public class FileUtil {
         return text;
     }
 
-    static String layoutJSON(JSONObject json) {
+    public static String layoutJSON(JSONObject json) {
         String raw = json.toString();
         String layouted;
 

@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
+import dev.hv.console.util.FileUtil;
+import dev.hv.console.util.NoValidTableNameException;
 import org.jdbi.v3.core.Jdbi;
 
 import dev.bsinfo.server.RESTServer;
@@ -84,7 +86,7 @@ public class StartHV {
 
 		try {
 			processOption(convertedArgs);
-		} catch (ArgsParser.NoValidTableNameException e) {
+		} catch (NoValidTableNameException e) {
 			e.printStackTrace(); //jesus, if we create more exceptions and cascade them harder, we might make the bad-programmer-god edge.
 		} catch (IOException ex) {
 			System.out.println("An IOException occured while executing your command (this probably means the writing failed.)");
@@ -99,12 +101,12 @@ public class StartHV {
 	 * @param convertedArgs
 	 * @throws IOException
 	 */
-	private void processOption(ArrayList<String> convertedArgs) throws IOException, ArgsParser.NoValidTableNameException {
+	private void processOption(ArrayList<String> convertedArgs) throws IOException, NoValidTableNameException {
 		if (convertedArgs.contains("export")) {
 			Exporter ex = new Exporter(argsParser, dbdao);
 			if (!ex.processExport(convertedArgs)) help();
 		} else if (convertedArgs.contains("import")) {
-			Importer imp = new Importer();
+			Importer imp = new Importer(argsParser, dbdao);
 			imp.processImport(convertedArgs);
 		} else if (convertedArgs.contains("-h") || convertedArgs.contains("--help"))
 			help();

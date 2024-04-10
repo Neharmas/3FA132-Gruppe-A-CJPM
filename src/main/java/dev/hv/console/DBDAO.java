@@ -1,6 +1,13 @@
 package dev.hv.console;
 
+import dev.hv.db.dao.CustomerDAO;
+import dev.hv.db.dao.ReadingDAO;
+import dev.hv.db.dao.UserDAO;
 import dev.hv.db.init.DBConnect;
+import dev.hv.db.model.DCustomer;
+import dev.hv.db.model.DReading;
+import dev.hv.db.model.DUser;
+import org.jdbi.v3.core.Handle;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -23,6 +30,30 @@ public class DBDAO {
         JSONObject wholeTableJSON = new JSONObject(buildString);
 
         return wholeTableJSON;
+    }
+
+    void insertCustomer(DCustomer customer) {
+        this.db.getJdbi().installPlugins();
+        Handle handle = this.db.getJdbi().open();
+        CustomerDAO customerDAO = handle.attach(CustomerDAO.class);
+        customerDAO.insert(customer);
+        handle.close();
+    }
+
+    void insertUser(DUser user) {
+        this.db.getJdbi().installPlugins();
+        Handle handle = this.db.getJdbi().open();
+        UserDAO userDAO = handle.attach(UserDAO.class);
+        userDAO.insert(user);
+        handle.close();
+    }
+
+    void insertReading(DReading reading) {
+        this.db.getJdbi().installPlugins();
+        Handle handle = this.db.getJdbi().open();
+        ReadingDAO readingDAO = handle.attach(ReadingDAO.class);
+        readingDAO.insert(reading);
+        handle.close();
     }
 
     public DBConnect getDb() {
