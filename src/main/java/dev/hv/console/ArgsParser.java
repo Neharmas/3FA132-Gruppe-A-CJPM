@@ -36,16 +36,14 @@ public class ArgsParser {
     }
 
     String getValidFileFlag(ArrayList<String> providedArgs) {
-        ArrayList<String> validFileFlag = new ArrayList<>();
-        validFileFlag.add("-c");
-        validFileFlag.add("-j");
-        validFileFlag.add("-x");
-        validFileFlag.add("-t");
+        ArrayList<String> validFileFlags = new ArrayList<>();
+        validFileFlags.add("-c");
+        validFileFlags.add("-j");
+        validFileFlags.add("-x");
+        validFileFlags.add("-t");
         for (String entry : providedArgs) {
-            for (int i = 0;  i <= 3; i++) {
-                if (entry.contains(validFileFlag.get(i))) {
-                    return entry;
-                }
+            if (validFileFlags.contains(entry)) {
+                return entry;
             }
         }
         return "NoFlagProvided";
@@ -91,6 +89,9 @@ public class ArgsParser {
     }
 
     boolean flagProvided(ArrayList<String> providedArgs) {
-        return providedArgs.contains("-");
+        for (String args: providedArgs) {
+            if (args.startsWith("-")) return true;
+        }
+        return false;
     }
 }

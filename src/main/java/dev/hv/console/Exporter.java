@@ -37,6 +37,7 @@ public class Exporter {
         if (argsParser.flagProvided(args)) {
             String filename;
             filename = this.argsParser.getValidFileName(args);
+            System.out.println("F-name: " + filename);
             if (filename.equals("NoFilenameProvided")) {
                 System.out.println("Please provide a filename!");
                 return false;
@@ -58,12 +59,12 @@ public class Exporter {
 
     private void exportTableToXML(JSONObject table, String filename) throws IOException {
         String layouted = this.fileUtil.layoutXML(table);
-        fileUtil.writeFile(layouted, filename);
+        this.fileUtil.writeFile(layouted, filename);
     }
 
     private void exportTableToJSON(JSONObject table, String filename) throws IOException {
         String layouted = this.fileUtil.layoutJSON(table);
-        fileUtil.writeFile(layouted, filename);
+        this.fileUtil.writeFile(layouted, filename);
     }
 
     private void exportTableToConsole(JSONObject table) {
@@ -74,13 +75,16 @@ public class Exporter {
     public void exportTable(ArrayList<String> convertedArgs, JSONObject table, String filename) throws IOException {
         switch(this.argsParser.getValidFileFlag(convertedArgs)) {
             case "-c":
-                exportTableToCSV(table, filename + ".csv");
+                exportTableToCSV(table, filename);
+                break;
             case "-x":
-                exportTableToXML(table, filename + ".xml");
+                exportTableToXML(table, filename);
+                break;
             case "-t":
-                exportTableToTxt(table, filename + ".txt");
+                exportTableToTxt(table, filename);
+                break;
             case "-j":
-            default: exportTableToJSON(table, filename + ".json");
+            default: exportTableToJSON(table, filename);
         }
     }
 

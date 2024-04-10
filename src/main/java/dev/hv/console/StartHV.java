@@ -79,6 +79,7 @@ public class StartHV {
 		this.exportTableToCSV(reading, "reading.csv");
 		this.exportTableToTxt(reading, "reading.txt");
 		this.exportTableToXML(reading, "reading.xml");*/
+		deleteAllTables();
 		dbdao.createAllTables();
 		dbdao.insertTestData();
 		System.out.println(Arrays.toString(originalArgs));
@@ -87,11 +88,17 @@ public class StartHV {
 			processOption(convertedArgs);
 		} catch (IOException ex) {
 			System.out.println("An IOException occured while executing your command (this probably means the writing failed.)");
+			ex.printStackTrace();
 			return -1;
 		}
 		return 1;
 	}
 
+	/**
+	 * Determin which function path to take
+	 * @param convertedArgs
+	 * @throws IOException
+	 */
 	private void processOption(ArrayList<String> convertedArgs) throws IOException {
 		if (convertedArgs.contains("export")) {
 			Exporter ex = new Exporter(argsParser, fileUtil, dbdao);

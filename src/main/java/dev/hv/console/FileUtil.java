@@ -7,8 +7,13 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 
+/**
+ * Helper Class to handle Files.
+ * Possible TODO: turn static since we never really need an instance of this class, only single methods
+ */
 public class FileUtil {
     void writeFile(String content, String filename) throws IOException {
+        System.out.println("FILENAME: " + filename);
         BufferedWriter w = new BufferedWriter(new FileWriter(filename));
         w.write(content);
         w.close();
@@ -89,11 +94,12 @@ public class FileUtil {
 
         tablename = getTableNameFromJSON(table);
 
-        switch(tablename) {
-            case "Customer": keys = customerKeys;
-            case "User": keys = userKeys;
-            case "Reading": keys = readingKeys;
-        }
+        keys = switch (tablename) {
+            case "Customer" -> customerKeys;
+            case "User" -> userKeys;
+            case "Reading" -> readingKeys;
+            default -> throw new IllegalStateException("Unexpected value: " + tablename); //this shouldn#t be possible in the first place bc we check the tablename beforehand... but if we would write cleaner code, this would be a better idea
+        };
 
         // set Header Accordingly
         for (String element : keys) {
