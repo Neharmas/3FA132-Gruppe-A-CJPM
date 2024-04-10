@@ -79,13 +79,13 @@ public class StartHV {
 		this.exportTableToCSV(reading, "reading.csv");
 		this.exportTableToTxt(reading, "reading.txt");
 		this.exportTableToXML(reading, "reading.xml");*/
-		deleteAllTables();
-		dbdao.createAllTables();
-		dbdao.insertTestData();
+
 		System.out.println(Arrays.toString(originalArgs));
 
 		try {
 			processOption(convertedArgs);
+		} catch (ArgsParser.NoValidTableNameException e) {
+			e.printStackTrace(); //jesus, if we create more exceptions and cascade them harder, we might make the bad-programmer-god edge.
 		} catch (IOException ex) {
 			System.out.println("An IOException occured while executing your command (this probably means the writing failed.)");
 			ex.printStackTrace();
@@ -99,9 +99,9 @@ public class StartHV {
 	 * @param convertedArgs
 	 * @throws IOException
 	 */
-	private void processOption(ArrayList<String> convertedArgs) throws IOException {
+	private void processOption(ArrayList<String> convertedArgs) throws IOException, ArgsParser.NoValidTableNameException {
 		if (convertedArgs.contains("export")) {
-			Exporter ex = new Exporter(argsParser, fileUtil, dbdao);
+			Exporter ex = new Exporter(argsParser, dbdao);
 			if (!ex.processExport(convertedArgs)) help();
 		} else if (convertedArgs.contains("import")) {
 			Importer imp = new Importer();

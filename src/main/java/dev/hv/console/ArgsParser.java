@@ -68,22 +68,27 @@ public class ArgsParser {
      * TODO rework this mess.
      * @param args
      * @return Tablename as String or "NoMatch"
+     * @throws NoValidTableNameException if there was no valid tablename provided (in the args)
      */
-    static String getValidTableNameIfExists(ArrayList<String> args) {
+    static String getValidTableNameIfExists(ArrayList<String> args) throws NoValidTableNameException {
         ArrayList<String> validTableNames = new ArrayList<String>();
         validTableNames.add("Customer");
         validTableNames.add("User");
         validTableNames.add("Reading");
         for (String entry : args) {
             for (String tableName: validTableNames) { // use validTableNames.size() instead if time for more generical use
-                if (entry.contains(tableName)) { // THIS IS NOT AT ALL A GOOD CHECK OR ... ANYHTING
-                    return entry;
+                if (entry.equalsIgnoreCase(tableName)) { // THIS IS NOT AT ALL A GOOD CHECK OR ... ANYHTING
+                    return tableName;
                 }
             }
         }
-        return "NoMatch";
+        throw new NoValidTableNameException("Could not find a tablename. please use one of " + validTableNames.toString());
     }
-
+    public static class NoValidTableNameException extends Exception {
+        public NoValidTableNameException(String errorMessage) {
+            super(errorMessage);
+        }
+    }
     ArrayList<String> convertStringArgsToArrayList(String[] args) {
         return new ArrayList<>(List.of(args)); //if i understand .asList returns a list that stays synced with the og-array, lol.
     }

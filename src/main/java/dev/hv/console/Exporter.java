@@ -12,15 +12,13 @@ public class Exporter {
      * @param args
      * @return 0 in case of an error or 1 otherwise
      */
-    private FileUtil fileUtil;
     private DBDAO dbdao;
     private ArgsParser argsParser;
-    Exporter(ArgsParser argsParser, FileUtil fileUtil, DBDAO dbdao) {
+    Exporter(ArgsParser argsParser, DBDAO dbdao) {
         this.argsParser = argsParser;
-        this.fileUtil = fileUtil;
         this.dbdao = dbdao;
     }
-    boolean processExport(ArrayList<String> args) throws IOException {
+    boolean processExport(ArrayList<String> args) throws IOException, ArgsParser.NoValidTableNameException {
         // check if tablename valid
         String tableName = ArgsParser.getValidTableNameIfExists(args);
         if (tableName.equals("NoMatch")) {
@@ -48,27 +46,27 @@ public class Exporter {
     }
 
     private void exportTableToCSV(JSONObject table, String filename) throws IOException {
-        String layouted = this.fileUtil.layoutCSV(table);
-        this.fileUtil.writeFile(layouted, filename);
+        String layouted = FileUtil.layoutCSV(table);
+        FileUtil.writeFile(layouted, filename);
     }
 
     private void exportTableToTxt(JSONObject table, String filename) throws IOException {
-        String layouted = this.fileUtil.layoutText(table);
-        this.fileUtil.writeFile(layouted, filename);
+        String layouted = FileUtil.layoutText(table);
+        FileUtil.writeFile(layouted, filename);
     }
 
     private void exportTableToXML(JSONObject table, String filename) throws IOException {
-        String layouted = this.fileUtil.layoutXML(table);
-        this.fileUtil.writeFile(layouted, filename);
+        String layouted = FileUtil.layoutXML(table);
+        FileUtil.writeFile(layouted, filename);
     }
 
     private void exportTableToJSON(JSONObject table, String filename) throws IOException {
-        String layouted = this.fileUtil.layoutJSON(table);
-        this.fileUtil.writeFile(layouted, filename);
+        String layouted = FileUtil.layoutJSON(table);
+        FileUtil.writeFile(layouted, filename);
     }
 
     private void exportTableToConsole(JSONObject table) {
-        String layouted = this.fileUtil.layoutJSON(table);
+        String layouted = FileUtil.layoutJSON(table);
         System.out.println(layouted);
     }
 

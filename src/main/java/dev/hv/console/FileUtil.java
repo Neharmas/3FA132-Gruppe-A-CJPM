@@ -3,23 +3,49 @@ package dev.hv.console;
 import org.json.JSONObject;
 
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.attribute.PosixFilePermissions;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
- * Helper Class to handle Files.
+ * Helper Class with static methods to handle Files. I just added the static to everything. Let's not get started on refactoring this too soon pls. As long as it works idfc that it's uglier than .
  * Possible TODO: turn static since we never really need an instance of this class, only single methods
  */
 public class FileUtil {
-    void writeFile(String content, String filename) throws IOException {
+    public static void createFoldersForFile(String filePath) throws IOException {
+        filePath = filePath.replace("\\", "/");
+        ArrayList<String> split = new ArrayList<>(List.of(filePath.split("/")));
+        split.removeLast();
+        //without the last part behind the last / [so that /target/test.txt becomes /target]
+        File onlyPath = new File(String.join("/", split));
+        System.out.println("P: " + onlyPath);
+        System.out.println(onlyPath.mkdirs());
+
+
+        /*File parentDir = file.getParentFile();
+        System.out.println(parentDir);
+
+        if (parentDir != null && !parentDir.exists()) {
+            if (!parentDir.mkdirs()) { // mkdirs() creates all necessary parent directories
+                throw new IOException("Failed to create parent directories for: " + filePath);
+            }
+        }*/
+    }
+    static void writeFile(String content, String filename) throws IOException {
+        //The filename could be a path, which is bad af....
+        createFoldersForFile(filename);
         System.out.println("FILENAME: " + filename);
         BufferedWriter w = new BufferedWriter(new FileWriter(filename));
         w.write(content);
         w.close();
     }
 
-    String layoutCSV(JSONObject table) {
+    static String layoutCSV(JSONObject table) {
         String csv, tablename, header = "", rows = "";
         ArrayList<String> keys = new ArrayList<String>();
 
@@ -54,7 +80,7 @@ public class FileUtil {
         return csv;
     }
 
-    String layoutXML(JSONObject table) {
+    static String layoutXML(JSONObject table) {
         String xml, tablename, header = "", rows = "";
         ArrayList<String> keys = new ArrayList<String>();
 
@@ -88,7 +114,7 @@ public class FileUtil {
         return xml;
     }
 
-    String layoutText(JSONObject table) {
+    static String layoutText(JSONObject table) {
         String text, tablename,header = "", rows = "";
         ArrayList<String> keys = new ArrayList<String>();
 
@@ -125,7 +151,7 @@ public class FileUtil {
         return text;
     }
 
-    String layoutJSON(JSONObject json) {
+    static String layoutJSON(JSONObject json) {
         String raw = json.toString();
         String layouted;
 
@@ -137,7 +163,7 @@ public class FileUtil {
         return layouted;
     }
 
-    private String getTableNameFromJSON(JSONObject table) {
+    private static String getTableNameFromJSON(JSONObject table) {
         String tablename;
 
         tablename = table.names().toString(); //["<tablename>"]
@@ -146,25 +172,25 @@ public class FileUtil {
         return tablename;
     }
 
-    private final ArrayList<String> validFileFormatFlags = new ArrayList<String>() {{
+    private static final ArrayList<String> validFileFormatFlags = new ArrayList<String>() {{
         add("-c"); // .csv
         add("-j"); // .json
         add("-t"); // .txt
         add("-x"); // .xml
     }};
 
-    private final ArrayList<String> options = new ArrayList<String>() {{
+    private static final ArrayList<String> options = new ArrayList<String>() {{
         add("export");
         add("import");
     }};
 
-    private final ArrayList<String> customerKeys = new ArrayList<String>() {{
+    private static final ArrayList<String> customerKeys = new ArrayList<String>() {{
         add("id");
         add("firstname");
         add("lastname");
     }};
 
-    private final ArrayList<String> userKeys = new ArrayList<String>() {{
+    private static final ArrayList<String> userKeys = new ArrayList<String>() {{
         add("id");
         add("firstname");
         add("lastname");
@@ -172,7 +198,7 @@ public class FileUtil {
 //		add("password");
     }};
 
-    private final ArrayList<String> readingKeys = new ArrayList<String>() {{
+    private static final ArrayList<String> readingKeys = new ArrayList<String>() {{
         add("comment");
         add("customer"); //Foreign key customer id
         add("kindofmeter");
