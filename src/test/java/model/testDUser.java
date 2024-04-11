@@ -22,12 +22,6 @@ class testDUser {
     private String token = "testToken";
     private String password = "testPassword";
 
-    private long newId = 4;
-    private String newLastname = "testNewlastname";
-    private String newFirstname = "testNewfirstname";
-    private String newToken = "testNewToken";
-    private String newPassword = "testNewPassword";
-
     DUser test_DUser = null;
     DUser test_IDDUser = null;
     DUser test_NameDUser = null;
@@ -53,37 +47,15 @@ class testDUser {
         // assert
         assertNotNull(DUsers[2]);
     }
+
     @Test
     @Order(2)
-    @DisplayName("Test all setters")
-    public void test_setter()
-    {
-        for(int i = 0; i<DUsers.length; i++)
-        {
-            // arrange / act
-            DUsers[i].setId(newId);
-            DUsers[i].setFirstname(newFirstname);
-            DUsers[i].setLastname(newLastname);
-            DUsers[i].setToken(newToken);
-            DUsers[i].setPassword(newPassword);
-
-            // assert
-            assertEquals(newId, DUsers[i].getId());
-            assertEquals(newFirstname, DUsers[i].getFirstname());
-            assertEquals(newLastname, DUsers[i].getLastname());
-            assertEquals(newToken, DUsers[i].getToken());
-            assertEquals(newPassword, DUsers[i].getPassword());
-        }
-    }
-
-    @Test
-    @Order(3)
-    @DisplayName("Test all setters")
+    @DisplayName("Test to String")
     public void test_toString()
     {
         // arrange
-        String equals = "DUser [id=" + newId + ", firstname=" + newFirstname + ", lastname=" + newLastname + ", token=" + newToken
-                + ", password=" + newPassword + "]";
+        String equals = "DUser [id=" + id + ", firstname=" + firstname + ", lastname=" + lastname + ", token=" + token
+                + ", password=" + password + "]";
 
         // act
         String firstUser = DUsers[0].toString();
@@ -91,9 +63,23 @@ class testDUser {
         String thirdUser = DUsers[2].toString();
 
         // assert
-        assertEquals(equals, firstUser);
+        assertEquals(new DUser().toString(), firstUser);
         assertEquals(equals, secondUser);
+        
+        equals = "DUser [id=null" + ", firstname=" + firstname + ", lastname=" + lastname + ", token=" + token
+            + ", password=" + password + "]";
+        
         assertEquals(equals, thirdUser);
+    }
+
+    @Test
+    @Order(3)
+    @DisplayName("Test equals To another User")
+    public void test_equals()
+    {
+        DUser user = new DUser(1L, "ln", "fn", "tk", "pw");
+        DUser user2 = new DUser(1L, "ln", "fn", "tk", "pw");
+        assertTrue(user.equals(user2));
     }
 	
 }

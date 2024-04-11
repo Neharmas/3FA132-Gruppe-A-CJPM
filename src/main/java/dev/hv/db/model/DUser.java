@@ -3,21 +3,23 @@ package dev.hv.db.model;
 import java.beans.ConstructorProperties;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Data;
 import org.jdbi.v3.core.mapper.reflect.ColumnName;
 
+@Data
 public class DUser implements IDUser{
 
 	@JsonProperty("id")
 	@ColumnName("id")
-	private Long id;
+	private Long ID;
 
 	@JsonProperty("firstname")
 	@ColumnName("firstname")
-	private String firstname;
+	private String firstName;
 
 	@JsonProperty("lastname")
 	@ColumnName("lastname")
-	private String lastname;
+	private String lastName;
 
 	@JsonProperty("token")
 	@ColumnName("token")
@@ -28,10 +30,10 @@ public class DUser implements IDUser{
 	private String password;
 	
 	@ConstructorProperties({ "id", "lastname", "firstname", "token", "password"  })
-	public DUser (long id, String lastname, String firstname, String token, String password) {
-		this.id = id;
-		this.lastname = lastname;
-		this.firstname = firstname;
+	public DUser (long ID, String lastName, String firstName, String token, String password) {
+		this.ID = ID;
+		this.lastName = lastName;
+		this.firstName = firstName;
 		this.token = token;
 		this.password = password;
 	}
@@ -40,69 +42,16 @@ public class DUser implements IDUser{
 		
 	}
 	
-	public DUser(final String lastname, final String firstname, final String token, final String password) {
-		this.lastname = lastname;
-		this.firstname = firstname;
+	public DUser(final String lastName, final String firstName, final String token, final String password) {
+		this.lastName = lastName;
+		this.firstName = firstName;
 		this.token = token;
 		this.password = password;
 	}
 
 	@Override
 	public String toString() {
-		return "DUser [id=" + id + ", firstname=" + firstname + ", lastname=" + lastname + ", token=" + token
+		return "DUser [id=" + ID + ", firstname=" + firstName + ", lastname=" + lastName + ", token=" + token
 				+ ", password=" + password + "]";
-	}
-	
-	@Override
-	public Long getId() {
-		return id;
-	}
-	@Override
-	public void setId(Long id) {
-		this.id = id;
-	}
-	@Override
-	public String getFirstname() {
-		return firstname;
-	}
-	@Override
-	public void setFirstname(String firstname) {
-		this.firstname = firstname;
-	}
-	@Override
-	public String getLastname() {
-		return lastname;
-	}
-	@Override
-	public void setLastname(String lastname) {
-		this.lastname = lastname;
-	}
-	@Override
-	public String getToken() {
-		return token;
-	}
-	@Override
-	public void setToken(String token) {
-		this.token = token;
-	}
-	@Override
-	public String getPassword() {
-		return password;
-	}
-
-	@Override
-	public void setPassword(String password) {
-		this.password = password;
-	}
-
-
-	public boolean equals(DUser other)
-	{
-		boolean equalID = this.id.equals(other.id);
-		boolean equalFirstName = this.firstname.equals(other.firstname);
-		boolean equalLastName = this.lastname.equals(other.lastname);
-		boolean equalToken = this.token.equals(other.token);
-
-		return equalID && equalFirstName && equalLastName && equalToken;
 	}
 }

@@ -22,7 +22,7 @@ import org.junit.jupiter.api.TestInstance.Lifecycle;
 public class testCustomerDAO {
     CustomerDAO customerDAO;
     DCustomer[] customers = {null, null, null};
-    private static DBConnect test_instance = null;
+    private DBConnect test_instance = null;
     @Test
     @Order(1)
     @DisplayName("Setup Connection")
@@ -33,6 +33,7 @@ public class testCustomerDAO {
 
         // act
         test_instance.getJdbi().installPlugins();
+        test_instance.removeAllTables();
         test_instance.createAllTables();
 
         // assert
@@ -79,8 +80,8 @@ public class testCustomerDAO {
                 .createQuery("SELECT * FROM customer;")
                 .mapToMap()
                 .list();
-        assertEquals(newCustomer.getLastname(), results.getFirst().get("lastname"));
-        assertEquals(newCustomer.getFirstname(), results.getFirst().get("firstname"));
+        assertEquals(newCustomer.getLastName(), results.getFirst().get("lastname"));
+        assertEquals(newCustomer.getFirstName(), results.getFirst().get("firstname"));
         assertEquals(1, results.getFirst().get("id"));
 
         customers[0] = newCustomer;
@@ -114,7 +115,7 @@ public class testCustomerDAO {
     }
     @AfterAll
     @DisplayName("Delete all Customers")
-    public static void deleteAll()
+    public void deleteAll()
     {
         Handle handle = test_instance.getJdbi().open();
         handle.execute("UPDATE SQLITE_SEQUENCE SET SEQ=0 WHERE NAME='Customer'");

@@ -13,16 +13,16 @@ public interface UserDAO extends IDAO<DUser> {
 
 	@Override
 	@SqlUpdate("delete from user where id = :id;")
-	public void delete(@Bind("id") Long id);
+	public boolean delete(@Bind("id") Long id);
 
 	@Override
-	@SqlUpdate("delete from user where id = :o.id;")
-	public void delete(@BindBean("o") DUser o);
+	@SqlUpdate("delete from user where id = :o.ID;")
+	public boolean delete(@BindBean("o") DUser o);
 
 	@Override
 	@SqlQuery("SELECT * FROM user WHERE id=:id;")
 	@RegisterBeanMapper(DUser.class)
-	public DUser findById(@Bind("id") Long id);
+	public DUser findById(@Bind("id") Long ID);
 
 	@Override
 	@SqlQuery("SELECT * FROM user;")
@@ -32,18 +32,21 @@ public interface UserDAO extends IDAO<DUser> {
 	@Override
 	@SqlUpdate("""
 			INSERT INTO user (lastname, firstname, token, password)
-			VALUES (:o.lastname, :o.firstname, :o.token, :o.password);
+			VALUES (:o.lastName, :o.firstName, :o.token, :o.password);
 			""")
 	public void insert(@BindBean("o") DUser o);
 
+	@SqlQuery("SELECT MAX(id) AS id FROM User")
+	public Integer getLastInsertedId();
+
 	@Override
 	@SqlUpdate("""
-			update user set lastname = :o.firstname, firstname = :o.firstname, token = :o.token, password = :o.password where id = :id;
+			update user set lastname = :o.firstName, firstname = :o.firstName, token = :o.token, password = :o.password where id = :id;
 			""")
 	public void update(@Bind("id") Long id, @BindBean("o") DUser o);
 
 	@Override
-	@SqlUpdate("update user set lastname = :o.lastname, firstname = :o.firstname, token = :o.token, password = :o.password where id = :o.id;")
+	@SqlUpdate("update user set lastname = :o.lastName, firstname = :o.firstName, token = :o.token, password = :o.password where id = :o.ID;")
 	public void update(@BindBean("o") DUser o);
 	
 }

@@ -1,12 +1,8 @@
 package dev.hv.db.dao;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.List;
 
 import dev.bsinfo.ressource.ReadingMapper;
-import org.jdbi.v3.core.statement.StatementContext;
-import org.jdbi.v3.sqlobject.config.RegisterBeanMapper;
 
 import org.jdbi.v3.sqlobject.config.RegisterRowMapper;
 
@@ -15,50 +11,48 @@ import org.jdbi.v3.sqlobject.customizer.BindBean;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 
-import dev.hv.db.model.DCustomer;
 import dev.hv.db.model.DReading;
-import dev.hv.db.model.DUser;
 
 public interface ReadingDAO extends IDAO<DReading> {
 	@Override
 	@SqlUpdate("delete from reading where id = :id;")
-	public void delete(@Bind("id") Long id);
+	public boolean delete(@Bind("id") Long ID);
 
 	@Override
-	@SqlUpdate("delete from reading where id = :o.id;")
-	public void delete(@BindBean("o") DReading o);
+	@SqlUpdate("delete from reading where id = :o.ID;")
+	public boolean delete(@BindBean("o") DReading o);
 
 	@Override
-	@SqlQuery("SELECT r.id, r.comment, r.kindofmeter, r.metercount, r.meterid, r.substitute, r.dateofreading, " +
-			"c.id as customer, c.lastname, c.firstname " +
-			"FROM reading as r " +
-			"JOIN customer as c ON r.customer = c.id " +
+	@SqlQuery("SELECT r.*, c.lastname as c_lastname, c.firstname as c_firstname " +
+			"FROM reading r LEFT JOIN customer c ON r.customer = c.id " +
 			"WHERE r.id = :id;")
 	@RegisterRowMapper(ReadingMapper.class)
-	public DReading findById(@Bind("id") Long id);
+	public DReading findById(@Bind("id") Long ID);
 
 
-	@SqlQuery("SELECT r.id, r.comment, r.kindofmeter, r.metercount, r.meterid, r.substitute, r.dateofreading, " +
-			"c.id as customer, c.lastname, c.firstname " +
-			"FROM reading as r " +
-			"LEFT JOIN customer as c ON r.customer = c.id;")
+	@SqlQuery("SELECT r.*, " +
+			"c.lastname as c_lastname, c.firstname as c_firstname " +
+			"FROM reading r " +
+			"LEFT JOIN customer c ON r.customer = c.id;")
 	@RegisterRowMapper(ReadingMapper.class)
 	public List<DReading> getAll();
 
 	@Override
 	@SqlUpdate("INSERT INTO reading (comment, customer, kindofmeter, metercount, meterid, substitute, dateofreading) " +
-			"VALUES (:comment, :customer.id, :kindofmeter, :metercount, :meterid, :substitute, :dateofreading); ")
+			"VALUES (:comment, :customer.ID, :kindOfMeter, :meterCount, :meterID, :substitute, :dateOfReading);")
 	public void insert(@BindBean DReading reading);
 
-	@Override
-	@SqlUpdate("UPDATE reading SET comment = :comment, customer = :customer.id, dateofreading = :dateofreading, " +
-			"kindofmeter = :kindofmeter, meterid = :meterid, metercount = :metercount, substitute = :substitute " +
-			"WHERE id = :id; ")
+	@SqlQuery("SELECT MAX(id) AS id FROM Reading")
+	public Integer getLastInsertedId();
 
-	public void update(@Bind("id") Long id, @BindBean DReading reading);
 	@Override
-	@SqlUpdate("UPDATE reading SET comment = :comment, customer = :customer.id, dateofreading = :dateofreading, " +
-			"kindofmeter = :kindofmeter, meterid = :meterid, metercount = :metercount, substitute = :substitute " +
+	@SqlUpdate("UPDATE reading SET comment = :comment, customer = :customer.ID, dateofreading = :dateOfReading, " +
+			"kindofmeter = :kindOfMeter, meterid = :meterID, metercount = :meterCount, substitute = :substitute " +
 			"WHERE id = :id; ")
+	public void update(@Bind("id") Long ID, @BindBean DReading reading);
+	@Override
+	@SqlUpdate("UPDATE reading SET comment = :comment, customer = :customer.ID, dateofreading = :dateOfReading, " +
+			"kindofmeter = :kindOfMeter, meterid = :meterID, metercount = :meterCount, substitute = :substitute " +
+			"WHERE id = :ID; ")
 	public void update(@BindBean DReading reading);
 }

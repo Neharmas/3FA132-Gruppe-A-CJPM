@@ -1,8 +1,5 @@
 package model;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
 import dev.hv.db.model.DCustomer;
 import dev.hv.db.model.DReading;
 import org.junit.jupiter.api.DisplayName;
@@ -12,6 +9,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.TestMethodOrder;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @TestInstance(Lifecycle.PER_CLASS) //otherwise 'static' would be required to update/use same value in multiple tests
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -28,18 +27,6 @@ public class testDReading {
     private Boolean substitute = false;
     private Long dateofreading = 211222L;
 
-
-    private String newcomment = "newtestcomment";
-
-    private Long newid = 7L;
-
-    private DCustomer newcustomer = new DCustomer();
-    private String newkindofmeter = "newtestmeter";
-    private double newmetercount = 6;
-    private String newmeterId = "5";
-    private Boolean newsubstitute = true;
-    private Long newdateofreading = 110521L;
-
     private DReading[] DReadings = {null, null, null};
 
     @Test
@@ -49,54 +36,32 @@ public class testDReading {
     {
         DReadings[0] = new DReading();
         assertNotNull(DReadings[0]);
-
+        
         DReadings[1] = new DReading(id, comment, customer, kindofmeter, metercount, meterId, substitute, dateofreading);
         assertNotNull(DReadings[1]);
 
         DReadings[2] = new DReading(comment, customer, kindofmeter, metercount, meterId, substitute, dateofreading);
         assertNotNull(DReadings[2]);
     }
-
     @Test
     @Order(2)
-    @DisplayName("Test all setters")
-    public void test_setter()
+    @DisplayName("Test Equals")
+    public void test_equals()
     {
-        for(int i = 0; i<DReadings.length; i++)
-        {
-            // arrange / act
-            DReadings[i].setId(newid);
-            DReadings[i].setComment(newcomment);
-            DReadings[i].setCustomer(newcustomer);
-            DReadings[i].setKindofmeter(newkindofmeter);
-            DReadings[i].setMetercount(newmetercount);
-            DReadings[i].setMeterid(newmeterId);
-            DReadings[i].setSubstitute(newsubstitute);
-            DReadings[i].setDateofreading(newdateofreading);
-
-            // assert
-            assertEquals(newid, DReadings[i].getId());
-            assertEquals(newcomment, DReadings[i].getComment());
-            assertEquals(newcustomer, DReadings[i].getCustomer());
-            assertEquals(newkindofmeter, DReadings[i].getKindofmeter());
-            assertEquals(newmetercount, DReadings[i].getMetercount());
-            assertEquals(newmeterId, DReadings[i].getMeterid());
-            assertEquals(newsubstitute, DReadings[i].getSubstitute());
-            assertEquals(newdateofreading, DReadings[i].getDateofreading());
-        }
+        assertFalse(DReadings[0].equals(DReadings[1]));
+        DReadings[2].setID(id);
+        assertTrue(DReadings[1].equals(DReadings[2]));
     }
 
     @Test
-    @Order(2)
-    @DisplayName("Test print Date of Reading")
+    @Order(3)
+    @DisplayName("Test Print Date Of Reading")
     public void test_printDateOfReading()
     {
-        // Wait for Function to be written
-        for(int i = 0; i<DReadings.length; i++)
+        for(int i = 1; i<DReadings.length; i++)
         {
-            String result = null;
-            assertEquals(result, DReadings[i].printDateofreading());
-
+            String result = DReadings[i].getDateOfReading().toString();
+            assertEquals(result, DReadings[i].printDateOfReading());
         }
     }
 }

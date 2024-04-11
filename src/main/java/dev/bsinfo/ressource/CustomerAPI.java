@@ -6,10 +6,10 @@ import dev.hv.db.model.DCustomer;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 
+import jakarta.ws.rs.core.Response;
 import org.jdbi.v3.core.Handle;
 import org.jdbi.v3.core.Jdbi;
 
-import java.io.InputStream;
 import java.util.List;
 
 @Path("customer")
@@ -27,14 +27,7 @@ public class CustomerAPI {
 
         customerDAO = handle.attach(CustomerDAO.class);
     }
-
-    @GET
-    @Path("form")
-    @Produces(MediaType.TEXT_HTML)
-    public InputStream getForm() {
-        return getClass().getClassLoader().getResourceAsStream("customer-form.html");
-    }
-
+    
     /**
      * Updates an user with the given id in the database
      * @param customer
@@ -44,49 +37,62 @@ public class CustomerAPI {
     @Path("edit")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
-    public DCustomer edit(DCustomer customer) {
-        if (customerDAO.findById(customer.getId()) == null) {
-            System.out.println("Couldn't find customer with id: " + customer.getId());
-            return null;
+    public Response edit(DCustomer customer) {
+        if (customerDAO.findById(customer.getID()) == null) {
+            System.out.println("Couldn't find customer with id: " + customer.getID());
+            //return null;
+            return Response.serverError().entity("Couldn't find Customer with id:" + customer.getID()).build();
         }
         else {
             customerDAO.update(customer);
             System.out.println("Updated customer " + customer.toString());
-            return customer;
+            return Response.ok(customer, MediaType.APPLICATION_JSON).build();
         }
     }
 
     @GET
     @Path("get/all")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<DCustomer> getAll()
+    public Response getAll()
     {
-        return customerDAO.getAll();
+        return Response.ok(customerDAO.getAll(), MediaType.APPLICATION_JSON).build();
     }
 
     @GET
     @Path("get/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public DCustomer get(@PathParam("id") Long id)
-    {
-        return customerDAO.findById(id);
+    public Response get(@PathParam("id") Long id) {
+
+        DCustomer c = customerDAO.findById(id);
+        System.out.println(c);
+
+        if (c == null) {
+            return  Response.serverError().entity("Couldn't find Customer with ID: " + id).build();
+        } else {
+            return  Response.ok(c, MediaType.APPLICATION_JSON).build();
+        }
+
     }
 
     @POST
     @Path("create")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
-    public DCustomer create(DCustomer cus)
+    public Response create(DCustomer cus)
     {
         customerDAO.insert(cus);
-        return cus;
+        Long lastID = customerDAO.getLastInsertedId().longValue();
+        cus.setID(lastID);
+        
+        return Response.ok(cus, MediaType.APPLICATION_JSON).build();
     }
 
-    @GET
+    @DELETE
     @Path("delete/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public void delete(@PathParam("id") Long id)
+    public Response delete(@PathParam("id") Long id)
     {
-        customerDAO.delete(id);
+        boolean i = customerDAO.delete(id);
+        return Response.ok(i, MediaType.APPLICATION_JSON).build(); //Todo usually this method should return <id> if deleted and smth like 0 if not but rn it just returns the id
     }
 }
