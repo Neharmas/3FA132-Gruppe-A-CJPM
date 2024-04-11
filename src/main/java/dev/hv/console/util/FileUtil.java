@@ -1,5 +1,6 @@
 package dev.hv.console.util;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.BufferedWriter;
@@ -24,17 +25,7 @@ public class FileUtil {
         //without the last part behind the last / [so that /target/test.txt becomes /target]
         File onlyPath = new File(String.join("/", split));
         System.out.println("P: " + onlyPath);
-        System.out.println(onlyPath.mkdirs());
-
-
-        /*File parentDir = file.getParentFile();
-        System.out.println(parentDir);
-
-        if (parentDir != null && !parentDir.exists()) {
-            if (!parentDir.mkdirs()) { // mkdirs() creates all necessary parent directories
-                throw new IOException("Failed to create parent directories for: " + filePath);
-            }
-        }*/
+        System.out.println("Created Folders For File: " + onlyPath.mkdirs());
     }
     public static void writeFile(String content, String filename) throws IOException {
         //The filename could be a path, which is bad af....
@@ -207,4 +198,29 @@ public class FileUtil {
         add("substitute");
         add("dateofreading");
     }};
+
+    public static void exportTableToXMLFile(JSONArray table, String tableName, String filename) throws IOException {
+        //String layouted = FileUtil.layoutXML(table);
+        String convertedXML = Converter.convertJSONToXML(table, tableName);
+        FileUtil.writeFile(convertedXML, filename);
+    }
+
+    public static void exportTableToJSONFile(JSONArray table, String filename) throws IOException {
+        FileUtil.writeFile(table.toString(), filename);
+    }
+
+    public static void exportTableToConsole(JSONArray table) throws IOException {
+        String convertedTxt = Converter.convertJSONToTXT(table);
+        System.out.println(convertedTxt);
+    }
+
+    public static void exportTableToCSV(JSONArray table, String filename) throws IOException {
+        String convertedCSV = Converter.convertJSONToCSV(table, filename);
+        FileUtil.writeFile(convertedCSV, filename);
+    }
+
+    public static void exportTableToTxt(JSONArray table, String filename) throws IOException {
+        String convertedTxt = Converter.convertJSONToTXT(table);
+        FileUtil.writeFile(convertedTxt, filename);
+    }
 }

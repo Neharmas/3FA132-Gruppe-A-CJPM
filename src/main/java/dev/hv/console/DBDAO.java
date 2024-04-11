@@ -18,14 +18,9 @@ import java.util.Map;
 public class DBDAO {
     private final DBConnect db = DBConnect.getConnection();
 
-    private JSONArray listMapToJSON(List<Map<String, Object>> table) {
-        JSONArray json = new JSONArray(table);
-        return json;
-    }
-
     public JSONArray listmap_to_json_string(List<Map<String, Object>> list)
     {
-        JSONArray json_arr=new JSONArray();
+        JSONArray json_arr = new JSONArray();
         for (Map<String, Object> map : list) {
             JSONObject json_obj=new JSONObject();
             for (Map.Entry<String, Object> entry : map.entrySet()) {
@@ -43,13 +38,9 @@ public class DBDAO {
         return json_arr;
     }
     JSONArray readTable(String tablename) {
+        
         List<Map<String, Object>> table = db.readTable(tablename);
         JSONArray table_json = listmap_to_json_string(table);
-        //JSONArray tableListJSON = listMapToJSON();
-        //String buildString = "{" + tablename + ": " + tableListJSON + "}";
-        //System.out.println(buildString);
-
-        System.out.println(table_json);
         return table_json;
     }
 

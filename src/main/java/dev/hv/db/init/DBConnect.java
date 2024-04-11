@@ -118,7 +118,7 @@ public class DBConnect implements IDbConnect{
 	}
 	
 	public void createCustomerTable() {
-		final Handle handle = jdbi.open();
+		final Handle handle = getJdbi().open();
 		
 		handle.execute("CREATE TABLE IF NOT EXISTS Customer ("
 				+ "id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,"
@@ -129,7 +129,7 @@ public class DBConnect implements IDbConnect{
 	}
 	
 	public void createUserTable() {
-		final Handle handle = jdbi.open();
+		final Handle handle = getJdbi().open();
 		
 		handle.execute("CREATE TABLE IF NOT EXISTS User ("
 				+ "id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,"
@@ -142,7 +142,7 @@ public class DBConnect implements IDbConnect{
 	}
 	
 	public void createReadingTable() {
-		final Handle handle = jdbi.open();
+		final Handle handle = getJdbi().open();
 		
 		handle.execute("CREATE TABLE IF NOT EXISTS Reading ("
 				+ "id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,"
@@ -173,14 +173,14 @@ public class DBConnect implements IDbConnect{
 	public void createSpecifiedTable(String tablename, String[] columnNames, String[] columnType, String[] constrains) {
 		String columnSpecification = buildColumnsSpecification(columnNames, columnType, constrains);
 
-		final Handle handle = jdbi.open();
+		final Handle handle = getJdbi().open();
 		handle.execute("CREATE TABLE IF NOT EXISTS " + tablename + columnSpecification );
 		
 		handle.close();
 	}
 
 	public List<Map<String, Object>> readTable(String tablename) {
-		final Handle handle = jdbi.open();
+		final Handle handle = getJdbi().open();
 		List<Map<String, Object>> res = handle.select("SELECT * FROM " + tablename + ";").mapToMap().list();
 		handle.close();
 		
@@ -188,7 +188,7 @@ public class DBConnect implements IDbConnect{
 	}
 	
 	public String readTableAsMap(String tablename) {
-		final Handle handle = jdbi.open();
+		final Handle handle = getJdbi().open();
 		//Map<String, Object> res = handle.select("SELECT * FROM " + tablename + ";").toString();
 		String res = handle.select("SELECT * FROM " + tablename + ";").toString();
 		handle.close();

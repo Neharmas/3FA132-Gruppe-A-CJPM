@@ -1,17 +1,34 @@
 package dev.hv.console;
 
-import dev.hv.console.util.NoValidTableNameException;
+import dev.hv.console.exceptions.InvalidArgumentException;
+import dev.hv.console.exceptions.NoValidFileNameException;
+import dev.hv.console.exceptions.NoValidFormatException;
+import dev.hv.console.exceptions.NoValidTableNameException;
+import dev.hv.console.util.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class ArgsParser {
+    ArrayList<String> preprocessArguments(String[] args) throws InvalidArgumentException {
+        if (!validateNumberOfArgs(args)) {
+            throw new InvalidArgumentException("");
+        }
+        return convertStringArgsToArrayList(args);
+    }
     /**
      * Parses the arguments and filters the Filename behind the --output=/-o or --input=/-i
-     * @param providedArgs
+     * @param args
      * @return the filename or "NoFileNameProvided"
      */
-    String getValidFileName(ArrayList<String> providedArgs) {
+    private boolean validateNumberOfArgs(String[] args) {
+        int empty = 0;
+        int tooMany = 5;
+        return (args.length != empty) && (args.length <= tooMany);
+    }
+
+    public static String getValidFileName(ArrayList<String> providedArgs) throws NoValidFileNameException {
         String filename;
         int c = 0;
         for (String entry: providedArgs) {
@@ -33,21 +50,16 @@ public class ArgsParser {
             }
             c++;
         }
-        return "NoFilenameProvided";
+        throw new NoValidFileNameException("No Valid Fil Name Provided");
     }
 
-    String getValidFileFlag(ArrayList<String> providedArgs) {
-        ArrayList<String> validFileFlags = new ArrayList<>();
-        validFileFlags.add("-c");
-        validFileFlags.add("-j");
-        validFileFlags.add("-x");
-        validFileFlags.add("-t");
-        for (String entry : providedArgs) {
-            if (validFileFlags.contains(entry)) {
-                return entry;
+    public static FileFormat getValidFileFlag(ArrayList<String> providedArgs) throws NoValidFormatException {
+        for (FileFormat format : FileFormat.values()) {
+            if (providedArgs.contains(format.getFlag())) {
+                return format;
             }
         }
-        return "NoFlagProvided";
+        throw new NoValidFormatException("No Valid Format was found in your arguments.");
     }
 
     private String getValidFileExtension(String filename) {
@@ -72,18 +84,14 @@ public class ArgsParser {
      * @throws NoValidTableNameException if there was no valid tablename provided (in the args)
      */
     static String getValidTableNameIfExists(ArrayList<String> args) throws NoValidTableNameException {
-        ArrayList<String> validTableNames = new ArrayList<String>();
-        validTableNames.add("Customer");
-        validTableNames.add("User");
-        validTableNames.add("Reading");
         for (String entry : args) {
-            for (String tableName: validTableNames) { // use validTableNames.size() instead if time for more generical use
-                if (entry.equalsIgnoreCase(tableName)) { // THIS IS NOT AT ALL A GOOD CHECK OR ... ANYHTING
-                    return tableName;
+            for (Table tableName: Table.values()) { // use validTableNames.size() instead if time for more generical use
+                if (entry.equalsIgnoreCase(tableName.toString())) { // THIS IS NOT AT ALL A GOOD CHECK OR ... ANYHTING
+                    return tableName.toString();
                 }
             }
         }
-        throw new NoValidTableNameException("Could not find a tablename. please use one of " + validTableNames.toString());
+        throw new NoValidTableNameException("Could not find a tablename. please use one of " + Arrays.toString(Table.values()));
     }
 
     ArrayList<String> convertStringArgsToArrayList(String[] args) {

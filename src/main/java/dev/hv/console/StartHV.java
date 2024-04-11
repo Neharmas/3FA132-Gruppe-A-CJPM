@@ -1,12 +1,8 @@
 package dev.hv.console;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.*;
 
-import dev.hv.console.util.FileUtil;
-import dev.hv.console.util.NoValidTableNameException;
-import org.jdbi.v3.core.Jdbi;
+import dev.hv.console.exceptions.InvalidArgumentException;
 
 import dev.bsinfo.server.RESTServer;
 
@@ -29,10 +25,9 @@ import dev.bsinfo.server.RESTServer;
  */
 
 public class StartHV {
-	private int requiredArgsDelete = 1;
 	private DBDAO dbdao;
-	private FileUtil fileUtil;
-	private Jdbi jdbi;
+	RESTServer server;
+
 	private String[] originalArgs;
 	private ArrayList<String> convertedArgs;
 	private ArgsParser argsParser;
@@ -42,166 +37,79 @@ public class StartHV {
 	}
 
 	private void initialize(String[] args) {
-		this.fileUtil = new FileUtil();
 		this.argsParser = new ArgsParser();
 		this.dbdao = new DBDAO();
 
-		this.jdbi = dbdao.getDb().getJdbi();
 		this.originalArgs = args;
 
 		this.startRESTServer();
+		convertAndRunArguments();
 	}
 
-	boolean preprocessArguments() {
-		if (!validateNumberOfArgs(originalArgs)) {
-			return false;
-		}
-		convertedArgs = argsParser.convertStringArgsToArrayList(originalArgs);
-		return true;
-	}
 
-	/**
-	 * Basically the "real" main-function of this class. Initializes and starts everything and then reads the passed arguments.
-	 * @return 0 if something expected didnt work (mostly input-errors; help was printed most likely). 1 if everything went smooth and -1 in other cases.
-	 */
-	private int runArguments() {
-		//DUMMY-SHIT for the fun.
-		/*
-		this.deleteAllTables(); //WHY...
-
-		dbdao.createAllTables();
-		dbdao.insertTestData();
-
-		JSONObject user, customer, reading = new JSONObject();
-		user = dbdao.readTable("User");
-		customer = dbdao.readTable("Customer");
-		reading = dbdao.readTable("Reading");
-
-		this.exportTableToConsole(reading);
-		this.exportTableToCSV(reading, "reading.csv");
-		this.exportTableToTxt(reading, "reading.txt");
-		this.exportTableToXML(reading, "reading.xml");*/
-
-		System.out.println(Arrays.toString(originalArgs));
-
+	private void convertAndRunArguments() {
 		try {
+			convertedArgs = argsParser.preprocessArguments(originalArgs);
 			processOption(convertedArgs);
-		} catch (NoValidTableNameException e) {
-			e.printStackTrace(); //jesus, if we create more exceptions and cascade them harder, we might make the bad-programmer-god edge.
-		} catch (IOException ex) {
-			System.out.println("An IOException occured while executing your command (this probably means the writing failed.)");
-			ex.printStackTrace();
-			return -1;
+		} catch (InvalidArgumentException e) {
+			System.out.println("Could not run arguments due to a converting error. " +
+					"Did you pass the correct arguments? Try running help");
 		}
-		return 1;
+
 	}
 
 	/**
 	 * Determin which function path to take
 	 * @param convertedArgs
-	 * @throws IOException
 	 */
-	private void processOption(ArrayList<String> convertedArgs) throws IOException, NoValidTableNameException {
+	private void processOption(ArrayList<String> convertedArgs) {
 		if (convertedArgs.contains("export")) {
 			Exporter ex = new Exporter(argsParser, dbdao);
-			if (!ex.processExport(convertedArgs)) help();
+			ex.process(convertedArgs);
 		} else if (convertedArgs.contains("import")) {
 			Importer imp = new Importer(argsParser, dbdao);
-			imp.processImport(convertedArgs);
+			imp.process(convertedArgs);
 		} else if (convertedArgs.contains("-h") || convertedArgs.contains("--help"))
 			help();
 		else if (convertedArgs.contains("delete"))
 			deleteAllTables();
 	}
 
-	private boolean validateNumberOfArgs(String[] args) {
-		int empty = 0;
-		int tooMany = 5;
-        return (args.length != empty) && (args.length <= tooMany);
-	}
 
-	private int loop() {
+
+	private void loop() {
 		Scanner scanner = new Scanner(System.in);
 		try {
 			while (true) {
 				System.out.println("Please input new parameters or type exit:");
-				long then = System.currentTimeMillis();
 				String line = scanner.nextLine();
-				long now = System.currentTimeMillis();
-				System.out.printf("Waited %.3fs for user input%n", (now - then) / 1000d);
 				System.out.printf("User input was: %s%n", line);
 				if (line.equalsIgnoreCase("exit")) {
 					server.close();
-					return 0;} //THis doesnt close the server thus no exit? - yes.
+					return;
+				}
 
 				originalArgs = line.split(" ");
-				if (!preprocessArguments()) {
-					help();
-				} else {
-					runArguments();
-				}
-				//re-init the cli (this is so dumb)
+
+				convertAndRunArguments();
+
 			}
 		} catch(IllegalStateException | NoSuchElementException e) {
 			// System.in has been closed
 			System.out.println("System.in was closed; exiting");
-			return 1;
 		}
 	}
 
-	RESTServer server;
 	private void startRESTServer() {
-		server = RESTServer.getInstance();
-		server.run();
+		this.server = RESTServer.getInstance();
+		this.server.run();
 	}
 
 	public static void main(String[] args) {
 		StartHV c = new StartHV();
 		c.initialize(args);
-		if (!c.preprocessArguments()) c.help();
-		else c.runArguments();
 		c.loop();
 	}
-
-
-
-	private ArrayList<String> requiredParamsDelete = new ArrayList<String>() {{ 
-		// add("-d");
-		add("--delete");
-	}};
-
-	private int requiredArgsHelp= 1;
-	private ArrayList<String> requiredParamsHelp = new ArrayList<String>() {{ 
-		add("-h");
-		// add("--help");
-	}};
-
-	private int requiredArgsExport = 3;
-	private ArrayList<String> requiredParamsExport = new ArrayList<String>() {{ 
-		//+ <tableName>
-		add("export");
-		add("-o"); // with <fileOut>
-		add("--output=");
-	}};
-
-	private int requiredArgsImport = 3;
-	private ArrayList<String> requiredParamsImport = new ArrayList<String>() {{ 
-		//+ <tableName>
-		add("import");
-		add("-i"); // with <fileIn>
-		add("--input=");
-	}};
-
-	private int minFlags = 0;
-	private int maxFlags = 1;
-
-	/*
-	private void runHelpOrDelete(ArrayList<String> convertedArgs) {
-		if (convertedArgs.contains("--delete")) 
-			deleteAllTables();
-		else 
-			help();
-	}*/
 
 	public void help() {
 		String helpHeader = "GruppeA \t cli-rest-client \t " + System.getProperty("java.version") + "\n";
@@ -223,14 +131,5 @@ public class StartHV {
 	public void deleteAllTables() {
 		dbdao.removeAllTables();
 		System.out.println("purged all Tables");
-	}
-
-	public File exportTable() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public void importTable(File inputfile) {
-		// TODO Auto-generated method stub
 	}
 }

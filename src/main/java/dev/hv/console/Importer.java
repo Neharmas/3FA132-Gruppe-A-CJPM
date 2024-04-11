@@ -3,15 +3,15 @@ package dev.hv.console;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.opencsv.CSVReader;
-import com.opencsv.bean.CsvToBean;
-import com.opencsv.bean.HeaderColumnNameTranslateMappingStrategy;
+import com.opencsv.bean.CsvToBeanBuilder;
+import dev.hv.console.exceptions.NoValidFileNameException;
+import dev.hv.console.exceptions.NoValidFormatException;
+import dev.hv.console.exceptions.NoValidTableNameException;
+import dev.hv.console.util.FileFormat;
 import dev.hv.console.util.FileUtil;
-import dev.hv.console.util.NoValidTableNameException;
-import dev.hv.db.dao.CustomerDAO;
 import dev.hv.db.model.DCustomer;
 import dev.hv.db.model.DReading;
 import dev.hv.db.model.DUser;
-import dev.hv.db.model.IDCustomer;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -20,32 +20,57 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 
-public class Importer {
-    private DBDAO dbdao;
-    private ArgsParser argsParser;
+public class Importer implements Command {
+    private final DBDAO dbdao;
+    String tableName = null;
+    String fileName = ""; //this currently is the whole path idk how much i like this.
+    FileFormat format;
+    ArrayList<String> args;
+
     Importer(ArgsParser argsParser, DBDAO dbdao) {
-        this.argsParser = argsParser;
         this.dbdao = dbdao;
     }
-    boolean processImport(ArrayList<String> args) throws IOException, NoValidTableNameException {
-        // check if tablename valid
-        String tableName = ArgsParser.getValidTableNameIfExists(args);
 
-        // size = 2 -> exportTableToConsole
-        /*
-        if (args.size() == 2) {
-            exportTableToConsole(table);
-        }*/
-        // flags provided ?-> abort : exportTable
-        if (argsParser.flagProvided(args)) {
-            String filename;
-            filename = this.argsParser.getValidFileName(args);
-            System.out.println("F-name: " + filename);
-            if (filename.equals("NoFilenameProvided")) {
-                System.out.println("Please provide a filename!");
+    /**
+     * this can be smartified by better generalization
+     * @return
+     */
+    @Override
+    public boolean checkArguments() {
+        try {
+            tableName = ArgsParser.getValidTableNameIfExists(args);
+            fileName = ArgsParser.getValidFileName(args);
+            format = ArgsParser.getValidFileFlag(args);
+            if (format == FileFormat.TXT) {
+                System.out.println("File Format .txt is not valid for imports.");
                 return false;
             }
-            importTable(args, tableName, filename);
+        } catch (NoValidTableNameException e) {
+            System.out.println("Could not process export. No valid table name provided. Exiting");
+            return false;
+        } catch (NoValidFileNameException e) {
+            System.out.println("Could not process export. No valid file name provided. Exiting.");
+            return false;
+        } catch (NoValidFormatException e) {
+            System.out.println("Could not process export. No valid file Format provided. Exiting.");
+            return false;
+        }
+
+        return true;
+
+    }
+
+    @Override
+    public boolean process(ArrayList<String> args) {
+        /*TODO THIS COULD GO INTO super()*/
+        // check if tablename valid
+        this.args = args;
+        if (!checkArguments()) return false;
+        try {
+            importTable(args, tableName, fileName);
+        } catch (IOException e) {
+            System.out.println("Could not write the table due to an IOException. Are you lacking permissions?");
+            return false;
         }
         return true;
     }
@@ -56,45 +81,72 @@ public class Importer {
         List<String[]> allLines = csvReader.readAll();
         allLines.removeFirst(); //The first line is the header
 
-        //todo zu verschachtelt gaeafasefarfqa
+        /*if only there was a way of not wri    ting the same code 3 times [nah i am kidding, honestly, generics suck ass too and are no fun to implement AT ALL. But we can if you guys want.]*/
         switch (table) {
             case "User":
-                for (String[] lines : allLines) {
-                    //breaks down the size-1-array into an actual array
-                    //(lines look like [id; lastname; firstname] for _some_ reason)
-                    lines = lines[0].split("; ");
-                    DUser user = new DUser(lines[1], lines[2], lines[3], lines[4]);
-                    dbdao.insertUser(user);
+                for (String[] line: allLines) {
+                    dbdao.insertUser(new DUser(line[0], line[1], line[3], line[4])); //why is the id index 2?
                 }
                 break;
             case "Customer":
-                //there _should_ be a smarter/better way for this by just generating beans from the csv but honestly that didnt
-                //work out of the box and this does.
-                for (String[] lines : allLines) {
-                    //breaks down the size-1-array into an actual array
-                    //(lines look like [id; lastname; firstname] for _some_ reason)
-                    lines = lines[0].split("; ");
-                    System.out.println(lines[0]);
-                    DCustomer customer = new DCustomer(lines[1], lines[2]);
-                    dbdao.insertCustomer(customer);
+                for (String[] line: allLines) {
+                    dbdao.insertCustomer(new DCustomer(line[0], line[2])); //why is the id index 1?
                 }
                 break;
             case "Reading":
-                for (String[] lines : allLines) {
-                    //breaks down the size-1-array into an actual array
-                    //(lines look like [id; lastname; firstname] for _some_ reason)
-                    lines = lines[0].split("; ");
-                    //TODO this is not a job for today. To post the readings we will probalby have to filter the reading-csv a bit differnt than we do for customer and user but since the file-formats are wrong already (I would have to check them now, too; specifially the xml because the export EXPORTS a wrong-formatted xml; should be easy tho.), I really dont want to do this today.
-                    //DReading reading = new DReading(lines[1], lines[2], lines[3], lines[4]);
-                    //dbdao.insertReading(reading);
+                for (String[] line: allLines) {
+                    //TODO this is obviously wrong but idc
+                    dbdao.insertReading(new DReading(line[3], new DCustomer(Long.parseLong(line[7]), "", ""),
+                            line[5], Double.parseDouble(line[0]),
+                            line[2], Boolean.parseBoolean(line[6]), Long.parseLong(line[1]))); //why is the id index 1?
                 }
                 break;
         }
     }
 
     private void importTableFromText(String filename, String table) throws IOException {
-        System.out.println("Please implement me, Senpai!");
+        JSONArray jsonArray = new JSONArray();
+        BufferedReader reader = new BufferedReader(new FileReader(filename)); // Read the .txt file
+
+        String line;
+        while ((line = reader.readLine()) != null) {
+            JSONObject object = new JSONObject();
+
+            String[] keyValuePairs = line.split("\\|"); // Split by your chosen separator
+            for (String pair : keyValuePairs) {
+                String[] keyValue = pair.split("\\s*:\\s*"); // Split key-value at ":"
+                if (keyValue.length == 2) {
+                    object.put(keyValue[0].trim(), keyValue[1].trim());
+                }
+            }
+
+            jsonArray.put(object);
+        }
+
+        reader.close();
+        //return jsonArray;
+        //turn json to table:
+
+        ObjectMapper mapper = new ObjectMapper();
+        for (int c = 0; c < jsonArray.length(); c++) {
+            JSONObject object = jsonArray.getJSONObject(c);
+            switch (table) {
+                case "User":
+                    DUser user = mapper.readValue(object.toString(), DUser.class);
+                    dbdao.insertUser(user);
+                    break;
+                case "Customer":
+                    DCustomer customer = mapper.readValue(object.toString(), DCustomer.class);
+                    dbdao.insertCustomer(customer);
+                    break;
+                case "Reading":
+                    DReading reading = mapper.readValue(object.toString(), DReading.class);
+                    dbdao.insertReading(reading);
+                    break;
+            }
+        }
     }
+
 
     private void importTableFromXML(String filename, String table) throws IOException {
         XmlMapper mapper = new XmlMapper();
@@ -150,18 +202,19 @@ public class Importer {
 
 
     public void importTable(ArrayList<String> convertedArgs, String table, String filename) throws IOException {
-        switch(this.argsParser.getValidFileFlag(convertedArgs)) {
-            case "-c":
+        switch (format) {
+            case CSV:
                 importTableFromCSV(filename, table);
                 break;
-            case "-x":
+            case XML:
                 importTableFromXML(filename, table);
                 break;
-            case "-t":
-                importTableFromText(filename, table);
+            case TXT:
+               importTableFromText(filename, table);
                 break;
-            case "-j":
-            default: importTableFromJSON(filename, table);
+            case JSON:
+            default:
+                importTableFromJSON(filename, table);
         }
     }
 
