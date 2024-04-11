@@ -1,0 +1,31 @@
+<?xml version='1.1' encoding='UTF-8'?>
+<Users>
+  <item>
+    <id>1</id>
+    <lastname>Fittler</lastname>
+    <firstname>Arnold</firstname>
+    <token>12345</token>
+    <password>123456</password>
+  </item>
+  <item>
+    <id>2</id>
+    <lastname>Franziska</lastname>
+    <firstname>Anne</firstname>
+    <token>88420</token>
+    <password>66699</password>
+  </item>
+  <item>
+    <id>3</id>
+    <lastname>Gandhi</lastname>
+    <firstname>Mahatma</firstname>
+    <token>112</token>
+    <password>42</password>
+  </item>
+  <item>
+    <id>4</id>
+    <lastname>Moses</lastname>
+    <firstname>Hannes</firstname>
+    <token>777</token>
+    <password>100</password>
+  </item>
+</Users>

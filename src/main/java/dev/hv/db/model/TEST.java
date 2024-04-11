@@ -15,7 +15,7 @@ import dev.hv.db.dao.UserDAO;
 import dev.hv.db.init.DBConnect;
 
 public class TEST {
-	/*
+
 	public static void main(String[] args) {
 		Jdbi jdbi = DBConnect.getConnection().getJdbi();
 		jdbi.installPlugins();
@@ -29,6 +29,7 @@ public class TEST {
 		System.out.println("CRATED.");
 		
 		//HANDLE FOR CUSTOMER //TEST FOR CUSTOMER
+
 		Handle handle = jdbi.open();
 		final CustomerDAO customer_dao = handle.attach(CustomerDAO.class);
 		
@@ -41,7 +42,8 @@ public class TEST {
 			System.out.println(c.toString());
 		}
 		handle.close();
-		
+
+
 		//HANDLE FOR READING //TEST FOR READING
 		Handle handle2 = jdbi.open();
 		handle2.registerRowMapper(ConstructorMapper.factory(DReading.class));
@@ -74,9 +76,9 @@ public class TEST {
 		//DBConnect.getConnection().createAllTables();	
 		//DBConnect.getConnection().insertTestData();
 		
-		/*List<DReading> cList = dao.getAll();
+		//List<DReading> rList = dao.getAll();
 		
-		for (DReading c: cList) {
+		/*for (DReading c: rList) {
 			System.out.println(c.toString());
 		}*/
 		
@@ -84,7 +86,7 @@ public class TEST {
 		
 		//dao.insert(test);
 		//runQuery("SELECT * from reading");
-	/*}
+	}
 
 	public static void runQuery(String q) {
 		Handle handle = DBConnect.getConnection().getJdbi().open();
@@ -98,6 +100,4 @@ public class TEST {
 			
 			handle.close();
 	}
-	
-	*/
 }

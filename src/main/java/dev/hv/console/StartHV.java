@@ -130,7 +130,9 @@ public class StartHV {
 				long now = System.currentTimeMillis();
 				System.out.printf("Waited %.3fs for user input%n", (now - then) / 1000d);
 				System.out.printf("User input was: %s%n", line);
-				if (line.equalsIgnoreCase("exit")) { return 0;}
+				if (line.equalsIgnoreCase("exit")) {
+					server.close();
+					return 0;} //THis doesnt close the server thus no exit? - yes.
 
 				originalArgs = line.split(" ");
 				if (!preprocessArguments()) {
@@ -147,8 +149,9 @@ public class StartHV {
 		}
 	}
 
+	RESTServer server;
 	private void startRESTServer() {
-		RESTServer server = RESTServer.getInstance();
+		server = RESTServer.getInstance();
 		server.run();
 	}
 

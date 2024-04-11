@@ -28,7 +28,7 @@ public class DCustomer implements IDCustomer, Comparable<DCustomer>{
 	public DCustomer() {
 
 	}
-	@ConstructorProperties({ "lastname", "firstname" })
+	//@ConstructorProperties({ "lastname", "firstname" })
 	public DCustomer(final String lastname, final String firstName) {
 		this.lastname = lastname;
 		this.firstname = firstName;

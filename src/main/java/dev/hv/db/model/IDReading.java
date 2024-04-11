@@ -1,6 +1,6 @@
 package dev.hv.db.model;
 
-public interface IDReading {
+public interface IDReading { //swhy isnt this comparable??
 
 	String getComment();
 	
@@ -22,7 +22,7 @@ public interface IDReading {
 	
 	void setComment(String comment);
 	
-	void setCustomer(IDCustomer customer);
+	void setCustomer(DCustomer customer);
 	
 	void setDateofreading(Long dateOfReading);
 	

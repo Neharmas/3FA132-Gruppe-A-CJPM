@@ -9,6 +9,7 @@ import dev.hv.db.model.DReading;
 import dev.hv.db.model.DUser;
 import org.jdbi.v3.core.Handle;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.List;
@@ -21,15 +22,35 @@ public class DBDAO {
         JSONArray json = new JSONArray(table);
         return json;
     }
-    JSONObject readTable(String tablename) {
-        JSONArray tableListJSON = listMapToJSON(db.readTable(tablename));
 
-        String buildString = "{" + tablename + ": " + tableListJSON + "}";
+    public JSONArray listmap_to_json_string(List<Map<String, Object>> list)
+    {
+        JSONArray json_arr=new JSONArray();
+        for (Map<String, Object> map : list) {
+            JSONObject json_obj=new JSONObject();
+            for (Map.Entry<String, Object> entry : map.entrySet()) {
+                String key = entry.getKey();
+                Object value = entry.getValue();
+                try {
+                    json_obj.put(key,value);
+                } catch (JSONException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
+            json_arr.put(json_obj);
+        }
+        return json_arr;
+    }
+    JSONArray readTable(String tablename) {
+        List<Map<String, Object>> table = db.readTable(tablename);
+        JSONArray table_json = listmap_to_json_string(table);
+        //JSONArray tableListJSON = listMapToJSON();
+        //String buildString = "{" + tablename + ": " + tableListJSON + "}";
         //System.out.println(buildString);
 
-        JSONObject wholeTableJSON = new JSONObject(buildString);
-
-        return wholeTableJSON;
+        System.out.println(table_json);
+        return table_json;
     }
 
     void insertCustomer(DCustomer customer) {
