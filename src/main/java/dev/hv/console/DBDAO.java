@@ -47,32 +47,28 @@ public class DBDAO {
 
     LinkedHashMap<String, Object> readTable(String tablename) {
         LinkedHashMap<String, Object> table = new LinkedHashMap<>();
-        Response response = null;
-        ArrayList<?> arrayList = null;
-        
+        Response response;
+
         switch (tablename) {
             case "Customer":
                 response = new CustomerAPI().getAll();
-                arrayList = (ArrayList<?>) response.getEntity();
-                for (Object obj : arrayList) {
-                    DCustomer c = (DCustomer) obj;
-                    table.put(String.valueOf(c.getID()), c);
+                ArrayList<DCustomer> customerList = (ArrayList<DCustomer>) response.getEntity();
+                for (DCustomer obj : customerList) {
+                    table.put(String.valueOf(obj.getID()), obj);
                 }
                 break;
             case "User":
                 response = new UserAPI().getAll();
-                arrayList = (ArrayList<?>) response.getEntity();
-                for (Object obj : arrayList) {
-                    DUser u = (DUser) obj;
+                ArrayList<DUser> users = (ArrayList<DUser>) response.getEntity();
+                for (DUser u : users) {
                     table.put(String.valueOf(u.getID()), u);
                 }
                 break;
             case "Reading":
                 response = new ReadingAPI().getAll();
-                arrayList = (ArrayList<?>) response.getEntity();
-                for (Object obj : arrayList) {
-                    DReading r = (DReading) obj;
-                    table.put(String.valueOf(r.getID()), r);
+                ArrayList<DReading> readings= (ArrayList<DReading>) response.getEntity();
+                for (DReading reading : readings) {
+                    table.put(String.valueOf(reading.getID()), reading);
                 }
                 break;
             default:

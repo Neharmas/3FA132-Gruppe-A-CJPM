@@ -3,7 +3,6 @@ package dev.hv.console;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.opencsv.CSVReader;
-import com.opencsv.bean.CsvToBeanBuilder;
 import dev.bsinfo.ressource.CustomerAPI;
 import dev.bsinfo.ressource.ReadingAPI;
 import dev.bsinfo.ressource.UserAPI;
@@ -11,7 +10,6 @@ import dev.hv.console.exceptions.NoValidFileNameException;
 import dev.hv.console.exceptions.NoValidFormatException;
 import dev.hv.console.exceptions.NoValidTableNameException;
 import dev.hv.console.util.FileFormat;
-import dev.hv.console.util.FileUtil;
 import dev.hv.db.model.DCustomer;
 import dev.hv.db.model.DReading;
 import dev.hv.db.model.DUser;
@@ -39,43 +37,41 @@ public class Importer implements Command {
      * @return
      */
     @Override
-    public boolean checkArguments() {
+    public boolean loadArguments() {
         try {
             tableName = ArgsParser.getValidTableNameIfExists(args);
             fileName = ArgsParser.getValidFileName(args);
             format = ArgsParser.getValidFileFlag(args);
             if (format == FileFormat.TXT) {
                 System.out.println("File Format .txt is not valid for imports.");
-                return false;
+                return true;
             }
         } catch (NoValidTableNameException e) {
             System.out.println("Could not process export. No valid table name provided. Exiting");
-            return false;
+            return true;
         } catch (NoValidFileNameException e) {
             System.out.println("Could not process export. No valid file name provided. Exiting.");
-            return false;
+            return true;
         } catch (NoValidFormatException e) {
             System.out.println("Could not process export. No valid file Format provided. Exiting.");
-            return false;
+            return true;
         }
 
-        return true;
+        return false;
 
     }
 
     @Override
-    public boolean process(ArrayList<String> args) {
+    public void process(ArrayList<String> args) {
         /*TODO THIS COULD GO INTO super()*/
         // check if tablename valid
         this.args = args;
-        if (!checkArguments()) return false;
+        if (loadArguments()) return;
         try {
             importTable(args, tableName, fileName);
         } catch (IOException e) {
             System.out.println("Could not write the table due to an IOException. Are you lacking permissions?");
-            return false;
         }
-        return true;
     }
 
     private void importTableFromCSV(String filename, String table) throws IOException {
@@ -84,12 +80,11 @@ public class Importer implements Command {
         List<String[]> allLines = csvReader.readAll();
         allLines.removeFirst(); //The first line is the header
 
-        /*if only there was a way of not wri    ting the same code 3 times [nah i am kidding, honestly, generics suck ass too and are no fun to implement AT ALL. But we can if you guys want.]*/
         switch (table) {
             case "User":
                 for (String[] line: allLines) {
                     UserAPI userAPI = new UserAPI();
-                    userAPI.create(new DUser(line[2], line[1], line[3], line[4])); //why is the id index 2?
+                    userAPI.create(new DUser(line[2], line[1], line[3], line[4])); //2 and 1 [first and last name are split but only bc the api-parameter are in the 'wrong' order, but the files are fine :thumb_up:.
                 }
                 break;
             case "Customer":
@@ -102,9 +97,12 @@ public class Importer implements Command {
                 for (String[] line: allLines) {
                     //TODO this is obviously wrong but idc
                     ReadingAPI readingAPI = new ReadingAPI();
-                    readingAPI.create(new DReading(line[3], new DCustomer(Long.parseLong(line[7]), "", ""),
+                    DCustomer customer = new DCustomer(Long.parseLong(line[7]), "", "");
+                    DReading reading = new DReading(line[1], customer,
                             line[5], Double.parseDouble(line[0]),
-                            line[2], Boolean.parseBoolean(line[6]), Long.parseLong(line[1])));
+                            line[2], Boolean.parseBoolean(line[6]), Long.parseLong(line[1]));
+
+                    readingAPI.create(reading);
                     }
                 break;
         }

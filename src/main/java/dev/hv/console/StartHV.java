@@ -64,7 +64,7 @@ public class StartHV {
 	 */
 	private void processOption(ArrayList<String> convertedArgs) {
 		if (convertedArgs.contains("export")) {
-			Exporter ex = new Exporter(argsParser, dbdao);
+			Exporter ex = new Exporter(dbdao);
 			ex.process(convertedArgs);
 		} else if (convertedArgs.contains("import")) {
 			Importer imp = new Importer(argsParser, dbdao);
