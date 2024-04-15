@@ -4,6 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.opencsv.CSVReader;
 import com.opencsv.bean.CsvToBeanBuilder;
+import dev.bsinfo.ressource.CustomerAPI;
+import dev.bsinfo.ressource.ReadingAPI;
+import dev.bsinfo.ressource.UserAPI;
 import dev.hv.console.exceptions.NoValidFileNameException;
 import dev.hv.console.exceptions.NoValidFormatException;
 import dev.hv.console.exceptions.NoValidTableNameException;
@@ -85,21 +88,24 @@ public class Importer implements Command {
         switch (table) {
             case "User":
                 for (String[] line: allLines) {
-                    dbdao.insertUser(new DUser(line[0], line[1], line[3], line[4])); //why is the id index 2?
+                    UserAPI userAPI = new UserAPI();
+                    userAPI.create(new DUser(line[2], line[1], line[3], line[4])); //why is the id index 2?
                 }
                 break;
             case "Customer":
                 for (String[] line: allLines) {
-                    dbdao.insertCustomer(new DCustomer(line[0], line[2])); //why is the id index 1?
+                    CustomerAPI customerAPI = new CustomerAPI();
+                    customerAPI.create(new DCustomer(line[2], line[1]));
                 }
                 break;
             case "Reading":
                 for (String[] line: allLines) {
                     //TODO this is obviously wrong but idc
-                    dbdao.insertReading(new DReading(line[3], new DCustomer(Long.parseLong(line[7]), "", ""),
+                    ReadingAPI readingAPI = new ReadingAPI();
+                    readingAPI.create(new DReading(line[3], new DCustomer(Long.parseLong(line[7]), "", ""),
                             line[5], Double.parseDouble(line[0]),
-                            line[2], Boolean.parseBoolean(line[6]), Long.parseLong(line[1]))); //why is the id index 1?
-                }
+                            line[2], Boolean.parseBoolean(line[6]), Long.parseLong(line[1])));
+                    }
                 break;
         }
     }

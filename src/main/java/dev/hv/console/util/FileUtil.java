@@ -11,6 +11,8 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.attribute.PosixFilePermissions;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -199,27 +201,29 @@ public class FileUtil {
         add("dateofreading");
     }};
 
-    public static void exportTableToXMLFile(JSONArray table, String tableName, String filename) throws IOException {
+    public static void exportTableToXMLFile(LinkedHashMap<String, Object> table, String tableName, String filename) throws IOException {
         //String layouted = FileUtil.layoutXML(table);
         String convertedXML = Converter.convertJSONToXML(table, tableName);
         FileUtil.writeFile(convertedXML, filename);
     }
 
-    public static void exportTableToJSONFile(JSONArray table, String filename) throws IOException {
-        FileUtil.writeFile(table.toString(), filename);
+    // TODO: TO JSON AND PROBABLY XML
+    public static void exportTableToJSONFile(LinkedHashMap<String, Object> table, String filename) throws IOException {
+        String convertedJSON = Converter.mapToJSON(table);
+        FileUtil.writeFile(convertedJSON, filename);
     }
 
-    public static void exportTableToConsole(JSONArray table) throws IOException {
+    public static void exportTableToConsole(LinkedHashMap<String, Object> table) throws IOException {
         String convertedTxt = Converter.convertJSONToTXT(table);
         System.out.println(convertedTxt);
     }
 
-    public static void exportTableToCSV(JSONArray table, String filename) throws IOException {
+    public static void exportTableToCSV(LinkedHashMap<String, Object> table, String filename) throws IOException {
         String convertedCSV = Converter.convertJSONToCSV(table, filename);
         FileUtil.writeFile(convertedCSV, filename);
     }
 
-    public static void exportTableToTxt(JSONArray table, String filename) throws IOException {
+    public static void exportTableToTxt(LinkedHashMap<String, Object> table, String filename) throws IOException {
         String convertedTxt = Converter.convertJSONToTXT(table);
         FileUtil.writeFile(convertedTxt, filename);
     }

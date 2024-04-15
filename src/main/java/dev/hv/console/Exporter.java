@@ -9,6 +9,9 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
 
 public class Exporter implements Command {
     /**
@@ -55,7 +58,7 @@ public class Exporter implements Command {
         this.args = args;
         if (!checkArguments()) return false;
 
-        JSONArray table = dbdao.readTable(tableName);
+        LinkedHashMap<String, Object> table = dbdao.readTable(tableName);
         // size = 2 -> exportTableToConsole
         if (args.size() == 2) {
             System.out.println(table.toString());
@@ -76,7 +79,7 @@ public class Exporter implements Command {
      * And add a 's' to name the whole collection
      * */
     //this cascading of tableName and such is so annoying and wouldnt be neccessary if we would first parse all arguments and create a object...
-    public void exportTable(ArrayList<String> convertedArgs, JSONArray table, String filename) throws IOException {
+    public void exportTable(ArrayList<String> convertedArgs, LinkedHashMap<String, Object> table, String filename) throws IOException {
         switch (format) {
             case CSV:
                 FileUtil.exportTableToCSV(table, filename);

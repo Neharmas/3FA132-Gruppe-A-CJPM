@@ -14,13 +14,67 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.StringWriter;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Converter {
-    public static String convertJSONToXML(JSONArray jsonArray, String name) throws JsonProcessingException {
+    
+    public static boolean isNumeric(String str){
+        try {
+            Double.parseDouble(str);
+            return true;
+        } catch(NumberFormatException e){
+            return false;
+        }
+    }
+    public static String mapToJSON(LinkedHashMap<String, Object> table){
+        String separator = System.lineSeparator(); // Or any separator between fields
+        String tab = "\t";
+        StringBuilder sb = new StringBuilder("[").append(separator);
+        for (int i = 0; i < table.size(); i++){
+            String valuesToString = table.values().toArray()[i].toString();
+            String content = valuesToString.substring(valuesToString.indexOf("[") + 1, valuesToString.lastIndexOf("]"));
+            String[] con = content.split(", ");
+            System.out.println(content);
+            sb.append(tab).append("{").append(separator);
+            for (int j = 0; j < con.length; j++){
+                String key = con[j].split("=", 2)[0];
+                String value = con[j].split("=", 2)[1];
+                sb.append(tab);
+                if (!isNumeric(key)){
+                    sb.append('"');
+                    sb.append(key);
+                    sb.append('"');
+                } else {
+                    sb.append(key);
+                }
+                sb.append(": ");
+                
+                if (!isNumeric(value)){
+                    sb.append('"');
+                    sb.append(value);
+                    sb.append('"');
+                } else{
+                    sb.append(value);
+                }
+                
+                if (con.length == j + 1) {
+                    sb.append(separator);
+                    continue;
+                }
+                
+                sb.append(",").append(separator);
+            }
+            sb.append(tab).append("}");
+            if (table.size() != i + 1){
+                sb.append(",").append(separator);
+                continue;
+            }
+            sb.append(separator);
+        }
+        sb.append("]");
+        return sb.toString();
+    }
+    public static String convertJSONToXML(LinkedHashMap<String, Object> jsonArray, String name) throws JsonProcessingException {
         XmlMapper xmlMapper = new XmlMapper();
         xmlMapper.configure(SerializationFeature.INDENT_OUTPUT, true);
         xmlMapper.configure(ToXmlGenerator.Feature.WRITE_XML_DECLARATION, true);
@@ -46,53 +100,64 @@ public class Converter {
         };
         return xmlString;
     }
-    public static String convertJSONToCSV(JSONArray jsonArray, String name) throws IOException {
+    public static String convertJSONToCSV(LinkedHashMap<String, Object> jsonArray, String name) throws IOException {
         StringWriter writer = new StringWriter(); // Write the CSV data to a string
-        CSVWriter csvWriter = new CSVWriter(writer);
+        CSVWriter csvWriter = new CSVWriter(writer, ';');
 
         String[] header = null; // We'll dynamically create the header
 
         // Iterating through the jsonArray
-        for (int i = 0; i < jsonArray.length(); i++) {
-            JSONObject object = jsonArray.getJSONObject(i);
-
-            Map<String, String> row = new HashMap<>(); // Store values for a single row
-            for (String key : object.keySet()) {
-                Object value = object.get(key);
-                row.put(key, value != null ? value.toString() : "");
-            }
-
+        for (int i = 0; i < jsonArray.size(); i++) {
+            String valuesToString = jsonArray.values().toArray()[i].toString();
+            String content = valuesToString.substring(valuesToString.indexOf("[") + 1, valuesToString.lastIndexOf("]"));
+            String[] parts = content.split(", ");
+            
             if (header == null) {
-                header = row.keySet().toArray(new String[0]);
-                csvWriter.writeNext(header); // Write the header first
+                header = new String[parts.length];
+                
+                // Copy the contents of parts into header
+                System.arraycopy(parts, 0, header, 0, parts.length);
+                for(int j = 0; j < header.length; j++) {
+                    header[j] = header[j].split("=", 2)[0];
+                }
+                csvWriter.writeNext(header, false); // Write the header first
             }
-
-            csvWriter.writeNext(row.values().toArray(new String[0]));
+            
+            for(int j = 0; j < parts.length; j++)
+                parts[j] = parts[j].split("=", 2)[1];
+            
+            csvWriter.writeNext(parts, false);
         }
 
         csvWriter.close();
         return writer.toString(); // Return the generated CSV content
     }
-
-    public static String convertJSONToTXT(JSONArray jsonArray) throws IOException {
+    
+    public static String convertJSONToTXT(LinkedHashMap<String, Object> jsonArray) throws IOException {
         StringBuilder sb = new StringBuilder();
 
         // Customize as needed:
-        String separator = " | "; // Or any separator between fields
-        String newLine = "\n";    // Line separator
-
-        for (int i = 0; i < jsonArray.length(); i++) {
-            JSONObject object = jsonArray.getJSONObject(i);
-
-            for (String key : object.keySet()) {
-                Object value = object.get(key);
-                sb.append(key).append(": ").append(value != null ? value.toString() : "");
-                sb.append(separator);
+        String separator = System.lineSeparator(); // Or any separator between fields
+        StringBuilder header = null;
+        
+        for (int i = 0; i < jsonArray.size(); i++) {
+            String valuesToString = jsonArray.values().toArray()[i].toString();
+            String content = valuesToString.substring(valuesToString.indexOf("[") + 1, valuesToString.lastIndexOf("]"));
+            String[] parts = content.split(", ");
+            
+            if (header == null) {
+                header = new StringBuilder();
+                
+                for(int j = 0; j < parts.length; j++) {
+                    header.append(parts[j].split("=", 2)[0]).append(" | ");
+                }
+                sb.append(header.append(separator));
             }
-            sb.append(newLine);
+            
+            for(int j = 0; j < parts.length; j++)
+                sb.append(parts[j].split("=", 2)[1]).append(" | ");
+            sb.append(separator);
         }
-
         return sb.toString(); // Return the formatted text
     }
-
 }
