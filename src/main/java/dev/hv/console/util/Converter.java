@@ -28,6 +28,18 @@ public class Converter {
         }
     }
     public static String mapToJSON(LinkedHashMap<String, Object> table){
+        ObjectMapper mapper = new ObjectMapper();
+
+        // Optional: Customize the mapper for formatting
+        mapper.configure(SerializationFeature.INDENT_OUTPUT, true); // Pretty-printing
+
+        // Object to JSON Conversion
+        try {
+            return mapper.writeValueAsString(table);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+        /*
         String separator = System.lineSeparator(); // Or any separator between fields
         String tab = "\t";
         StringBuilder sb = new StringBuilder("[").append(separator);
@@ -69,7 +81,7 @@ public class Converter {
             sb.append(separator);
         }
         sb.append("]");
-        return sb.toString();
+        return sb.toString();*/
     }
     public static String convertJSONToXML(LinkedHashMap<String, Object> jsonArray, String name) throws JsonProcessingException {
         XmlMapper xmlMapper = new XmlMapper();

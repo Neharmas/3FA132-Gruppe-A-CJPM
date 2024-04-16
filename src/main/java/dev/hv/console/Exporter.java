@@ -84,6 +84,8 @@ public class Exporter implements Command {
      * */
     //this cascading of tableName and such is so annoying and wouldnt be neccessary if we would first parse all arguments and create a object...
     private void exportTable(LinkedHashMap<String, Object> table, Path filename) throws IOException {
+        //THE way the table arrives here is weird but works so idfc rn. The objects are there already and correct.
+        System.out.println("Exporting table: \n".concat(table.toString()));
         switch (format) {
             case CSV:
                 FileUtil.exportTableToCSV(table, filename);
