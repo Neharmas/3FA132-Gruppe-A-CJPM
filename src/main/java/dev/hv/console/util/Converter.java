@@ -6,12 +6,6 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
 import com.opencsv.CSVWriter;
-import dev.hv.db.model.DCustomer;
-import dev.hv.db.model.DReading;
-import dev.hv.db.model.DUser;
-import lombok.val;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -35,53 +29,10 @@ public class Converter {
 
         // Object to JSON Conversion
         try {
-            return mapper.writeValueAsString(table);
+            return mapper.writeValueAsString(table.values());
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
-        /*
-        String separator = System.lineSeparator(); // Or any separator between fields
-        String tab = "\t";
-        StringBuilder sb = new StringBuilder("[").append(separator);
-        for (int i = 0; i < table.size(); i++){
-            String valuesToString = table.values().toArray()[i].toString();
-            String content = valuesToString.substring(valuesToString.indexOf("[") + 1, valuesToString.lastIndexOf("]"));
-            String[] con = content.split(", ");
-            
-            sb.append(tab).append("{").append(separator);
-            for (int j = 0; j < con.length; j++){
-                String key = con[j].split("=", 2)[0];
-                String value = con[j].split("=", 2)[1];
-                sb.append(tab);
-                if (!isNumeric(key)){
-                    sb.append('"').append(key).append('"');
-                } else {
-                    sb.append(key);
-                }
-                sb.append(": ");
-                
-                if (!isNumeric(value)){
-                    sb.append('"').append(value).append('"');
-                } else{
-                    sb.append(value);
-                }
-                
-                if (con.length == j + 1) {
-                    sb.append(separator);
-                    continue;
-                }
-                
-                sb.append(",").append(separator);
-            }
-            sb.append(tab).append("}");
-            if (table.size() != i + 1){
-                sb.append(",").append(separator);
-                continue;
-            }
-            sb.append(separator);
-        }
-        sb.append("]");
-        return sb.toString();*/
     }
     public static String convertJSONToXML(LinkedHashMap<String, Object> jsonArray, String name) throws JsonProcessingException {
         XmlMapper xmlMapper = new XmlMapper();

@@ -95,9 +95,9 @@ public class ReadingAPI {
         //create customer and set the name
         if (customer == null) {
             //if the name and first_name are empty, we replace them with EMTPY. This can be changed later, as it isn't really best practice
-            if (reading.getCustomer().getFirstName().isEmpty())
+            if (reading.getCustomer().getFirstName() == null || reading.getCustomer().getFirstName().isEmpty())
                 reading.getCustomer().setFirstName("EMPTY");
-            if (reading.getCustomer().getLastName().isEmpty())
+            if (reading.getCustomer().getLastName() == null || reading.getCustomer().getLastName().isEmpty())
                 reading.getCustomer().setLastName("EMPTY");
         
         customerDAO.insert(reading.getCustomer()); //the id doesn't have to stay the same on insert!

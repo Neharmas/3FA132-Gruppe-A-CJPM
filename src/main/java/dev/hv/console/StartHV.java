@@ -5,9 +5,6 @@ import java.util.*;
 import dev.hv.console.exceptions.InvalidArgumentException;
 
 import dev.bsinfo.server.RESTServer;
-import dev.hv.db.init.DBConnect;
-import dev.hv.db.model.DCustomer;
-import dev.hv.db.model.DReading;
 
 /** 
  * Try To Implement the 'Template Method'-Pattern:
