@@ -45,20 +45,20 @@ public class Importer implements Command {
             
             if (format == FileFormat.TXT) {
                 System.out.println("File Format .txt is not valid for imports.");
-                return true;
+                return false;
             }
         } catch (NoValidTableNameException e) {
             System.out.println("Could not process export. No valid table name provided. Exiting");
-            return true;
+            return false;
         } catch (NoValidFileNameException e) {
             System.out.println("Could not process export. No valid file name provided. Exiting.");
-            return true;
+            return false;
         } catch (NoValidFormatException e) {
             System.out.println("Could not process export. No valid file Format provided. Exiting.");
-            return true;
+            return false;
         }
 
-        return false;
+        return true;
 
     }
 
@@ -97,8 +97,10 @@ public class Importer implements Command {
                 break;
             case "Customer":
                     CustomerAPI customerAPI = new CustomerAPI();
-                    for (String[] customer : values)
+                    for (String[] customer : values){
                         customerAPI.create(new DCustomer(customer[1].trim(), customer[2].trim()));
+                        System.out.println(new DCustomer(customer[1].trim(), customer[2].trim()));
+                    }
                 break;
             case "Reading":
                  //TODO this is obviously wrong but idc
@@ -141,15 +143,21 @@ public class Importer implements Command {
             switch (table) {
                 case "User":
                     DUser user = mapper.readValue(object.toString(), DUser.class);
-                    dbdao.insertUser(user);
+                    UserAPI userAPI = new UserAPI();
+                    userAPI.create(user);
+                    System.out.println(user.toString().concat(" imported"));
                     break;
                 case "Customer":
                     DCustomer customer = mapper.readValue(object.toString(), DCustomer.class);
-                    dbdao.insertCustomer(customer);
+                    CustomerAPI customerAPI = new CustomerAPI();
+                    customerAPI.create(customer);
+                    System.out.println(customer.toString().concat(" imported"));
                     break;
                 case "Reading":
                     DReading reading = mapper.readValue(object.toString(), DReading.class);
-                    dbdao.insertReading(reading);
+                    ReadingAPI readingAPI = new ReadingAPI();
+                    readingAPI.create(reading);
+                    System.out.println(reading.toString().concat(" imported"));
                     break;
             }
         }
@@ -162,22 +170,25 @@ public class Importer implements Command {
         switch (table) {
             case "User":
                 DUser[] users = mapper.readValue(new File(filename), DUser[].class);
+                UserAPI userAPI = new UserAPI();
                 for (DUser user : users) {
-                    dbdao.insertUser(user);
+                    userAPI.create(user);
                     System.out.println(user.toString().concat(" imported"));
                 }
                 break;
             case "Customer":
                 DCustomer[] customers = mapper.readValue(new File(filename), DCustomer[].class);
+                CustomerAPI customerapi = new CustomerAPI();
                 for (DCustomer customer : customers) {
-                    dbdao.insertCustomer(customer);
+                    customerapi.create(customer);
                     System.out.println(customer.toString().concat(" imported"));
                 }
                 break;
             case "Reading":
                 DReading[] readings = mapper.readValue(new File(filename), DReading[].class);
+                ReadingAPI readingAPI = new ReadingAPI();
                 for (DReading reading : readings) {
-                    dbdao.insertReading(reading);
+                    readingAPI.create(reading);
                     System.out.println(reading.toString().concat(" imported"));
                 }
                 break;
@@ -191,22 +202,25 @@ public class Importer implements Command {
         switch (table) {
             case "User":
                 DUser[] users = objectMapper.readValue(new File(filename), DUser[].class);
+                UserAPI userAPI = new UserAPI();
                 for (DUser user : users) {
-                    dbdao.insertUser(user);
+                    userAPI.create(user);
                     System.out.println(user.toString().concat(" imported"));
                 }
                 break;
             case "Customer":
                 DCustomer[] customers = objectMapper.readValue(new File(filename), DCustomer[].class);
+                CustomerAPI customerapi = new CustomerAPI();
                 for (DCustomer customer : customers) {
-                    dbdao.insertCustomer(customer);
+                    customerapi.create(customer);
                     System.out.println(customer.toString().concat(" imported"));
                 }
                 break;
             case "Reading":
                 DReading[] readings = objectMapper.readValue(new File(filename), DReading[].class);
+                ReadingAPI readingAPI = new ReadingAPI();
                 for (DReading reading : readings) {
-                    dbdao.insertReading(reading);
+                    readingAPI.create(reading);
                     System.out.println(reading.toString().concat(" imported"));
                 }
                 break;
