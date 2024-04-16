@@ -67,7 +67,7 @@ public class Importer implements Command {
         /*TODO THIS COULD GO INTO super()*/
         // check if tablename valid
         this.args = args;
-        if (loadArguments()) return;
+        if (!loadArguments()) return;
         try {
             importTable(args, tableName, fileName);
         } catch (IOException e) {

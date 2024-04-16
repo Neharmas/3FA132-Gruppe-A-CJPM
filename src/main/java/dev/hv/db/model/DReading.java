@@ -58,7 +58,8 @@ public class DReading implements IDReading{
 
 	@Override
 	public String toString() {
-		return "DReading [id=" + ID + ", comment=" + comment + ", customer=" + customer + ", kindofmeter=" + meterCount +
+		return "DReading [id=" + ID + ", comment=" + comment + ", customer=" + customer + ", kindofmeter=" + kindOfMeter +
+				", metercount=" + meterCount +
 				", meterid=" + meterID + ", substitute=" + substitute + ", dateodreading=" + dateOfReading +"]";
 	}
 	

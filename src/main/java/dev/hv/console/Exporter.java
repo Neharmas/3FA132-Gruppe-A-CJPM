@@ -38,24 +38,25 @@ public class Exporter implements Command {
             format = ArgsParser.getValidFileFlag(args);
         } catch (NoValidTableNameException e) {
             System.out.println("Could not process export. No valid table name provided. Exiting");
-            return true;
+            return false;
         } catch (NoValidFileNameException e) {
             System.out.println("Could not process export. No valid file name provided. Exiting.");
-            return true;
+            return false;
         } catch (NoValidFormatException e) {
             System.out.println("Could not process export. No valid file Format provided. Exiting.");
-            return true;
+            return false;
         }
-        return false;
+        return true;
     }
 
     @Override
     public void process(ArrayList<String> args) {
         // check if tablename valid
         this.args = args;
-        if (loadArguments()) return;
+        if (!loadArguments()) return;
 
         LinkedHashMap<String, Object> table = dbdao.readTable(tableName);
+        System.out.println(table);
         // size = 2 -> exportTableToConsole
         if (args.size() == 2) {
             System.out.println(table.toString());
@@ -65,6 +66,7 @@ public class Exporter implements Command {
         try {
             exportTable(table, fileName);
         } catch (IOException e) {
+            e.printStackTrace();
             System.out.println("Could not write the table due to an IOException. Are you lacking permissions?");
         }
     }

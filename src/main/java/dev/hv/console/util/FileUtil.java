@@ -1,41 +1,59 @@
 package dev.hv.console.util;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.attribute.PosixFilePermissions;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Helper Class with static methods to handle Files. I just added the static to everything. Let's not get started on refactoring this too soon pls. As long as it works idfc that it's uglier than .
  * Possible TODO: turn static since we never really need an instance of this class, only single methods
  */
 public class FileUtil {
-    public static void createFoldersForFile(String filePath) throws IOException {
+
+    /**
+     *
+     * @param filePath - the string representation of the relative path you want to parse
+     * @return
+     * @throws IOException
+     */
+    public static Path parseStringToPathOld(String filePath) throws IOException {
+        //unify delimiter (this could probably be done better with System.pathseperator or smth)
         filePath = filePath.replace("\\", "/");
         ArrayList<String> split = new ArrayList<>(List.of(filePath.split("/")));
-        split.removeLast();
-        //without the last part behind the last / [so that /target/test.txt becomes /target]
-        File onlyPath = new File(String.join("/", split));
-        System.out.println("P: " + onlyPath);
-        System.out.println("Created Folders For File: " + onlyPath.mkdirs());
+
+        String fileName = split.removeLast();
+        String onlyStringPath = String.join("/", split);
+
+        System.out.println("P: " + onlyStringPath);
+
+        Path createdPath = Files.createDirectories(Paths.get(
+                Paths.get("").toAbsolutePath().toString(), onlyStringPath));
+
+        Path absolutePath = Paths.get(String.valueOf(createdPath), fileName);
+
+        System.out.println("Created Folders For File: " + absolutePath);
+        return absolutePath;
     }
-    public static void writeFile(String content, String filename) throws IOException {
-        //The filename could be a path, which is bad af....
-        createFoldersForFile(filename);
-        System.out.println("FILENAME: " + filename);
-        BufferedWriter w = new BufferedWriter(new FileWriter(filename));
-        w.write(content);
-        w.close();
+
+    /**
+     * Takes a String-Path and creates a absolute-path as Path from it.
+     * @param filePath - expecte do be seperated by / or \\
+     * @return Path absolutePath
+     */
+    private static Path parseStringToPath(String filePath) {
+        return Paths.get(Paths.get("").toAbsolutePath().toString(),filePath);
+    }
+
+    public static void writeFile(String content, String file) throws IOException {
+        //The filename could be a path, which is bad af....// /exprot/pensi/test.xml
+        Path path = parseStringToPath(file);
+        System.out.println("File-Path: " + path);
+        Files.write(path, Collections.singleton(content), StandardCharsets.UTF_8);
     }
 
     public static String layoutCSV(JSONObject table) {
@@ -224,6 +242,7 @@ public class FileUtil {
     }
 
     public static void exportTableToTxt(LinkedHashMap<String, Object> table, String filename) throws IOException {
+        System.out.println(table);
         String convertedTxt = Converter.convertJSONToTXT(table);
         FileUtil.writeFile(convertedTxt, filename);
     }
