@@ -4,14 +4,10 @@ import dev.hv.console.exceptions.NoValidFileNameException;
 import dev.hv.console.exceptions.NoValidFormatException;
 import dev.hv.console.exceptions.NoValidTableNameException;
 import dev.hv.console.util.*;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
 
 public class Exporter implements Command {
     /**
@@ -26,37 +22,38 @@ public class Exporter implements Command {
     FileFormat format;
     ArrayList<String> args;
 
-    Exporter(ArgsParser argsParser, DBDAO dbdao) {
+    Exporter(DBDAO dbdao) {
         this.dbdao = dbdao;
     }
 
 
+    /**
+     * trys to load the {@code args} of this object into the attributes. Might throw some exceptions
+     */
     @Override
-    public boolean checkArguments() {
+    public boolean loadArguments() {
         try {
             tableName = ArgsParser.getValidTableNameIfExists(args);
             fileName = ArgsParser.getValidFileName(args);
             format = ArgsParser.getValidFileFlag(args);
         } catch (NoValidTableNameException e) {
             System.out.println("Could not process export. No valid table name provided. Exiting");
-            return false;
+            return true;
         } catch (NoValidFileNameException e) {
             System.out.println("Could not process export. No valid file name provided. Exiting.");
-            return false;
+            return true;
         } catch (NoValidFormatException e) {
             System.out.println("Could not process export. No valid file Format provided. Exiting.");
-            return false;
+            return true;
         }
-
-        return true;
-
+        return false;
     }
 
     @Override
-    public boolean process(ArrayList<String> args) {
+    public void process(ArrayList<String> args) {
         // check if tablename valid
         this.args = args;
-        if (!checkArguments()) return false;
+        if (loadArguments()) return;
 
         LinkedHashMap<String, Object> table = dbdao.readTable(tableName);
         // size = 2 -> exportTableToConsole
@@ -66,12 +63,10 @@ public class Exporter implements Command {
         // flags provided ?-> abort : exportTable
 
         try {
-            exportTable(args, table, fileName);
+            exportTable(table, fileName);
         } catch (IOException e) {
             System.out.println("Could not write the table due to an IOException. Are you lacking permissions?");
-            return false;
         }
-        return true;
     }
 
     /*
@@ -79,7 +74,7 @@ public class Exporter implements Command {
      * And add a 's' to name the whole collection
      * */
     //this cascading of tableName and such is so annoying and wouldnt be neccessary if we would first parse all arguments and create a object...
-    public void exportTable(ArrayList<String> convertedArgs, LinkedHashMap<String, Object> table, String filename) throws IOException {
+    public void exportTable(LinkedHashMap<String, Object> table, String filename) throws IOException {
         switch (format) {
             case CSV:
                 FileUtil.exportTableToCSV(table, filename);

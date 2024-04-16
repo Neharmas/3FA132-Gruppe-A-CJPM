@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public interface Command {
 
-    boolean process(ArrayList<String> args);
+    void process(ArrayList<String> args);
 
-    boolean checkArguments();
+    boolean loadArguments();
 }

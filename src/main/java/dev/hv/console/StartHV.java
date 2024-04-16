@@ -5,6 +5,9 @@ import java.util.*;
 import dev.hv.console.exceptions.InvalidArgumentException;
 
 import dev.bsinfo.server.RESTServer;
+import dev.hv.db.init.DBConnect;
+import dev.hv.db.model.DCustomer;
+import dev.hv.db.model.DReading;
 
 /** 
  * Try To Implement the 'Template Method'-Pattern:
@@ -39,9 +42,10 @@ public class StartHV {
 	private void initialize(String[] args) {
 		this.argsParser = new ArgsParser();
 		this.dbdao = new DBDAO();
-
+		
+		this.dbdao.getDb().getJdbi();
 		this.originalArgs = args;
-
+		
 		this.startRESTServer();
 		convertAndRunArguments();
 	}
@@ -64,7 +68,7 @@ public class StartHV {
 	 */
 	private void processOption(ArrayList<String> convertedArgs) {
 		if (convertedArgs.contains("export")) {
-			Exporter ex = new Exporter(argsParser, dbdao);
+			Exporter ex = new Exporter(dbdao);
 			ex.process(convertedArgs);
 		} else if (convertedArgs.contains("import")) {
 			Importer imp = new Importer(argsParser, dbdao);
@@ -79,6 +83,7 @@ public class StartHV {
 
 	private void loop() {
 		Scanner scanner = new Scanner(System.in);
+		
 		try {
 			while (true) {
 				System.out.println("Please input new parameters or type exit:");

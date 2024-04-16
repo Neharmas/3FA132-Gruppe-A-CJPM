@@ -3,7 +3,6 @@ package dev.hv.console;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.opencsv.CSVReader;
-import com.opencsv.bean.CsvToBeanBuilder;
 import dev.bsinfo.ressource.CustomerAPI;
 import dev.bsinfo.ressource.ReadingAPI;
 import dev.bsinfo.ressource.UserAPI;
@@ -11,7 +10,6 @@ import dev.hv.console.exceptions.NoValidFileNameException;
 import dev.hv.console.exceptions.NoValidFormatException;
 import dev.hv.console.exceptions.NoValidTableNameException;
 import dev.hv.console.util.FileFormat;
-import dev.hv.console.util.FileUtil;
 import dev.hv.db.model.DCustomer;
 import dev.hv.db.model.DReading;
 import dev.hv.db.model.DUser;
@@ -39,7 +37,7 @@ public class Importer implements Command {
      * @return
      */
     @Override
-    public boolean checkArguments() {
+    public boolean loadArguments() {
         try {
             tableName = ArgsParser.getValidTableNameIfExists(args);
             fileName = ArgsParser.getValidFileName(args);
@@ -47,36 +45,34 @@ public class Importer implements Command {
             
             if (format == FileFormat.TXT) {
                 System.out.println("File Format .txt is not valid for imports.");
-                return false;
+                return true;
             }
         } catch (NoValidTableNameException e) {
             System.out.println("Could not process export. No valid table name provided. Exiting");
-            return false;
+            return true;
         } catch (NoValidFileNameException e) {
             System.out.println("Could not process export. No valid file name provided. Exiting.");
-            return false;
+            return true;
         } catch (NoValidFormatException e) {
             System.out.println("Could not process export. No valid file Format provided. Exiting.");
-            return false;
+            return true;
         }
 
-        return true;
+        return false;
 
     }
 
     @Override
-    public boolean process(ArrayList<String> args) {
+    public void process(ArrayList<String> args) {
         /*TODO THIS COULD GO INTO super()*/
         // check if tablename valid
         this.args = args;
-        if (!checkArguments()) return false;
+        if (loadArguments()) return;
         try {
             importTable(args, tableName, fileName);
         } catch (IOException e) {
             System.out.println("Could not write the table due to an IOException. Are you lacking permissions?");
-            return false;
         }
-        return true;
     }
 
     private void importTableFromCSV(String filename, String table) throws IOException {
@@ -85,28 +81,33 @@ public class Importer implements Command {
         List<String[]> allLines = csvReader.readAll();
         allLines.removeFirst(); //The first line is the header
         
-        String[] values = new String[0];
-        for (String[] allLine : allLines) {
-           String line = Arrays.toString(allLine);
-           values = line.substring(1, line.length() - 1).split(";");
+        String[][] values = new String[allLines.size()][];
+        for (int i = 0; i < allLines.size(); i++){
+           
+           String line = Arrays.toString(allLines.get(i));
+           values[i] = line.substring(1, line.length() - 1).split(",");
         }
         
         /*if only there was a way of not wri    ting the same code 3 times [nah i am kidding, honestly, generics suck ass too and are no fun to implement AT ALL. But we can if you guys want.]*/
         switch (table) {
             case "User":
                     UserAPI userAPI = new UserAPI();
-                    userAPI.create(new DUser(values[2], values[1], values[3], values[4])); //why is the id index 2?
+                    for (String[] user : values)
+                        userAPI.create(new DUser(user[2].trim(), user[1].trim(), user[3].trim(), user[4].trim())); //why is the id index 2?
                 break;
             case "Customer":
                     CustomerAPI customerAPI = new CustomerAPI();
-                    customerAPI.create(new DCustomer(values[1], values[2]));
+                    for (String[] customer : values)
+                        customerAPI.create(new DCustomer(customer[1].trim(), customer[2].trim()));
                 break;
             case "Reading":
                  //TODO this is obviously wrong but idc
-                    ReadingAPI readingAPI = new ReadingAPI();
-                    readingAPI.create(new DReading(values[3], new DCustomer(Long.parseLong(values[7]), "", ""),
-                        values[5], Double.parseDouble(values[0]),
-                        values[2], Boolean.parseBoolean(values[6]), Long.parseLong(values[1])));
+                  /*  ReadingAPI readingAPI = new ReadingAPI();
+                    for (String[] reading : values)
+                        readingAPI.create(new DReading(reading[]));
+                    //readingAPI.create(new DReading(values[3], new DCustomer(Long.parseLong(values[7]), "", ""),
+                      //  values[5], Double.parseDouble(values[0]),
+                        //values[2], Boolean.parseBoolean(values[6]), Long.parseLong(values[1])));*/
                 break;
         }
     }

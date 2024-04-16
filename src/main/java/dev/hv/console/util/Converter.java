@@ -83,7 +83,7 @@ public class Converter {
     }
     public static String convertJSONToCSV(LinkedHashMap<String, Object> jsonArray, String name) throws IOException {
         StringWriter writer = new StringWriter(); // Write the CSV data to a string
-        CSVWriter csvWriter = new CSVWriter(writer, ';');
+        CSVWriter csvWriter = new CSVWriter(writer);
 
         String[] header = null; // We'll dynamically create the header
 
@@ -113,7 +113,8 @@ public class Converter {
         csvWriter.close();
         return writer.toString(); // Return the generated CSV content
     }
-    
+
+    //TODO: SOMWHERE HERE; THE METER_COUNT GETS LOST IN THE EXPORT...
     public static String convertJSONToTXT(LinkedHashMap<String, Object> jsonArray) throws IOException {
         StringBuilder sb = new StringBuilder();
 
@@ -135,7 +136,7 @@ public class Converter {
                 sb.append(header.append(separator));
             }
             
-            for(int j = 0; j < parts.length; j++)
+            for (int j = 0; j < parts.length; j++)
                 sb.append(parts[j].split("=", 2)[1]).append(" | ");
             sb.append(separator);
         }
