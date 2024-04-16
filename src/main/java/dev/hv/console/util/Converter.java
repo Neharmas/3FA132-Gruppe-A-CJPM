@@ -81,7 +81,7 @@ public class Converter {
         //and this probably has to be checked a) with the docs or b) with the frontend.
         return xmlMapper.writer().withRootName(name).writeValueAsString(jsonArray.values());
     }
-    public static String convertJSONToCSV(LinkedHashMap<String, Object> jsonArray, String name) throws IOException {
+    public static String convertJSONToCSV(LinkedHashMap<String, Object> jsonArray) throws IOException {
         StringWriter writer = new StringWriter(); // Write the CSV data to a string
         CSVWriter csvWriter = new CSVWriter(writer);
 
