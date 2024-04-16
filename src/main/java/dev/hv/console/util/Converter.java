@@ -134,15 +134,19 @@ public class Converter {
     }
 
     //TODO: SOMWHERE HERE; THE METER_COUNT GETS LOST IN THE EXPORT...
-    public static String convertJSONToTXT(LinkedHashMap<String, Object> jsonArray) throws IOException {
+    public static String convertJSONToTXT(LinkedHashMap<String, Object> stringObjectLinkedHashMap) throws IOException {
         StringBuilder sb = new StringBuilder();
 
         // Customize as needed:
         String separator = System.lineSeparator(); // Or any separator between fields
         StringBuilder header = null;
-        
-        for (int i = 0; i < jsonArray.size(); i++) {
-            String valuesToString = jsonArray.values().toArray()[i].toString();
+        System.out.println(stringObjectLinkedHashMap.toString());
+        for (String k: stringObjectLinkedHashMap.keySet()) {
+            System.out.println(stringObjectLinkedHashMap.get(k));
+        }
+
+        for (int i = 0; i < stringObjectLinkedHashMap.size(); i++) {
+            String valuesToString = stringObjectLinkedHashMap.values().toArray()[i].toString();
             String content = valuesToString.substring(valuesToString.indexOf("[") + 1, valuesToString.lastIndexOf("]"));
             String[] parts = content.split(", ");
             
