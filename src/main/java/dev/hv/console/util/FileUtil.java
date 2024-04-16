@@ -45,15 +45,34 @@ public class FileUtil {
      * @param filePath - expecte do be seperated by / or \\
      * @return Path absolutePath
      */
-    private static Path parseStringToPath(String filePath) {
+    public static Path parseStringToPath(String filePath) {
         return Paths.get(Paths.get("").toAbsolutePath().toString(),filePath);
     }
 
-    public static void writeFile(String content, String file) throws IOException {
-        //The filename could be a path, which is bad af....// /exprot/pensi/test.xml
-        Path path = parseStringToPath(file);
-        System.out.println("File-Path: " + path);
-        Files.write(path, Collections.singleton(content), StandardCharsets.UTF_8);
+    /**
+     * The method that attempts (!) to write the file.
+     * @param content
+     * @param file
+     * @throws IOException when the call to .writeFile doesnt work. Can also cause other eceptions, due to calls
+     * to Files.createDirectories(). [catching them better would require reworks...]
+     */
+    public static void writeFile(String content, Path file) throws IOException {
+        //Files.createDirectories(path.get);
+        Path onlyPath = file.getParent();
+        if (onlyPath != null) {
+            System.out.println("Parent directories detected in path. checking folder existence...");
+            try {
+                Files.createDirectories(onlyPath);
+            } catch (IOException e) {
+                System.out.println("Error creating directories for file. ".concat(file.toString()));
+                throw new RuntimeException(e);
+            }
+        } else {
+            System.out.println("No directory-path found. continue...");
+        }
+
+        System.out.println("File-Path: " + file);
+        Files.write(file, Collections.singleton(content), StandardCharsets.UTF_8);
     }
 
     public static String layoutCSV(JSONObject table) {
@@ -219,16 +238,16 @@ public class FileUtil {
         add("dateofreading");
     }};
 
-    public static void exportTableToXMLFile(LinkedHashMap<String, Object> table, String tableName, String filename) throws IOException {
+    public static void exportTableToXMLFile(LinkedHashMap<String, Object> table, String tableName, Path file) throws IOException {
         //String layouted = FileUtil.layoutXML(table);
         String convertedXML = Converter.convertJSONToXML(table, tableName);
-        FileUtil.writeFile(convertedXML, filename);
+        FileUtil.writeFile(convertedXML, file);
     }
 
     // TODO: TO JSON AND PROBABLY XML
-    public static void exportTableToJSONFile(LinkedHashMap<String, Object> table, String filename) throws IOException {
+    public static void exportTableToJSONFile(LinkedHashMap<String, Object> table, Path filepath) throws IOException {
         String convertedJSON = Converter.mapToJSON(table);
-        FileUtil.writeFile(convertedJSON, filename);
+        FileUtil.writeFile(convertedJSON, filepath);
     }
 
     public static void exportTableToConsole(LinkedHashMap<String, Object> table) throws IOException {
@@ -236,12 +255,12 @@ public class FileUtil {
         System.out.println(convertedTxt);
     }
 
-    public static void exportTableToCSV(LinkedHashMap<String, Object> table, String filename) throws IOException {
-        String convertedCSV = Converter.convertJSONToCSV(table, filename);
-        FileUtil.writeFile(convertedCSV, filename);
+    public static void exportTableToCSV(LinkedHashMap<String, Object> table, Path filepath) throws IOException {
+        String convertedCSV = Converter.convertJSONToCSV(table);
+        FileUtil.writeFile(convertedCSV, filepath);
     }
 
-    public static void exportTableToTxt(LinkedHashMap<String, Object> table, String filename) throws IOException {
+    public static void exportTableToTxt(LinkedHashMap<String, Object> table, Path filename) throws IOException {
         System.out.println(table);
         String convertedTxt = Converter.convertJSONToTXT(table);
         FileUtil.writeFile(convertedTxt, filename);

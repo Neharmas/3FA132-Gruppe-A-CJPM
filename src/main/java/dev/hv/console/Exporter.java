@@ -5,7 +5,9 @@ import dev.hv.console.exceptions.NoValidFormatException;
 import dev.hv.console.exceptions.NoValidTableNameException;
 import dev.hv.console.util.*;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
@@ -17,10 +19,10 @@ public class Exporter implements Command {
      * @return 0 in case of an error or 1 otherwise
      */
     private final DBDAO dbdao;
-    String tableName = null;
-    String fileName = ""; //this currently is the whole path idk how much i like this.
-    FileFormat format;
-    ArrayList<String> args;
+    private String tableName;
+    private Path fileName; //this currently is the whole path idk how much i like this.
+    private FileFormat format;
+    private ArrayList<String> args;
 
     Exporter(DBDAO dbdao) {
         this.dbdao = dbdao;
@@ -29,12 +31,13 @@ public class Exporter implements Command {
 
     /**
      * trys to load the {@code args} of this object into the attributes. Might throw some exceptions
+     * Gets automatically called by the .process-method before it does anything. [good design lollll]
      */
     @Override
     public boolean loadArguments() {
         try {
             tableName = ArgsParser.getValidTableNameIfExists(args);
-            fileName = ArgsParser.getValidFileName(args);
+            fileName = FileUtil.parseStringToPath(ArgsParser.getValidFileName(args));
             format = ArgsParser.getValidFileFlag(args);
         } catch (NoValidTableNameException e) {
             System.out.println("Could not process export. No valid table name provided. Exiting");
@@ -49,6 +52,10 @@ public class Exporter implements Command {
         return true;
     }
 
+    /**
+     * loads the arguments into attributes by calling loadArguments and then attempts to run them
+     * @param args
+     */
     @Override
     public void process(ArrayList<String> args) {
         // check if tablename valid
@@ -67,7 +74,7 @@ public class Exporter implements Command {
             exportTable(table, fileName);
         } catch (IOException e) {
             e.printStackTrace();
-            System.out.println("Could not write the table due to an IOException. Are you lacking permissions?");
+            System.out.println("Could not export the table due to an IOException. Are you lacking permissions?");
         }
     }
 
@@ -76,7 +83,9 @@ public class Exporter implements Command {
      * And add a 's' to name the whole collection
      * */
     //this cascading of tableName and such is so annoying and wouldnt be neccessary if we would first parse all arguments and create a object...
-    public void exportTable(LinkedHashMap<String, Object> table, String filename) throws IOException {
+    private void exportTable(LinkedHashMap<String, Object> table, Path filename) throws IOException {
+        //THE way the table arrives here is weird but works so idfc rn. The objects are there already and correct.
+        System.out.println("Exporting table: \n".concat(table.toString()));
         switch (format) {
             case CSV:
                 FileUtil.exportTableToCSV(table, filename);
