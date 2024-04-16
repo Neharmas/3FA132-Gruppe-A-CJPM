@@ -9,6 +9,7 @@ import com.opencsv.CSVWriter;
 import dev.hv.db.model.DCustomer;
 import dev.hv.db.model.DReading;
 import dev.hv.db.model.DUser;
+import lombok.val;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -34,25 +35,21 @@ public class Converter {
             String valuesToString = table.values().toArray()[i].toString();
             String content = valuesToString.substring(valuesToString.indexOf("[") + 1, valuesToString.lastIndexOf("]"));
             String[] con = content.split(", ");
-            System.out.println(content);
+            
             sb.append(tab).append("{").append(separator);
             for (int j = 0; j < con.length; j++){
                 String key = con[j].split("=", 2)[0];
                 String value = con[j].split("=", 2)[1];
                 sb.append(tab);
                 if (!isNumeric(key)){
-                    sb.append('"');
-                    sb.append(key);
-                    sb.append('"');
+                    sb.append('"').append(key).append('"');
                 } else {
                     sb.append(key);
                 }
                 sb.append(": ");
                 
                 if (!isNumeric(value)){
-                    sb.append('"');
-                    sb.append(value);
-                    sb.append('"');
+                    sb.append('"').append(value).append('"');
                 } else{
                     sb.append(value);
                 }
@@ -79,26 +76,10 @@ public class Converter {
         xmlMapper.configure(SerializationFeature.INDENT_OUTPUT, true);
         xmlMapper.configure(ToXmlGenerator.Feature.WRITE_XML_DECLARATION, true);
         xmlMapper.configure(ToXmlGenerator.Feature.WRITE_XML_1_1, true);
-
-        System.out.println(jsonArray);
-
+        
         //TODO URGENCY: HIGH: The testData (somehow) accept meterid and such as 22ss but idk if they create the table wrong or if the testdata is bad
         //and this probably has to be checked a) with the docs or b) with the frontend.
-        String xmlString = switch (name) {
-            case "User" -> {
-                List<DUser> users = Arrays.asList(new ObjectMapper().readValue(jsonArray.toString(), DUser[].class));
-                yield xmlMapper.writer().withRootName("Users").writeValueAsString(users);
-            }
-            case "Customer" -> {
-                List<DCustomer> customers = Arrays.asList(new ObjectMapper().readValue(jsonArray.toString(), DCustomer[].class));
-                yield xmlMapper.writer().withRootName("Customers").writeValueAsString(customers);
-            }
-            default -> {
-                List<DReading> readings = Arrays.asList(new ObjectMapper().readValue(jsonArray.toString(), DReading[].class));
-                yield xmlMapper.writer().withRootName("Readings").writeValueAsString(readings);
-            }
-        };
-        return xmlString;
+        return xmlMapper.writer().withRootName(name).writeValueAsString(jsonArray.values());
     }
     public static String convertJSONToCSV(LinkedHashMap<String, Object> jsonArray, String name) throws IOException {
         StringWriter writer = new StringWriter(); // Write the CSV data to a string

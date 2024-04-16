@@ -1,19 +1,13 @@
 package dev.hv.db.init;
 
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
 import org.jdbi.v3.core.Handle;
 import org.jdbi.v3.core.Jdbi;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 public class DBConnect implements IDbConnect{
 	private static DBConnect instance = null;

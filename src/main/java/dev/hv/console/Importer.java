@@ -44,6 +44,7 @@ public class Importer implements Command {
             tableName = ArgsParser.getValidTableNameIfExists(args);
             fileName = ArgsParser.getValidFileName(args);
             format = ArgsParser.getValidFileFlag(args);
+            
             if (format == FileFormat.TXT) {
                 System.out.println("File Format .txt is not valid for imports.");
                 return false;
@@ -83,29 +84,29 @@ public class Importer implements Command {
         CSVReader csvReader = new CSVReader(reader);
         List<String[]> allLines = csvReader.readAll();
         allLines.removeFirst(); //The first line is the header
-
+        
+        String[] values = new String[0];
+        for (String[] allLine : allLines) {
+           String line = Arrays.toString(allLine);
+           values = line.substring(1, line.length() - 1).split(";");
+        }
+        
         /*if only there was a way of not wri    ting the same code 3 times [nah i am kidding, honestly, generics suck ass too and are no fun to implement AT ALL. But we can if you guys want.]*/
         switch (table) {
             case "User":
-                for (String[] line: allLines) {
                     UserAPI userAPI = new UserAPI();
-                    userAPI.create(new DUser(line[2], line[1], line[3], line[4])); //why is the id index 2?
-                }
+                    userAPI.create(new DUser(values[2], values[1], values[3], values[4])); //why is the id index 2?
                 break;
             case "Customer":
-                for (String[] line: allLines) {
                     CustomerAPI customerAPI = new CustomerAPI();
-                    customerAPI.create(new DCustomer(line[2], line[1]));
-                }
+                    customerAPI.create(new DCustomer(values[1], values[2]));
                 break;
             case "Reading":
-                for (String[] line: allLines) {
-                    //TODO this is obviously wrong but idc
+                 //TODO this is obviously wrong but idc
                     ReadingAPI readingAPI = new ReadingAPI();
-                    readingAPI.create(new DReading(line[3], new DCustomer(Long.parseLong(line[7]), "", ""),
-                            line[5], Double.parseDouble(line[0]),
-                            line[2], Boolean.parseBoolean(line[6]), Long.parseLong(line[1])));
-                    }
+                    readingAPI.create(new DReading(values[3], new DCustomer(Long.parseLong(values[7]), "", ""),
+                        values[5], Double.parseDouble(values[0]),
+                        values[2], Boolean.parseBoolean(values[6]), Long.parseLong(values[1])));
                 break;
         }
     }
@@ -132,7 +133,7 @@ public class Importer implements Command {
         reader.close();
         //return jsonArray;
         //turn json to table:
-
+        
         ObjectMapper mapper = new ObjectMapper();
         for (int c = 0; c < jsonArray.length(); c++) {
             JSONObject object = jsonArray.getJSONObject(c);
@@ -162,18 +163,21 @@ public class Importer implements Command {
                 DUser[] users = mapper.readValue(new File(filename), DUser[].class);
                 for (DUser user : users) {
                     dbdao.insertUser(user);
+                    System.out.println(user.toString().concat(" imported"));
                 }
                 break;
             case "Customer":
                 DCustomer[] customers = mapper.readValue(new File(filename), DCustomer[].class);
                 for (DCustomer customer : customers) {
                     dbdao.insertCustomer(customer);
+                    System.out.println(customer.toString().concat(" imported"));
                 }
                 break;
             case "Reading":
                 DReading[] readings = mapper.readValue(new File(filename), DReading[].class);
                 for (DReading reading : readings) {
                     dbdao.insertReading(reading);
+                    System.out.println(reading.toString().concat(" imported"));
                 }
                 break;
         }
@@ -188,24 +192,25 @@ public class Importer implements Command {
                 DUser[] users = objectMapper.readValue(new File(filename), DUser[].class);
                 for (DUser user : users) {
                     dbdao.insertUser(user);
+                    System.out.println(user.toString().concat(" imported"));
                 }
                 break;
             case "Customer":
                 DCustomer[] customers = objectMapper.readValue(new File(filename), DCustomer[].class);
                 for (DCustomer customer : customers) {
                     dbdao.insertCustomer(customer);
+                    System.out.println(customer.toString().concat(" imported"));
                 }
                 break;
             case "Reading":
                 DReading[] readings = objectMapper.readValue(new File(filename), DReading[].class);
                 for (DReading reading : readings) {
                     dbdao.insertReading(reading);
+                    System.out.println(reading.toString().concat(" imported"));
                 }
                 break;
         }
     }
-
-
 
     public void importTable(ArrayList<String> convertedArgs, String table, String filename) throws IOException {
         switch (format) {
@@ -215,12 +220,14 @@ public class Importer implements Command {
             case XML:
                 importTableFromXML(filename, table);
                 break;
+            case JSON:
+                importTableFromJSON(filename, table);
+                break;
             case TXT:
                importTableFromText(filename, table);
                 break;
-            case JSON:
             default:
-                importTableFromJSON(filename, table);
+                System.out.println("Unrecognized Format: ".concat(format.getExtension()));
         }
     }
 
