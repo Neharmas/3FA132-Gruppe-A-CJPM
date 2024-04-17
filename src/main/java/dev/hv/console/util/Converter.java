@@ -96,7 +96,7 @@ public class Converter {
             
             // Not an elegant solution but it works
             if (content.contains("customer=DCustomer")){
-                parts[2] = parts[2].substring(parts[2].indexOf("[") + 1);
+                parts[2] = "customer=".concat(parts[2].substring(parts[2].indexOf("[") + 1).split("=", 2)[1]);
                 parts[4] = parts[4].substring(0, parts[4].length() - 1);
             }
             

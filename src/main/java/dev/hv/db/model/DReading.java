@@ -20,19 +20,19 @@ public class DReading implements IDReading{
 
 	private DCustomer customer;
 
-	@JsonProperty("id")
+	@JsonProperty("ID")
 	@ColumnName("id")
 	private Long ID;
 
-	@JsonProperty("kindofmeter")
+	@JsonProperty("kindOfMeter")
 	@ColumnName("kindofmeter")
 	private String kindOfMeter;
 
-	@JsonProperty("metercount")
-	@ColumnName("metercount")
+	@JsonProperty("meterCount")
+	@ColumnName("meterCount")
 	private Double meterCount;
 	
-	@JsonProperty("meterid")
+	@JsonProperty("meterID")
 	@ColumnName("meterid")
 	private String meterID;
 
@@ -40,11 +40,11 @@ public class DReading implements IDReading{
 	@ColumnName("substitute")
 	private Boolean substitute;
 	
-	@JsonProperty("dateofreading")
+	@JsonProperty("dateOfReading")
 	@ColumnName("dateofreading")
 	private Long dateOfReading;
 	
-	@ConstructorProperties({ "id", "comment", "customer", "kindofmeter", "metercount", "meterid", "substitute", "dateofreading" })
+	@ConstructorProperties({ "ID", "comment", "customer", "kindOfMeter", "meterCount", "meterID", "substitute", "dateOfReading" })
 	public DReading (long ID, String comment, DCustomer customer, String kindOfMeter, double meterCount, String meterID, boolean substitute, long dateOfReading) {
 		this.ID = ID;
 		this.comment = comment;
@@ -58,9 +58,8 @@ public class DReading implements IDReading{
 
 	@Override
 	public String toString() {
-		return "DReading [id=" + ID + ", comment=" + comment + ", customer=" + customer + ", kindofmeter=" + kindOfMeter +
-				", metercount=" + meterCount +
-				", meterid=" + meterID + ", substitute=" + substitute + ", dateodreading=" + dateOfReading +"]";
+		return "DReading [ID=" + ID + ", comment=" + comment + ", customer=" + customer + ", kindOfMeter=" + kindOfMeter +
+				", meterCount=" + meterCount + ", meterID=" + meterID + ", substitute=" + substitute + ", dateOfReading=" + dateOfReading + "]";
 	}
 	
 	public DReading () {

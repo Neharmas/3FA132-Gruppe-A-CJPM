@@ -8,19 +8,19 @@ import org.jdbi.v3.core.mapper.reflect.ColumnName;
 
 @Data
 public class DCustomer implements IDCustomer{
-	@JsonProperty("id")
+	@JsonProperty("ID")
 	@ColumnName("id")
 	private Long ID;
 
-	@JsonProperty("firstname")
+	@JsonProperty("firstName")
 	@ColumnName("firstname")
 	private String firstName;
 	
-	@JsonProperty("lastname")
+	@JsonProperty("lastName")
 	@ColumnName("lastname")
 	private String lastName;
 
-	@ConstructorProperties({ "id", "lastname", "firstname" })
+	@ConstructorProperties({ "ID", "lastName", "firstName" })
 	public DCustomer(long ID, String lastName, String firstName) {
 		this.ID = ID;
 		this.lastName = lastName;
@@ -38,6 +38,6 @@ public class DCustomer implements IDCustomer{
 
 	@Override
 	public String toString() {
-		return "DCustomer [id=" + ID + ", firstname=" + firstName + ", lastname=" + lastName + "]";
+		return "DCustomer [ID=" + ID + ", firstName=" + firstName + ", lastName=" + lastName + "]";
 	}
 }

@@ -56,7 +56,7 @@ class testDCustomer {
     public void test_toString()
     {
         // arrange
-        String matches = "DCustomer [id=" + id + ", firstname=" + firstname + ", lastname=" + lastname + "]";
+        String matches = "DCustomer [ID=" + id + ", firstName=" + firstname + ", lastName=" + lastname + "]";
 
         // act
         String entry = id_customer.toString();

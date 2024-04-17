@@ -44,8 +44,8 @@ public class Importer implements Command {
             format = ArgsParser.getValidFileFlag(args);
             
             if (format == FileFormat.TXT) {
-                System.out.println("File Format .txt is not valid for imports.");
-                return false;
+                //System.out.println("File Format .txt is not valid for imports.");
+                //return false;
             }
         } catch (NoValidTableNameException e) {
             System.out.println("Could not process export. No valid table name provided. Exiting");
@@ -117,20 +117,35 @@ public class Importer implements Command {
     private void importTableFromText(String filename, String table) throws IOException {
         JSONArray jsonArray = new JSONArray();
         BufferedReader reader = new BufferedReader(new FileReader(filename)); // Read the .txt file
-
+        
+        int count = 0;
         String line;
+        String[] keys = new String[0];
         while ((line = reader.readLine()) != null) {
             JSONObject object = new JSONObject();
-
-            String[] keyValuePairs = line.split("\\|"); // Split by your chosen separator
-            for (String pair : keyValuePairs) {
-                String[] keyValue = pair.split("\\s*:\\s*"); // Split key-value at ":"
-                if (keyValue.length == 2) {
-                    object.put(keyValue[0].trim(), keyValue[1].trim());
-                }
+            count++;
+            if (count == 1) {
+                keys = line.split("\\|");
+                continue;
             }
-
+            
+            String[] values = line.split("\\|"); // Split by your chosen separator
+            for (int i = 0; i < values.length - 1; i++){
+                if (keys[i].equals(" customer ")) {
+                    JSONObject customer = new JSONObject();
+                    customer.put("ID", values[i].trim());
+                    customer.put("firstName", values[i + 1].trim());
+                    customer.put("lastName", values[i + 2].trim());
+                    
+                    object.put("customer", customer);
+                    i += 2;
+                    continue;
+                }
+                object.put(keys[i].trim(), values[i].trim());
+            }
             jsonArray.put(object);
+            
+            
         }
 
         reader.close();
