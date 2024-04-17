@@ -94,6 +94,12 @@ public class Converter {
             String content = valuesToString.substring(valuesToString.indexOf("[") + 1, valuesToString.lastIndexOf("]"));
             String[] parts = content.split(", ");
             
+            // Not an elegant solution but it works
+            if (content.contains("customer=DCustomer")){
+                parts[2] = parts[2].substring(parts[2].indexOf("[") + 1);
+                parts[4] = parts[4].substring(0, parts[4].length() - 1);
+            }
+            
             if (header == null) {
                 header = new StringBuilder();
                 
@@ -103,8 +109,10 @@ public class Converter {
                 sb.append(header.append(separator));
             }
             
-            for (int j = 0; j < parts.length; j++)
-                sb.append(parts[j].split("=", 2)[1]).append(" | ");
+            for (int j = 0; j < parts.length; j++){
+                String partValue = parts[j].split("=", 2)[1];
+                sb.append(partValue).append(" | ");
+            }
             sb.append(separator);
         }
         return sb.toString(); // Return the formatted text
