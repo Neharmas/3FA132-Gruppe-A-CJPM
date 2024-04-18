@@ -168,6 +168,7 @@ public class testReadingAPI {
         statusCode = response.statusCode();
         assertEquals(200, statusCode);
     }
+    
     @Test
     @Order(6)
     @DisplayName("Test 'delete/{id}' Endpoint")

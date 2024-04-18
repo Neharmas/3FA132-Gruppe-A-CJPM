@@ -9,15 +9,15 @@ import org.jdbi.v3.core.mapper.reflect.ColumnName;
 @Data
 public class DUser implements IDUser{
 
-	@JsonProperty("id")
+	@JsonProperty("ID")
 	@ColumnName("id")
 	private Long ID;
 
-	@JsonProperty("firstname")
+	@JsonProperty("firstName")
 	@ColumnName("firstname")
 	private String firstName;
 
-	@JsonProperty("lastname")
+	@JsonProperty("lastName")
 	@ColumnName("lastname")
 	private String lastName;
 
@@ -29,7 +29,7 @@ public class DUser implements IDUser{
 	@ColumnName("password")
 	private String password;
 	
-	@ConstructorProperties({ "id", "lastname", "firstname", "token", "password"  })
+	@ConstructorProperties({ "ID", "lastName", "firstName", "token", "password"  })
 	public DUser (long ID, String lastName, String firstName, String token, String password) {
 		this.ID = ID;
 		this.lastName = lastName;
@@ -51,7 +51,7 @@ public class DUser implements IDUser{
 
 	@Override
 	public String toString() {
-		return "DUser [id=" + ID + ", firstname=" + firstName + ", lastname=" + lastName + ", token=" + token
+		return "DUser [ID=" + ID + ", firstName=" + firstName + ", lastName=" + lastName + ", token=" + token
 				+ ", password=" + password + "]";
 	}
 }

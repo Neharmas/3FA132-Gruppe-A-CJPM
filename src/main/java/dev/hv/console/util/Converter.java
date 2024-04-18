@@ -67,9 +67,16 @@ public class Converter {
                 csvWriter.writeNext(header, false); // Write the header first
             }
             
-            for(int j = 0; j < parts.length; j++)
+            for(int j = 0; j < parts.length; j++){
+                if (parts[j].contains("DCustomer [ID=")){
+                    parts[j] = parts[j].split("=", 3)[2];
+                    parts[j + 1] = parts[j + 1].split("=", 2)[1];
+                    parts[j + 2] = parts[j + 2].split("=", 2)[1].substring(0, parts[j + 2].split("=", 2)[1].length() - 1);
+                    j += 2;
+                    continue;
+                }
                 parts[j] = parts[j].split("=", 2)[1];
-            
+            }
             csvWriter.writeNext(parts, false);
         }
 

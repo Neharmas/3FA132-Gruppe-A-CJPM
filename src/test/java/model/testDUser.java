@@ -54,7 +54,7 @@ class testDUser {
     public void test_toString()
     {
         // arrange
-        String equals = "DUser [id=" + id + ", firstname=" + firstname + ", lastname=" + lastname + ", token=" + token
+        String equals = "DUser [ID=" + id + ", firstName=" + firstname + ", lastName=" + lastname + ", token=" + token
                 + ", password=" + password + "]";
 
         // act
@@ -66,7 +66,7 @@ class testDUser {
         assertEquals(new DUser().toString(), firstUser);
         assertEquals(equals, secondUser);
         
-        equals = "DUser [id=null" + ", firstname=" + firstname + ", lastname=" + lastname + ", token=" + token
+        equals = "DUser [ID=null" + ", firstName=" + firstname + ", lastName=" + lastname + ", token=" + token
             + ", password=" + password + "]";
         
         assertEquals(equals, thirdUser);

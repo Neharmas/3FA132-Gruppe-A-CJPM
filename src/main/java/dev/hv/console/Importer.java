@@ -22,15 +22,11 @@ import java.nio.file.Path;
 import java.util.*;
 
 public class Importer implements Command {
-    private final DBDAO dbdao;
     String tableName = null;
     String fileName = ""; //this currently is the whole path idk how much i like this.
     FileFormat format;
     ArrayList<String> args;
-
-    Importer(ArgsParser argsParser, DBDAO dbdao) {
-        this.dbdao = dbdao;
-    }
+    
 
     /**
      * this can be smartified by better generalization
@@ -91,25 +87,36 @@ public class Importer implements Command {
         /*if only there was a way of not wri    ting the same code 3 times [nah i am kidding, honestly, generics suck ass too and are no fun to implement AT ALL. But we can if you guys want.]*/
         switch (table) {
             case "User":
-                    UserAPI userAPI = new UserAPI();
-                    for (String[] user : values)
-                        userAPI.create(new DUser(user[2].trim(), user[1].trim(), user[3].trim(), user[4].trim())); //why is the id index 2?
+                UserAPI userAPI = new UserAPI();
+                for (String[] user : values){
+                    if(user.length <= 1)
+                        continue;
+                    userAPI.create(new DUser(user[2].trim(), user[1].trim(), user[3].trim(), user[4].trim())); //why is the id index 2?
+                }
                 break;
             case "Customer":
-                    CustomerAPI customerAPI = new CustomerAPI();
-                    for (String[] customer : values){
-                        customerAPI.create(new DCustomer(customer[1].trim(), customer[2].trim()));
-                        System.out.println(new DCustomer(customer[1].trim(), customer[2].trim()));
-                    }
+                CustomerAPI customerAPI = new CustomerAPI();
+                for (String[] customer : values) {
+                    if(customer.length <= 1)
+                        continue;
+                    customerAPI.create(new DCustomer(customer[1].trim(), customer[2].trim()));
+                    System.out.println(new DCustomer(customer[1].trim(), customer[2].trim()));
+                }
                 break;
             case "Reading":
-                 //TODO this is obviously wrong but idc
-                  /*  ReadingAPI readingAPI = new ReadingAPI();
-                    for (String[] reading : values)
-                        readingAPI.create(new DReading(reading[]));
-                    //readingAPI.create(new DReading(values[3], new DCustomer(Long.parseLong(values[7]), "", ""),
-                      //  values[5], Double.parseDouble(values[0]),
-                        //values[2], Boolean.parseBoolean(values[6]), Long.parseLong(values[1])));*/
+                //TODO this is obviously wrong but idc
+                ReadingAPI readingAPI = new ReadingAPI();
+                for (String[] reading : values) {
+                    if(reading.length <= 1)
+                        continue;
+                    DCustomer customer = new DCustomer(Long.parseLong(reading[2].trim()), reading[4].trim(), reading[3].trim());
+                    DReading read = new DReading(Long.parseLong(reading[0].trim()), reading[1].trim(), customer,
+                        reading[5].trim(), Double.parseDouble(reading[6].trim()), reading[7].trim(),
+                        Boolean.parseBoolean(reading[8].trim()), Long.parseLong(reading[9].trim()));
+                    readingAPI.create(read);
+                    System.out.println(read.toString().concat(" imported"));
+                }
+                
                 break;
         }
     }
