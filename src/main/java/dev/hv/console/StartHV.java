@@ -68,7 +68,7 @@ public class StartHV {
 			Exporter ex = new Exporter(dbdao);
 			ex.process(convertedArgs);
 		} else if (convertedArgs.contains("import")) {
-			Importer imp = new Importer(argsParser, dbdao);
+			Importer imp = new Importer();
 			imp.process(convertedArgs);
 		} else if (convertedArgs.contains("-h") || convertedArgs.contains("--help"))
 			help();
