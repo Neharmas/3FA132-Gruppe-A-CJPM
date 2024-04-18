@@ -109,10 +109,26 @@ public class Importer implements Command {
                 for (String[] reading : values) {
                     if(reading.length <= 1)
                         continue;
+                    
+                    Long id = Long.parseLong(reading[0].trim());
+                    String comment = reading[1].trim();
                     DCustomer customer = new DCustomer(Long.parseLong(reading[2].trim()), reading[4].trim(), reading[3].trim());
-                    DReading read = new DReading(Long.parseLong(reading[0].trim()), reading[1].trim(), customer,
-                        reading[5].trim(), Double.parseDouble(reading[6].trim()), reading[7].trim(),
-                        Boolean.parseBoolean(reading[8].trim()), Long.parseLong(reading[9].trim()));
+                    String kindOfMeter = reading[5].trim();
+                    Double meterCount = Double.parseDouble(reading[6].trim());
+                    String meterID = reading[7].trim();
+                    Boolean substitute = Boolean.parseBoolean(reading[8].trim());
+                    Long dateOfReading = Long.parseLong(reading[9].trim());
+                    
+                    DReading read = new DReading(
+                        id,
+                        comment,
+                        customer,
+                        kindOfMeter,
+                        meterCount,
+                        meterID,
+                        substitute,
+                        dateOfReading
+                    );
                     readingAPI.create(read);
                     System.out.println(read.toString().concat(" imported"));
                 }

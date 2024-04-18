@@ -74,6 +74,8 @@ public class StartHV {
 			help();
 		else if (convertedArgs.contains("delete"))
 			deleteAllTables();
+		else if (convertedArgs.contains("create"))
+			createAllTables();
 	}
 
 
@@ -124,12 +126,17 @@ public class StartHV {
 				+ "\t -t = as .txt" + "\n"
 				+ "import [-i/--input=] <file> = import <table> from <file> into db" + "\n"
 				+ " -i, --input=<file> = define <file> which should be imported" + "\n" + "\n"
+				+ "--create = create standard tables" + "\n"
 				+ "--delete = drop all tables" + "\n"
 				+ "--help = print this menu" + "\n";
 		String helpFooter = "Report bugs to https://github.com/xKURDOx !";
 		System.out.println(helpHeader + helpIntro + helpDescription + helpFooter);
 	}
 
+	public void createAllTables(){
+		dbdao.createAllTables();
+		System.out.println("Created Tables: User, Customer and Reading");
+	}
 	public void deleteAllTables() {
 		dbdao.removeAllTables();
 		System.out.println("purged all Tables");

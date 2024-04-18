@@ -1,14 +1,14 @@
 [
   {
-  "lastname": "test",
-  "firstname": "arsch"
+  "lastName": "test",
+  "firstName": "arsch"
   },
   {
-  "lastname": "tester",
-  "firstname": "arscher"
+  "lastName": "tester",
+  "firstName": "arscher"
   },
   {
-    "lastname": "testerer",
-    "firstname": "arscherer"
+    "lastName": "testerer",
+    "firstName": "arscherer"
   }
 ]
