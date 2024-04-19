@@ -55,18 +55,7 @@ public class DReading implements IDReading{
 		this.substitute = substitute;
 		this.dateOfReading = dateOfReading;
 	}
-
-	@Override
-	public String toString() {
-		return "DReading [ID=" + ID + ", comment=" + comment + ", customer=" + customer + ", kindOfMeter=" + kindOfMeter +
-				", meterCount=" + meterCount + ", meterID=" + meterID + ", substitute=" + substitute + ", dateOfReading=" + dateOfReading + "]";
-	}
 	
-	public DReading () {
-		
-	}
-
-
 	public DReading(String comment, DCustomer customer, String kindOfMeter, double meterCount, String meterID, boolean substitute, long dateOfReading) {
 		this.comment = comment;
 		this.customer = customer;
@@ -75,6 +64,13 @@ public class DReading implements IDReading{
 		this.meterID = meterID;
 		this.substitute = substitute;
 		this.dateOfReading = dateOfReading;
+	}
+	
+	public DReading () { }
+	@Override
+	public String toString() {
+		return "DReading [ID=" + ID + ", comment=" + comment + ", customer=" + customer + ", kindOfMeter=" + kindOfMeter +
+				", meterCount=" + meterCount + ", meterID=" + meterID + ", substitute=" + substitute + ", dateOfReading=" + dateOfReading + "]";
 	}
 	
 	@Override

@@ -6,7 +6,6 @@ import dev.bsinfo.ressource.UserAPI;
 import dev.bsinfo.server.RESTServer;
 import dev.hv.db.init.DBConnect;
 import dev.hv.db.model.DUser;
-import jakarta.ws.rs.core.Response;
 import org.jdbi.v3.core.Handle;
 import org.junit.jupiter.api.*;
 

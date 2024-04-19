@@ -13,11 +13,6 @@ import jakarta.ws.rs.core.Response;
 import org.jdbi.v3.core.Handle;
 import org.jdbi.v3.core.Jdbi;
 
-import javax.print.attribute.standard.Media;
-import java.io.InputStream;
-import java.util.List;
-import java.util.Objects;
-
 @Path("reading")
 public class ReadingAPI {
     ReadingDAO readingDAO;

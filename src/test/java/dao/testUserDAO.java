@@ -1,22 +1,17 @@
 package dao;
 
-import dev.hv.db.dao.ReadingDAO;
 import dev.hv.db.dao.UserDAO;
 import dev.hv.db.init.DBConnect;
-import dev.hv.db.model.DCustomer;
-import dev.hv.db.model.DReading;
 import dev.hv.db.model.DUser;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 import java.util.Map;
 
 import org.jdbi.v3.core.Handle;
-import org.jdbi.v3.core.Jdbi;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 

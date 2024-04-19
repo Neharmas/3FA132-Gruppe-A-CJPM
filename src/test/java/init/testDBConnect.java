@@ -30,14 +30,6 @@ public class testDBConnect
     private Jdbi jdbi = null;
     private String[] allTables = {"Customer", "User", "Reading"};
     
-    private int count = 0;
-    
-    @RepeatedTest(2)
-    public void test_set()
-    {
-    	count += 1;
-    }
-    
     @BeforeAll
     @RepeatedTest(2)
     @DisplayName("Set Class Singleton instance")

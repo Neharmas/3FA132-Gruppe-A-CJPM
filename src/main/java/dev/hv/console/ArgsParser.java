@@ -50,7 +50,7 @@ public class ArgsParser {
             }
             c++;
         }
-        throw new NoValidFileNameException("No Valid Fil Name Provided");
+        throw new NoValidFileNameException("No Valid File Name Provided");
     }
 
     public static FileFormat getValidFileFlag(ArrayList<String> providedArgs) throws NoValidFormatException {

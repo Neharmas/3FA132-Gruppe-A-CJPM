@@ -26,15 +26,12 @@ public class DCustomer implements IDCustomer{
 		this.lastName = lastName;
 		this.firstName = firstName;
 	}
-
-	public DCustomer() {
-
-	}
-
+	
 	public DCustomer(final String lastName, final String firstName) {
 		this.lastName = lastName;
 		this.firstName = firstName;
 	}
+	public DCustomer() { }
 
 	@Override
 	public String toString() {

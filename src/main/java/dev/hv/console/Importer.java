@@ -3,6 +3,7 @@ package dev.hv.console;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.opencsv.CSVReader;
+import com.opencsv.exceptions.CsvException;
 import dev.bsinfo.ressource.CustomerAPI;
 import dev.bsinfo.ressource.ReadingAPI;
 import dev.bsinfo.ressource.UserAPI;
@@ -65,13 +66,15 @@ public class Importer implements Command {
         this.args = args;
         if (!loadArguments()) return;
         try {
-            importTable(args, tableName, fileName);
+            importTable(tableName, fileName);
         } catch (IOException e) {
             System.out.println("Could not write the table due to an IOException. Are you lacking permissions?");
+        } catch (CsvException e) {
+          throw new RuntimeException(e);
         }
     }
 
-    private void importTableFromCSV(String filename, String table) throws IOException {
+    private void importTableFromCSV(String filename, String table) throws IOException, CsvException {
         Reader reader = Files.newBufferedReader(Path.of(filename));
         CSVReader csvReader = new CSVReader(reader);
         List<String[]> allLines = csvReader.readAll();
@@ -172,7 +175,6 @@ public class Importer implements Command {
         }
 
         reader.close();
-        //return jsonArray;
         //turn json to table:
         
         ObjectMapper mapper = new ObjectMapper();
@@ -265,7 +267,7 @@ public class Importer implements Command {
         }
     }
 
-    public void importTable(ArrayList<String> convertedArgs, String table, String filename) throws IOException {
+    public void importTable(String table, String filename) throws IOException, CsvException {
         switch (format) {
             case CSV:
                 importTableFromCSV(filename, table);

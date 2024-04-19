@@ -38,16 +38,14 @@ public class DUser implements IDUser{
 		this.password = password;
 	}
 	
-	public DUser() {
-		
-	}
-	
 	public DUser(final String lastName, final String firstName, final String token, final String password) {
 		this.lastName = lastName;
 		this.firstName = firstName;
 		this.token = token;
 		this.password = password;
 	}
+	
+	public DUser() { }
 
 	@Override
 	public String toString() {

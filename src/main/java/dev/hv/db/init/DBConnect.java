@@ -2,8 +2,6 @@ package dev.hv.db.init;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 
 import org.jdbi.v3.core.Handle;
@@ -31,8 +29,6 @@ public class DBConnect implements IDbConnect{
 		createUserTable();
 		createReadingTable();
 	}
-	
-	
 	
 	public void insertTestData() {
 		final Handle handle = jdbi.open();

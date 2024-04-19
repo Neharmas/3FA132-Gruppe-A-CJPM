@@ -39,9 +39,6 @@ public class Converter {
         xmlMapper.configure(SerializationFeature.INDENT_OUTPUT, true);
         xmlMapper.configure(ToXmlGenerator.Feature.WRITE_XML_DECLARATION, true);
         xmlMapper.configure(ToXmlGenerator.Feature.WRITE_XML_1_1, true);
-        
-        //TODO URGENCY: HIGH: The testData (somehow) accept meterid and such as 22ss but idk if they create the table wrong or if the testdata is bad
-        //and this probably has to be checked a) with the docs or b) with the frontend.
         return xmlMapper.writer().withRootName(name).writeValueAsString(jsonArray.values());
     }
     public static String convertJSONToCSV(LinkedHashMap<String, Object> jsonArray) throws IOException {
@@ -85,7 +82,7 @@ public class Converter {
     }
 
     //TODO: SOMWHERE HERE; THE METER_COUNT GETS LOST IN THE EXPORT...
-    public static String convertJSONToTXT(LinkedHashMap<String, Object> stringObjectLinkedHashMap) throws IOException {
+    public static String convertJSONToTXT(LinkedHashMap<String, Object> stringObjectLinkedHashMap) {
         StringBuilder sb = new StringBuilder();
 
         // Customize as needed:
@@ -109,17 +106,17 @@ public class Converter {
             
             if (header == null) {
                 header = new StringBuilder();
-                
-                for(int j = 0; j < parts.length; j++) {
-                    header.append(parts[j].split("=", 2)[0]).append(" | ");
-                }
+              
+              for (String part : parts) {
+                header.append(part.split("=", 2)[0]).append(" | ");
+              }
                 sb.append(header.append(separator));
             }
-            
-            for (int j = 0; j < parts.length; j++){
-                String partValue = parts[j].split("=", 2)[1];
-                sb.append(partValue).append(" | ");
-            }
+          
+          for (String part : parts) {
+            String partValue = part.split("=", 2)[1];
+            sb.append(partValue).append(" | ");
+          }
             sb.append(separator);
         }
         return sb.toString(); // Return the formatted text

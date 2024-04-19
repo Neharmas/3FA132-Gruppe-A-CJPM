@@ -1,7 +1,5 @@
 package dev.hv.console;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.bsinfo.ressource.CustomerAPI;
 import dev.bsinfo.ressource.ReadingAPI;
 import dev.bsinfo.ressource.UserAPI;
@@ -12,38 +10,13 @@ import dev.hv.db.init.DBConnect;
 import dev.hv.db.model.DCustomer;
 import dev.hv.db.model.DReading;
 import dev.hv.db.model.DUser;
-import jakarta.ws.rs.core.GenericType;
-import jakarta.ws.rs.core.Link;
 import jakarta.ws.rs.core.Response;
 import org.jdbi.v3.core.Handle;
-import org.json.JSONArray;
-import org.json.JSONException;
 
 import java.util.*;
 
 public class DBDAO {
     private final DBConnect db = DBConnect.getConnection();
-
-    /*
-    public JSONArray listmap_to_json_string(List<LinkedHashMap<String, Object>> list)
-    {
-        JSONArray json_arr = new JSONArray();
-        for (Map<String, Object> map : list) {
-            JSONObject json_obj=new JSONObject();
-            for (Map.Entry<String, Object> entry : map.entrySet()) {
-                String key = entry.getKey();
-                Object value = entry.getValue();
-                try {
-                    json_obj.put(key,value);
-                } catch (JSONException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-            }
-            json_arr.put(json_obj);
-        }
-        return json_arr;
-    }*/
 
     LinkedHashMap<String, Object> readTable(String tablename) {
         LinkedHashMap<String, Object> table = new LinkedHashMap<>();

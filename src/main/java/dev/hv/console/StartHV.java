@@ -33,8 +33,7 @@ public class StartHV {
 	private ArgsParser argsParser;
 
 
-	private StartHV() {
-	}
+	private StartHV() {}
 
 	private void initialize(String[] args) {
 		this.argsParser = new ArgsParser();
@@ -44,7 +43,8 @@ public class StartHV {
 		this.originalArgs = args;
 		
 		this.startRESTServer();
-		convertAndRunArguments();
+		if(args.length > 0)
+			convertAndRunArguments();
 	}
 
 
@@ -125,10 +125,10 @@ public class StartHV {
 				+ "\t -x = as .xml" + "\n"
 				+ "\t -t = as .txt" + "\n"
 				+ "import [-i/--input=] <file> = import <table> from <file> into db" + "\n"
-				+ " -i, --input=<file> = define <file> which should be imported" + "\n" + "\n"
+				+ " -i, --input=<file> = define <file> which should be imported" + "\n"
 				+ "--create = create standard tables" + "\n"
 				+ "--delete = drop all tables" + "\n"
-				+ "--help = print this menu" + "\n";
+				+ "--help = print this menu" + "\n\n";
 		String helpFooter = "Report bugs to https://github.com/xKURDOx !";
 		System.out.println(helpHeader + helpIntro + helpDescription + helpFooter);
 	}

@@ -75,75 +75,6 @@ public class FileUtil {
         Files.write(file, Collections.singleton(content), StandardCharsets.UTF_8);
     }
 
-    public static String layoutCSV(JSONObject table) {
-        String csv, tablename, header = "", rows = "";
-        ArrayList<String> keys = new ArrayList<String>();
-
-        tablename = getTableNameFromJSON(table);
-
-        System.out.println("Tablename: " + tablename);
-        switch (tablename) {
-            case "Customer": keys = customerKeys; break;
-            case "User": keys = userKeys; break;
-            case "Reading": keys = readingKeys; break;
-        }
-
-        for (String element : keys) {
-            header = header + element + ";";
-        }
-        header = header.substring(0, header.length() - 1);
-
-        // append Column Values Accordingly
-        int entrys = table.getJSONArray(tablename).length();
-        String row = "";
-        for (int i=0; i < entrys; i++) {
-            row = row + "\n";
-            for (String key: keys) {
-                String value = table.getJSONArray(tablename).getJSONObject(i).get(key).toString();
-                row = row + value + "; ";
-            }
-            row = row.substring(0, row.length() - 2);
-        }
-
-        csv = header + row + "\n";
-
-        return csv;
-    }
-
-    public static String layoutXML(JSONObject table) {
-        String xml, tablename, header = "", rows = "";
-        ArrayList<String> keys = new ArrayList<String>();
-
-        tablename = getTableNameFromJSON(table);
-
-        switch(tablename) {
-            case "Customer": keys = customerKeys; break;
-            case "User": keys = userKeys; break;
-            case "Reading": keys = readingKeys; break;
-        }
-
-        // set Heading Accordingly
-        header = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\n";
-        header = header + "<" + tablename + ">" + "\n";
-
-        // append Column Values Accordingly
-        int entrys = table.getJSONArray(tablename).length();
-        String row = "";
-        for (int i=0; i < entrys; i++) {
-            row = row + "  <Entry> \n";
-            for (String key: keys) {
-                String value = table.getJSONArray(tablename).getJSONObject(i).get(key).toString();
-                row = row + "\t<" + key + ">" + value + "</" + key + ">\n";
-            }
-            row = row + "  </Entry> \n";
-        }
-
-        String footer = "</" + tablename + ">" + "\n";
-        xml = header + row + footer;
-
-        return xml;
-    }
-
     public static String layoutText(JSONObject table) {
         String text, tablename,header = "", rows = "";
         ArrayList<String> keys = new ArrayList<String>();
@@ -181,18 +112,6 @@ public class FileUtil {
         return text;
     }
 
-    public static String layoutJSON(JSONObject json) {
-        String raw = json.toString();
-        String layouted;
-
-        raw = new StringBuffer(raw).insert(1, "\n  ").toString();
-        layouted = raw.replace("[", "\n    [\n\t");
-        layouted = layouted.replace("},{", "}, \n\t{");
-        layouted = layouted.replace("]", "\n    ]\n");
-
-        return layouted;
-    }
-
     private static String getTableNameFromJSON(JSONObject table) {
         String tablename;
 
@@ -202,25 +121,25 @@ public class FileUtil {
         return tablename;
     }
 
-    private static final ArrayList<String> validFileFormatFlags = new ArrayList<String>() {{
+    private static final ArrayList<String> validFileFormatFlags = new ArrayList<>() {{
         add("-c"); // .csv
         add("-j"); // .json
         add("-t"); // .txt
         add("-x"); // .xml
     }};
 
-    private static final ArrayList<String> options = new ArrayList<String>() {{
+    private static final ArrayList<String> options = new ArrayList<>() {{
         add("export");
         add("import");
     }};
 
-    private static final ArrayList<String> customerKeys = new ArrayList<String>() {{
+    private static final ArrayList<String> customerKeys = new ArrayList<>() {{
         add("id");
         add("firstname");
         add("lastname");
     }};
 
-    private static final ArrayList<String> userKeys = new ArrayList<String>() {{
+    private static final ArrayList<String> userKeys = new ArrayList<>() {{
         add("id");
         add("firstname");
         add("lastname");
@@ -228,7 +147,7 @@ public class FileUtil {
 //		add("password");
     }};
 
-    private static final ArrayList<String> readingKeys = new ArrayList<String>() {{
+    private static final ArrayList<String> readingKeys = new ArrayList<>() {{
         add("comment");
         add("customer"); //Foreign key customer id
         add("kindofmeter");
@@ -250,7 +169,7 @@ public class FileUtil {
         FileUtil.writeFile(convertedJSON, filepath);
     }
 
-    public static void exportTableToConsole(LinkedHashMap<String, Object> table) throws IOException {
+    public static void exportTableToConsole(LinkedHashMap<String, Object> table) {
         String convertedTxt = Converter.convertJSONToTXT(table);
         System.out.println(convertedTxt);
     }
