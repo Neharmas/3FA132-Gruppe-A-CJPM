@@ -5,33 +5,42 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.*;
 
-import dev.bsinfo.server.StartServer;
+import dev.bsinfo.server.RESTServer;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class testStartServer {
-	private static StartServer instance;
-    final String pack = "dev.bsinfo.ressource";
-    String url = "http://localhost:8080/rest";
+	private static RESTServer instance;
+	final String pack = "dev.bsinfo.ressource";
+  String url = "http://localhost:8080/rest";
     
 	@Test
-    @Order(1)
-    @DisplayName("Test Singelton")
+	@Order(1)
+	@DisplayName("Test Singelton")
 	public void testgetInstance() {
-		instance = StartServer.getInstance();
+		instance = RESTServer.getInstance();
 		assertNotNull(instance);
 	}
 	
 	
 	@Test
-    @Order(2)
-    @DisplayName("Test Connection")
+	@Order(2)
+	@DisplayName("Test Connection")
 	public void testrun() {
 		assertTrue(instance.run());
-	}
-	@Test
-	@Order(3)
-	@DisplayName("Stop Server")
-	public static void stopServer() {
 		instance.close();
 	}
+	
+	@Test
+	@Order(3)
+	@DisplayName("Test Connection with Parameters")
+	public void testRunParam(){
+		assertTrue(instance.run(url, pack));
+	}
+	
+	@Test
+	@Order(4)
+	@DisplayName("Stop Server")
+	public void stopServer() {
+	instance.close();
+}
 }

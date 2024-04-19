@@ -1,10 +1,7 @@
 package dev.hv.db.init;
 
-import java.io.FileReader;
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+import java.io.InputStream;
 import java.util.Properties;
 
 import org.jdbi.v3.core.Handle;
@@ -28,33 +25,9 @@ public class DBConnect implements IDbConnect{
 
 	@Override
 	public void createAllTables() {		
-		final Handle handle = jdbi.open();
-		//create table KUNDEN
-		handle.execute("CREATE TABLE IF NOT EXISTS Customer ("
-				+ "id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,"
-				+ "lastname TEXT NOT NULL,"
-				+ "firstname TEXT NOT NULL);");
-		//create table Nutzer
-		handle.execute("CREATE TABLE IF NOT EXISTS User ("
-				+ "id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,"
-				+ "lastname TEXT NOT NULL,"
-				+ "firstname TEXT NOT NULL,"
-				+ "token TEXT NOT NULL,"
-				+ "password TEXT NOT NULL);");
-		//create table Lesen
-		handle.execute("CREATE TABLE IF NOT EXISTS Reading ("
-				+ "id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,"
-				+ "comment TEXT NOT NULL,"
-				+ "customer INTEGER NOT NULL,"
-				+ "dateofreading INTEGER NOT NULL,"
-				+ "kindofmeter TEXT NOT NULL,"
-				+ "meterid TEXT NOT NULL,"
-				+ "metercount INTEGER NOT NULL,"
-				+ "substitute BOOLEAN NOT NULL,"
-				+ "FOREIGN KEY (customer) REFERENCES Customer (id)"
-				+ ");");
-		
-		handle.close();
+		createCustomerTable();
+		createUserTable();
+		createReadingTable();
 	}
 	
 	public void insertTestData() {
@@ -87,7 +60,8 @@ public class DBConnect implements IDbConnect{
 		if (this.jdbi == null) {
 			 try {
 	            final Properties prop = new Properties();
-	            prop.load(new FileReader("hausverwaltung.properties"));
+				InputStream inputStream = DBConnect.class.getClassLoader().getResourceAsStream("hausverwaltung.properties");
+	            prop.load(inputStream);
 	            final String dburl = prop.getProperty("DBURL"); //DBURL
 	            final String dbuser = prop.getProperty("DBUSER"); //DBUSER
 	            String dbpw = prop.getProperty("DBPW"); //DBW
@@ -113,4 +87,46 @@ public class DBConnect implements IDbConnect{
 		handle.close();
 	}
 
+	public void createCustomerTable() {
+		final Handle handle = getJdbi().open();
+		
+		handle.execute("CREATE TABLE IF NOT EXISTS Customer ("
+				+ "id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,"
+				+ "lastname TEXT NOT NULL,"
+				+ "firstname TEXT NOT NULL);");
+
+		handle.close();
+	}
+	
+	public void createUserTable() {
+		final Handle handle = getJdbi().open();
+		
+		handle.execute("CREATE TABLE IF NOT EXISTS User ("
+				+ "id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,"
+				+ "lastname TEXT NOT NULL,"
+				+ "firstname TEXT NOT NULL,"
+				+ "token TEXT NOT NULL,"
+				+ "password TEXT NOT NULL);");
+
+		handle.close();
+	}
+	
+	public void createReadingTable() {
+		final Handle handle = getJdbi().open();
+		
+		handle.execute("CREATE TABLE IF NOT EXISTS Reading ("
+				+ "id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,"
+				+ "comment TEXT NOT NULL,"
+				+ "customer INTEGER NOT NULL,"
+				+ "dateofreading TEXT NOT NULL,"
+				+ "kindofmeter TEXT NOT NULL,"
+				+ "meterid TEXT NOT NULL,"
+				+ "metercount INTEGER NOT NULL,"
+				+ "substitute BOOLEAN NOT NULL,"
+				//dependent on existing customer table
+				+ "FOREIGN KEY (customer) REFERENCES Customer (id)" 
+				+ ");");
+
+		handle.close();
+	}
 }

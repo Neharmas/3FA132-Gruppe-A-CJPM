@@ -9,17 +9,17 @@ import org.jdbi.v3.core.mapper.reflect.ColumnName;
 @Data
 public class DUser implements IDUser{
 
-	@JsonProperty("id")
+	@JsonProperty("ID")
 	@ColumnName("id")
-	private Long id;
+	private Long ID;
 
-	@JsonProperty("firstname")
+	@JsonProperty("firstName")
 	@ColumnName("firstname")
-	private String firstname;
+	private String firstName;
 
-	@JsonProperty("lastname")
+	@JsonProperty("lastName")
 	@ColumnName("lastname")
-	private String lastname;
+	private String lastName;
 
 	@JsonProperty("token")
 	@ColumnName("token")
@@ -29,34 +29,27 @@ public class DUser implements IDUser{
 	@ColumnName("password")
 	private String password;
 	
-	@ConstructorProperties({ "id", "lastname", "firstname", "token", "password"  })
-	public DUser (long id, String lastname, String firstname, String token, String password) {
-		this.id = id;
-		this.lastname = lastname;
-		this.firstname = firstname;
+	@ConstructorProperties({ "ID", "lastName", "firstName", "token", "password"  })
+	public DUser (long ID, String lastName, String firstName, String token, String password) {
+		this.ID = ID;
+		this.lastName = lastName;
+		this.firstName = firstName;
 		this.token = token;
 		this.password = password;
 	}
 	
-	public DUser() {
-		
-	}
-	
-	public DUser(final String lastname, final String firstname, final String token, final String password) {
-		this.lastname = lastname;
-		this.firstname = firstname;
+	public DUser(final String lastName, final String firstName, final String token, final String password) {
+		this.lastName = lastName;
+		this.firstName = firstName;
 		this.token = token;
 		this.password = password;
 	}
+	
+	public DUser() { }
 
 	@Override
 	public String toString() {
-		return "DUser [id=" + id + ", firstname=" + firstname + ", lastname=" + lastname + ", token=" + token
+		return "DUser [ID=" + ID + ", firstName=" + firstName + ", lastName=" + lastName + ", token=" + token
 				+ ", password=" + password + "]";
-	}
-
-	public boolean equals(DUser other)
-	{
-		return this.toString().equals(other.toString());
 	}
 }

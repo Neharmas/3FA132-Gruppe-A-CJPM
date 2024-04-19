@@ -5,13 +5,13 @@ import java.util.List;
 public interface IDAO<T> {
 
    // DELETE
-   void delete(Long id);
+   boolean delete(Long ID);
 
    // DELETE
-   void delete(T o);
+   boolean delete(T o);
 
    // READ
-   T findById(Long id);
+   T findById(Long ID);
 
    // READ
    List<T> getAll();
@@ -20,7 +20,7 @@ public interface IDAO<T> {
    void insert(T o);
 
    // UPDATE
-   void update(Long id, T o);
+   void update(Long ID, T o);
 
    // UPDATE
    void update(T o);

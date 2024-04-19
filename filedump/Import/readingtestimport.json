@@ -1,0 +1,66 @@
+[ {
+  "ID" : 1,
+  "comment" : "afsadf",
+  "customer" : {
+    "ID" : 1,
+    "lastName" : "test",
+    "firstName" : "arsch"
+  },
+  "kindOfMeter" : "klljlk",
+  "meterCount" : 2342.0,
+  "meterID" : "lklkl",
+  "substitute" : true,
+  "dateOfReading" : 234324
+}, {
+  "ID" : 2,
+  "comment" : "afsadf",
+  "customer" : {
+    "ID" : 1,
+    "lastName" : "test",
+    "firstName" : "arsch"
+  },
+  "kindOfMeter" : "klljlk",
+  "meterCount" : 2342.0,
+  "meterID" : "lklkl",
+  "substitute" : true,
+  "dateOfReading" : 234324
+}, {
+  "ID" : 3,
+  "comment" : "afsadf",
+  "customer" : {
+    "ID" : 1,
+    "lastName" : "test",
+    "firstName" : "arsch"
+  },
+  "kindOfMeter" : "klljlk",
+  "meterCount" : 2342.0,
+  "meterID" : "lklkl",
+  "substitute" : true,
+  "dateOfReading" : 234324
+}, {
+  "ID" : 4,
+  "comment" : "afsadf",
+  "customer" : {
+    "ID" : 1,
+    "lastName" : "test",
+    "firstName" : "arsch"
+  },
+  "kindOfMeter" : "klljlk",
+  "meterCount" : 2342.0,
+  "meterID" : "lklkl",
+  "substitute" : true,
+  "dateOfReading" : 234324
+}, {
+  "ID" : 5,
+  "comment" : "afsadf",
+  "customer" : {
+    "ID" : 1,
+    "lastName" : "test",
+    "firstName" : "arsch"
+  },
+  "kindOfMeter" : "klljlk",
+  "meterCount" : 2342.0,
+  "meterID" : "lklkl",
+  "substitute" : true,
+  "dateOfReading" : 234324
+} ]

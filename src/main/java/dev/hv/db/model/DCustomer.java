@@ -7,46 +7,34 @@ import lombok.Data;
 import org.jdbi.v3.core.mapper.reflect.ColumnName;
 
 @Data
-public class DCustomer implements IDCustomer, Comparable<DCustomer>{
-
-	@JsonProperty("id")
+public class DCustomer implements IDCustomer{
+	@JsonProperty("ID")
 	@ColumnName("id")
-	private Long id;
+	private Long ID;
 
-	@JsonProperty("firstname")
+	@JsonProperty("firstName")
 	@ColumnName("firstname")
-	private String firstname;
+	private String firstName;
 	
-	@JsonProperty("lastname")
+	@JsonProperty("lastName")
 	@ColumnName("lastname")
-	private String lastname;
+	private String lastName;
 
-	//@ConstructorProperties({ "id", "lastname", "firstname" })
-	public DCustomer(long id, String lastname, String firstName) {
-		this.id = id;
-		this.lastname = lastname;
-		this.firstname = firstName;
+	@ConstructorProperties({ "ID", "lastName", "firstName" })
+	public DCustomer(long ID, String lastName, String firstName) {
+		this.ID = ID;
+		this.lastName = lastName;
+		this.firstName = firstName;
 	}
-
-	public DCustomer() {
-
+	
+	public DCustomer(final String lastName, final String firstName) {
+		this.lastName = lastName;
+		this.firstName = firstName;
 	}
-	@ConstructorProperties({ "lastname", "firstname" })
-	public DCustomer(final String lastname, final String firstName) {
-		this.lastname = lastname;
-		this.firstname = firstName;
-	}
+	public DCustomer() { }
 
 	@Override
 	public String toString() {
-		return "DCustomer [id=" + id + ", firstname=" + firstname + ", lastname=" + lastname + "]";
-	}
-	@Override
-	public int compareTo(DCustomer o) {
-		return o.id.compareTo(this.id);
-	}
-	
-	public boolean isEqualTo(DCustomer o) {
-		return this.toString().equals(o.toString());
+		return "DCustomer [ID=" + ID + ", firstName=" + firstName + ", lastName=" + lastName + "]";
 	}
 }

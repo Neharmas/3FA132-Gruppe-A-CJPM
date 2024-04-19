@@ -7,13 +7,11 @@ import dev.hv.db.dao.CustomerDAO;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 import java.util.Map;
 
 import org.jdbi.v3.core.Handle;
-import org.jdbi.v3.core.Jdbi;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 
@@ -33,6 +31,7 @@ public class testCustomerDAO {
 
         // act
         test_instance.getJdbi().installPlugins();
+        test_instance.removeAllTables();
         test_instance.createAllTables();
 
         // assert
@@ -79,8 +78,8 @@ public class testCustomerDAO {
                 .createQuery("SELECT * FROM customer;")
                 .mapToMap()
                 .list();
-        assertEquals(newCustomer.getLastname(), results.getFirst().get("lastname"));
-        assertEquals(newCustomer.getFirstname(), results.getFirst().get("firstname"));
+        assertEquals(newCustomer.getLastName(), results.getFirst().get("lastname"));
+        assertEquals(newCustomer.getFirstName(), results.getFirst().get("firstname"));
         assertEquals(1, results.getFirst().get("id"));
 
         customers[0] = newCustomer;

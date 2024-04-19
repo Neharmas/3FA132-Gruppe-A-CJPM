@@ -9,11 +9,9 @@ import dev.hv.db.model.DReading;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 
+import jakarta.ws.rs.core.Response;
 import org.jdbi.v3.core.Handle;
 import org.jdbi.v3.core.Jdbi;
-
-import java.io.InputStream;
-import java.util.List;
 
 @Path("reading")
 public class ReadingAPI {
@@ -32,28 +30,22 @@ public class ReadingAPI {
         readingDAO = handle.attach(ReadingDAO.class);
         customerDAO = handle.attach(CustomerDAO.class);
     }
-    @GET
-    @Path("form")
-    @Produces(MediaType.TEXT_HTML)
-    public InputStream getForm() {
-        return getClass().getClassLoader().getResourceAsStream("reading-form.html");
-    }
-
+    
     @PUT
     @Path("edit")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
-    public DReading edit(DReading reading) {
-        if (readingDAO.findById(reading.getId()) == null) {
-            System.out.println("Couldn't find reading with id: " + reading.getId());
+    public Response edit(DReading reading) {
+        if (readingDAO.findById(reading.getID()) == null) {
+            System.out.println("Couldn't find reading with id: " + reading.getID());
             return null;
         }
         DCustomer customer = reading.getCustomer();
         //check if customer exits/get customer by id
-        customer = customerDAO.findById(customer.getId());
+        customer = customerDAO.findById(customer.getID());
         if (customer == null) {
             System.out.println("Couldn't find customer (id-check): "
-                    + reading.getCustomer().getId() +" will not be changed.");
+                    + reading.getCustomer().getID() +" will not be changed.");
         } else {
             //reset the customer to the one saved in the db (the data sent could contain a dummy-customer)
             reading.setCustomer(customer);
@@ -61,23 +53,24 @@ public class ReadingAPI {
 
 
         readingDAO.update(reading);
-        return reading;
+        return Response.ok(reading, MediaType.APPLICATION_JSON).build();
     }
 
     @GET
     @Path("get/all")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<DReading> getAll()
+    public Response getAll()
     {
-        return readingDAO.getAll();
+        return Response.ok(readingDAO.getAll(), MediaType.APPLICATION_JSON).build();
     }
 
     @GET
     @Path("get/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public DReading get(@PathParam("id") Long id)
+    public Response get(@PathParam("id") Long id)
     {
-        return readingDAO.findById(id);
+
+        return Response.ok(readingDAO.findById(id), MediaType.APPLICATION_JSON).build();
     }
 
 
@@ -85,27 +78,46 @@ public class ReadingAPI {
     @Path("create")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes("application/json")
-    public DReading create(DReading reading)
+    public Response create(DReading reading)
     {
-        /*boolean enableSubstitute = "true".equalsIgnoreCase(substitute);
-
-        DCustomer customer = customerDAO.findById(customerID);
-        DReading reading = new DReading(comment, customer, kindofmeter, metercount, meterid, enableSubstitute, dateofreading);
-        */
+        //if the response doesn't have a customer, something is a bit wrong:
+        if (reading.getCustomer() == null)
+    		    return Response.serverError().encoding("No customer sent with the reading. Please try again").build();
+        
+        DCustomer customer = customerDAO.findById(reading.getCustomer().getID());
+        
+        //if the customer doesn't exist yet, we create it.
+        //create customer and set the name
+        if (customer == null) {
+            //if the name and first_name are empty, we replace them with EMTPY. This can be changed later, as it isn't really best practice
+            if (reading.getCustomer().getFirstName() == null || reading.getCustomer().getFirstName().isEmpty())
+                reading.getCustomer().setFirstName("EMPTY");
+            if (reading.getCustomer().getLastName() == null || reading.getCustomer().getLastName().isEmpty())
+                reading.getCustomer().setLastName("EMPTY");
+        
+        customerDAO.insert(reading.getCustomer()); //the id doesn't have to stay the same on insert!
+        
+        //technically could be simplified a bit by just resetting the id (how would the other data change?
+        reading.setCustomer(customerDAO.findById(Long.valueOf(customerDAO.getLastInsertedId())));
+        
+        //if the customer (id) already exists, we update name and firstname
+        } else {
+            customerDAO.update(customer);
+        }
+        
         readingDAO.insert(reading);
         Long lastID = readingDAO.getLastInsertedId().longValue();
-                reading.setId(lastID);
-        if(!reading.isEqualTo(get(lastID)))
-            return null;
+        reading.setID(lastID);
         
-        return reading;
+        return Response.ok(reading, MediaType.APPLICATION_JSON).build();
     }
 
-    @GET
+    @DELETE
     @Path("delete/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public void delete(@PathParam("id") Long id)
+    public Response delete(@PathParam("id") Long id)
     {
-        readingDAO.delete(id);
+
+        return Response.ok(readingDAO.delete(id), MediaType.APPLICATION_JSON).build();
     }
 }

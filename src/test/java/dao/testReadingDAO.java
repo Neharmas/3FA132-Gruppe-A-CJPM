@@ -9,16 +9,11 @@ import dev.hv.db.model.DReading;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 import java.util.Map;
 
-import dev.hv.db.model.DUser;
-import dev.hv.db.model.IDCustomer;
 import org.jdbi.v3.core.Handle;
-import org.jdbi.v3.core.Jdbi;
-import org.jdbi.v3.sqlobject.SqlObjectPlugin;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 
@@ -26,6 +21,7 @@ import org.junit.jupiter.api.TestInstance.Lifecycle;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class testReadingDAO {
     ReadingDAO readingDAO;
+    CustomerDAO customerDAO;
     DReading[] readings = {null, null, null};
     private DBConnect test_instance = null;
     @Test
@@ -38,6 +34,7 @@ public class testReadingDAO {
 
         // act
         test_instance.getJdbi().installPlugins();
+        test_instance.removeAllTables();
         test_instance.createAllTables();
 
         // assert
@@ -51,10 +48,12 @@ public class testReadingDAO {
         // arrange
         Handle handle = test_instance.getJdbi().open();
         readingDAO = handle.attach(ReadingDAO.class);
+        customerDAO = handle.attach(CustomerDAO.class);
 
         // act
         for(int i = 0; i< readings.length; i++) {
-            DCustomer customer = new DCustomer(i+1,"Ajomale", "Christopher");
+            DCustomer customer = new DCustomer(i,"Ajomale", "Christopher");
+            customerDAO.insert(customer);
             readings[i] = new DReading( "comment", customer, "kindofmeter", 2, "meterid", false, 19122023L);
             readingDAO.insert(readings[i]);
         }
@@ -102,7 +101,6 @@ public class testReadingDAO {
         // act
         readingDAO.delete(1L);
         boolean exists = readingDAO.findById(1L) != null;
-        List<DReading> test = readingDAO.getAll();
         // assert
         assertFalse(exists);
 
@@ -120,4 +118,3 @@ public class testReadingDAO {
         assertEquals(2, listReadings.size());
     }
 }
-

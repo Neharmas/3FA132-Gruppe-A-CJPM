@@ -1,38 +1,38 @@
 package dev.hv.db.model;
 
-public interface IDReading {
+public interface IDReading { //swhy isnt this comparable??
 
 	String getComment();
 	
 	IDCustomer getCustomer();
 	
-	Long getDateofreading();
+	Long getDateOfReading();
 	
-	Long getId();
+	Long getID();
 	
-	String getKindofmeter();
+	String getKindOfMeter();
 	
-	Double getMetercount();
+	Double getMeterCount();
 	
-	String getMeterid();
+	String getMeterID();
 	
 	Boolean getSubstitute();
 	
-	String printDateofreading();
+	String printDateOfReading();
 	
 	void setComment(String comment);
 	
 	void setCustomer(DCustomer customer);
 	
-	void setDateofreading(Long dateOfReading);
+	void setDateOfReading(Long dateOfReading);
 	
-	void setId(Long id);
+	void setID(Long ID);
 	
-	void setKindofmeter(String kindOfMeter);
+	void setKindOfMeter(String kindOfMeter);
 	
-	void setMetercount(Double meterCount);
+	void setMeterCount(Double meterCount);
 	
-	void setMeterid(String meterId);
+	void setMeterID(String meterID);
 	
 	void setSubstitute(Boolean substitute);
 

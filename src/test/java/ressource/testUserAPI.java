@@ -2,20 +2,17 @@ package ressource;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
 import dev.bsinfo.ressource.UserAPI;
-import dev.bsinfo.server.StartServer;
+import dev.bsinfo.server.RESTServer;
 import dev.hv.db.init.DBConnect;
 import dev.hv.db.model.DUser;
 import org.jdbi.v3.core.Handle;
-import org.jdbi.v3.core.Jdbi;
 import org.junit.jupiter.api.*;
 
 import java.io.IOException;
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -23,113 +20,118 @@ import static org.junit.jupiter.api.Assertions.*;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class testUserAPI {
     String url = "http://localhost:8080/rest";
-    private static StartServer instance;
+    private static RESTServer instance;
     private static UserAPI api;
 
     @BeforeAll
     @DisplayName("Start Api Server")
     static public void run() {
         // Server
-        instance = StartServer.getInstance();
+        instance = RESTServer.getInstance();
         instance.run();
         api = new UserAPI();
     }
+    DUser user = new DUser(1L,
+        "testLastName",
+        "testFirstName",
+        "testToken",
+        "testPassWord"
+    );
 
     @Test
     @Order(1)
     @DisplayName("Test Create User")
     public void testCreate() throws IOException, InterruptedException {
+        String json = ObjToJSON.convert(user);
 
-        DUser user = new DUser(
-                1L,
-                "testLastName",
-                "testFirstName",
-                "testToken",
-                "testPassWord"
-        );
-
-        ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
-        String json = ow.writeValueAsString(user);
-
-        HttpClient client = HttpClient.newHttpClient();
-
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(url + "/user/create"))
-                .header("Content-Type", "application/json")
-                .POST(HttpRequest.BodyPublishers.ofString(json))
-                .build();
-
-        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        HttpResponse<String>response = HTTPRequestBuilder.create(url, HTTPRequestBuilder.ResourceTypes.USER, json);
 
         int statusCode = response.statusCode();
-        assertEquals(200, statusCode);
-
-        DUser otherUser = api.get(1L);
-
-        assertTrue(user.equals(otherUser));
+        assertEquals(statusCode, 200);
+        DUser responseBody =  new ObjectMapper().readValue(response.body(), new TypeReference<>(){});
+        assertTrue(user.equals(responseBody));
     }
 
     @Test
     @Order(2)
-    @DisplayName("Test GetAll")
-    public void testGetAll() throws IOException, InterruptedException
-    {
-        HttpClient client = HttpClient.newHttpClient();
-
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(url + "/user/get/all"))
-                .GET()
-                .header("Content-Type", "application/x-www-form-urlencoded")
-                .build();
-
-        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+    @DisplayName("Test Get By ID")
+    public void testGet() throws IOException, InterruptedException {
+        HttpResponse<String>response = HTTPRequestBuilder.get(
+                url,
+                HTTPRequestBuilder.ResourceTypes.USER,
+                user.getID().toString());
 
         int statusCode = response.statusCode();
-        assertEquals(200, statusCode);
+        assertEquals( 200, statusCode);
 
-        DUser user = new DUser(
-                1L,
-                "testLastName",
-                "testFirstName",
-                "testToken",
-                "testPassWord"
-        );
-        ObjectMapper mapper = new ObjectMapper();
-
-        DUser responseBody = mapper.readValue(response.body(), new TypeReference<List<DUser>>(){}).getFirst();
+        DUser responseBody = new ObjectMapper().readValue(response.body(), new TypeReference<>(){});
         assertTrue(user.equals(responseBody));
     }
 
     @Test
     @Order(3)
-    @DisplayName("Test Get By ID")
-    public void testGet() throws IOException, InterruptedException {
-        HttpClient client = HttpClient.newHttpClient();
-
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(url + "/user/get/1"))
-                .header("Content-Type", "application/x-www-form-urlencoded")
-                .GET()
-                .build();
-
-        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+    @DisplayName("Test GetAll")
+    public void testGetAll() throws IOException, InterruptedException {
+        DUser newUser = new DUser(2L, "newLastName", "newFirstName", "newToken", "newPassword");
+        api.create(newUser);
+        HttpResponse<String>response = HTTPRequestBuilder.get(url, HTTPRequestBuilder.ResourceTypes.USER,"all");
 
         int statusCode = response.statusCode();
-        assertEquals( 200, statusCode);
+        assertEquals(200, statusCode);
 
-        DUser user = new DUser(
-                1L,
-                "testLastName",
-                "testFirstName",
-                "testToken",
-                "testPassWord"
-        );
-        ObjectMapper mapper = new ObjectMapper();
+        List<DUser> responseBody = new ObjectMapper().readValue(response.body(), new TypeReference<>(){});
+        List<DUser> fullList = Arrays.asList(user, newUser);
 
-        DUser responseBody = mapper.readValue(response.body(), new TypeReference<DUser>(){});
-        assertTrue(user.equals(responseBody));
+        assertEquals(fullList.toString(), responseBody.toString());
     }
+    
+    @Test
+    @Order(4)
+    @DisplayName("Test Edit User")
+    public void testEdit() throws IOException, InterruptedException{
+        DUser newUser = new DUser(
+            1L,
+            "EditName",
+            "EditLastName",
+            "editToken",
+            "editPassword"
+        );
 
+        String json = ObjToJSON.convert(newUser);
+
+        HttpResponse<String> response = HTTPRequestBuilder.edit(url, HTTPRequestBuilder.ResourceTypes.USER, json);
+
+        int statusCode = response.statusCode();
+        assertEquals(statusCode, 200);
+        DUser responseBody = new ObjectMapper().readValue(response.body(), new TypeReference<>(){});
+        assertTrue(newUser.equals(responseBody));
+        
+        // Assert NULL
+        newUser.setID(999L);
+
+        json = ObjToJSON.convert(newUser);
+
+        response = HTTPRequestBuilder.edit(url, HTTPRequestBuilder.ResourceTypes.USER, json);
+
+
+        statusCode = response.statusCode();
+        assertEquals(statusCode, 500);
+    }
+    @Test
+    @Order(5)
+    @DisplayName("Delete User")
+    public void test_delete() throws IOException, InterruptedException {
+        api.delete(2L);
+        HttpResponse<String>response = HTTPRequestBuilder.delete(url,
+                HTTPRequestBuilder.ResourceTypes.USER,
+                user.getID().toString());
+        
+        int statusCode = response.statusCode();
+        assertEquals( 200, statusCode);
+        ArrayList<DUser> test = (ArrayList<DUser>) api.getAll().getEntity();
+        assertTrue(test.isEmpty());
+    }
+    
     @AfterAll
     @DisplayName("Delete all Users")
     public static void deleteAll()
